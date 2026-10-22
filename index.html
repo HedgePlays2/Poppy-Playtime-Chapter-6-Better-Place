@@ -25,6 +25,16 @@
     #panel button:hover { background:#24506a; border-color:#6bdcff }
     #panel #start { color:#071019; background:#6bdcff; border-color:#6bdcff; font-weight:bold }
     #saveStatus { min-height:18px; font-size:12px }
+    #cutscene { position:fixed; inset:0; z-index:10; display:none; align-items:flex-end; justify-content:center; padding:clamp(16px,4vw,48px); box-sizing:border-box; background:linear-gradient(180deg,#02040b22 25%,#02040bd9 100%); }
+    #cinemaGlow { position:absolute; inset:0; background:radial-gradient(ellipse at 50% 38%,#4ccfff22,transparent 55%); animation:cinemaPulse 3s ease-in-out infinite alternate; pointer-events:none; }
+    #dialogueBox { position:relative; width:min(900px,100%); box-sizing:border-box; padding:22px 24px 18px; border:1px solid #72dfff99; border-left:5px solid #65dfff; border-radius:8px; background:#050a13ed; box-shadow:0 0 35px #000b; }
+    #speaker { color:#7be3ff; text-transform:uppercase; letter-spacing:3px; font-size:12px; font-weight:bold; margin-bottom:8px; }
+    #dialogueText { min-height:54px; font-size:clamp(16px,2.5vw,22px); line-height:1.5; color:#f0f5fb; }
+    #cinemaControls { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:16px; }
+    #cinemaProgress { color:#9aa9bc; font-size:12px; }
+    #cinemaControls button { border:1px solid #65dfff; border-radius:5px; padding:10px 16px; color:#071019; background:#65dfff; font-weight:bold; cursor:pointer; }
+    @keyframes cinemaPulse { from { opacity:.35 } to { opacity:1 } }
+    @media(max-width:600px) { #dialogueBox { padding:16px } #dialogueText { min-height:76px } }
     #toast { position:fixed; z-index:8; top:18px; right:18px; padding:12px 16px; border:1px solid #6bdcff; border-radius:5px; background:#07101bf2 }
     #touch { display:none; position:fixed; inset:auto 0 18px; z-index:4; justify-content:space-between; padding:0 15px; pointer-events:none }
     .pad,.touch-actions { display:grid; gap:6px; pointer-events:auto }
@@ -83,6 +93,17 @@
     </div>
   </div>
   <div id="toast" style="display:none"></div>
+  <div id="cutscene" aria-live="polite">
+    <div id="cinemaGlow"></div>
+    <div id="dialogueBox">
+      <div id="speaker">SYSTEM MESSAGE</div>
+      <div id="dialogueText">A signal is waking up inside the laboratory...</div>
+      <div id="cinemaControls">
+        <span id="cinemaProgress">INTRO · 1 / 6</span>
+        <button id="cinemaNext">CONTINUE ▶</button>
+      </div>
+    </div>
+  </div>
 
   <script type="module">
     import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
@@ -327,6 +348,84 @@
     const blueHand = createHand(0x2196ff,-1);
     const redHand = createHand(0xff3434,1);
 
+    // First-person GrabPack hardware stays visible while the player explores.
+    // Glowby is mounted on the left launcher, with Sawyer's eye always visible.
+    function makeStarShape(outer=0.28, inner=0.13) {
+      const shape = new THREE.Shape();
+      for(let i=0;i<10;i++) {
+        const angle=Math.PI/2+i*Math.PI/5;
+        const radius=i%2===0?outer:inner;
+        const x=Math.cos(angle)*radius, y=Math.sin(angle)*radius;
+        if(i===0) shape.moveTo(x,y); else shape.lineTo(x,y);
+      }
+      shape.closePath();
+      return shape;
+    }
+
+    const packHardware = new THREE.Group();
+    camera.add(packHardware);
+    const packMat = new THREE.MeshStandardMaterial({color:0x202b3a,metalness:0.65,roughness:0.35});
+    const cuffMat = new THREE.MeshStandardMaterial({color:0x536779,metalness:0.45,roughness:0.4});
+    const blueMat = new THREE.MeshStandardMaterial({color:0x168cff,emissive:0x063f85,metalness:0.25,roughness:0.35});
+    const redMat = new THREE.MeshStandardMaterial({color:0xe33a43,emissive:0x65080e,metalness:0.2,roughness:0.35});
+
+    function addLauncher(side, colorMaterial) {
+      const arm = new THREE.Group();
+      arm.position.set(side*0.39,-0.48,-0.82);
+      arm.rotation.z=side*0.12;
+      const forearm = new THREE.Mesh(new THREE.BoxGeometry(0.27,0.23,0.58),cuffMat);
+      forearm.position.set(0,-0.035,-0.06);
+      arm.add(forearm);
+      const cuff = new THREE.Mesh(new THREE.CylinderGeometry(0.17,0.19,0.22,12),packMat);
+      cuff.rotation.x=Math.PI/2;
+      cuff.position.set(0,0.015,-0.28);
+      arm.add(cuff);
+      const launcher = new THREE.Mesh(new THREE.CylinderGeometry(0.105,0.14,0.28,12),colorMaterial);
+      launcher.rotation.x=Math.PI/2;
+      launcher.position.set(0,0.035,-0.43);
+      arm.add(launcher);
+      const rim = new THREE.Mesh(new THREE.TorusGeometry(0.105,0.025,8,16),packMat);
+      rim.position.set(0,0.035,-0.575);
+      arm.add(rim);
+      packHardware.add(arm);
+      return arm;
+    }
+    addLauncher(-1,blueMat);
+    addLauncher(1,redMat);
+
+    const glowby = new THREE.Group();
+    glowby.position.set(-0.43,-0.30,-1.01);
+    glowby.rotation.z=-0.12;
+    const starMaterial = new THREE.MeshStandardMaterial({
+      color:0x6ceaff, emissive:0x168fc2, emissiveIntensity:1.5,
+      metalness:0.15, roughness:0.28
+    });
+    const star = new THREE.Mesh(new THREE.ExtrudeGeometry(makeStarShape(),{depth:0.10,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:0.025,bevelThickness:0.025}),starMaterial);
+    star.position.z=-0.02;
+    glowby.add(star);
+    const eyeSocket = new THREE.Mesh(new THREE.SphereGeometry(0.105,18,12),new THREE.MeshStandardMaterial({color:0x171021,emissive:0x250b42}));
+    eyeSocket.position.set(0,0.015,0.115);
+    eyeSocket.scale.set(1.1,0.78,0.45);
+    glowby.add(eyeSocket);
+    const sawyerEye = new THREE.Mesh(new THREE.SphereGeometry(0.064,18,12),new THREE.MeshStandardMaterial({color:0x44208c,emissive:0x5524b5,emissiveIntensity:1.2}));
+    sawyerEye.position.set(0.005,0.015,0.153);
+    sawyerEye.scale.set(0.78,1.08,0.5);
+    glowby.add(sawyerEye);
+    const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.027,12,10),new THREE.MeshBasicMaterial({color:0x08040c}));
+    pupil.position.set(0.012,0.015,0.173);
+    glowby.add(pupil);
+    const eyeGlint = new THREE.Mesh(new THREE.SphereGeometry(0.009,8,8),new THREE.MeshBasicMaterial({color:0xffffff}));
+    eyeGlint.position.set(-0.008,0.036,0.184);
+    glowby.add(eyeGlint);
+    packHardware.add(glowby);
+
+    const packBase = new THREE.Mesh(new THREE.BoxGeometry(0.66,0.20,0.18),packMat);
+    packBase.position.set(0,-0.57,-0.72);
+    packHardware.add(packBase);
+    const packLight = new THREE.PointLight(0x3fcfff,0.35,1.5);
+    packLight.position.set(-0.43,-0.30,-0.88);
+    packHardware.add(packLight);
+
     function handOrigin(hand) {
       const forward=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion);
       const right=new THREE.Vector3(1,0,0).applyQuaternion(camera.quaternion);
@@ -539,18 +638,66 @@
       saveStatus.textContent="New game ready.";
     }
 
+    const introLines = [
+      {speaker:"SYSTEM",text:"CONNECTION ESTABLISHED. UNKNOWN CONSCIOUSNESS DETECTED."},
+      {speaker:"GLOWBY",text:"Hey... I'm here with you. Don't worry. You're not alone."},
+      {speaker:"DOCTOR SAWYER",text:"I am Harley Sawyer. Experiment 1354. I have no body left—only a mind running in a machine."},
+      {speaker:"DOCTOR SAWYER",text:"Connect Glowby to the terminal, and I can move into this little vessel. It is the only way you can carry me with you."},
+      {speaker:"GLOWBY",text:"There'll be two of us in here now. I'm still me... and he's going to help us."},
+      {speaker:"DOCTOR SAWYER",text:"I remember what happened to the children. I cannot undo it. But I can help you stop the Prototype—and protect the ones still alive."}
+    ];
+    let introIndex=0, introActive=false;
+
+    function showIntroLine() {
+      const line=introLines[introIndex];
+      $("speaker").textContent=line.speaker;
+      $("dialogueText").textContent=line.text;
+      $("cinemaProgress").textContent="INTRO · "+(introIndex+1)+" / "+introLines.length;
+      $("cinemaNext").textContent=introIndex===introLines.length-1?"BEGIN CHAPTER ▶":"CONTINUE ▶";
+    }
+
+    function finishIntro() {
+      introActive=false;
+      $("cutscene").style.display="none";
+      state.running=true;
+      screen.style.display="none";
+      if(matchMedia("(pointer:fine)").matches) renderer.domElement.requestPointerLock?.();
+      showToast("Glowby and Sawyer are with you.");
+    }
+
+    function advanceIntro() {
+      if(!introActive) return;
+      introIndex++;
+      if(introIndex>=introLines.length) finishIntro();
+      else showIntroLine();
+    }
+
+    function playIntro() {
+      introIndex=0;
+      introActive=true;
+      state.running=false;
+      screen.style.display="none";
+      $("cutscene").style.display="flex";
+      showIntroLine();
+    }
+
+    $("cinemaNext").addEventListener("click",advanceIntro);
+
     function startGame(continueExisting=false) {
       if(continueExisting) {
         if(!loadGame(false)) {
           showToast("No save found. Starting a new game.");
           resetProgress();
+          playIntro();
+          return;
         }
+        state.running=true;
+        screen.style.display="none";
+        if(matchMedia("(pointer:fine)").matches) renderer.domElement.requestPointerLock?.();
       } else {
         resetProgress();
+        playIntro();
       }
-      state.running=true;
-      screen.style.display="none";
-      if(matchMedia("(pointer:fine)").matches) renderer.domElement.requestPointerLock?.();
     }
 
     function pauseGame() {
@@ -664,6 +811,10 @@
         movePlayer(delta);
         updateTarget();
       }
+      const bob=Math.sin(performance.now()*0.0024)*0.012;
+      glowby.position.y=-0.30+bob;
+      glowby.rotation.z=-0.12+Math.sin(performance.now()*0.0015)*0.025;
+      sawyerEye.material.emissiveIntensity=1.0+Math.sin(performance.now()*0.003)*0.25;
       updateGrabPack(delta);
       renderer.render(scene,camera);
     }
