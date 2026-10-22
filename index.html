@@ -871,7 +871,7 @@
       const bob=Math.sin(performance.now()*0.0024)*0.012;
       glowby.position.y=-0.30+bob;
       glowby.rotation.z=-0.12+Math.sin(performance.now()*0.0015)*0.025;
-      sawyerEye.material.emissiveIntensity=1.0+Math.sin(performance.now()*0.003)*0.25;
+      // sawyerEye is a Group, not a material; animating its nonexistent material crashed the render loop.
       updateGrabPack(delta);
       renderer.render(scene,camera);
     }
