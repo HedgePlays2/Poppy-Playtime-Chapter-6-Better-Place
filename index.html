@@ -267,8 +267,11 @@
 
       // Corridor support ribs, overhead cable trays, and floor-zone markings.
       for(let z=31;z>=-53;z-=7) {
-        box("Support rib",-14.55,3,z,0.32,6,0.32,mat.dark,false);
-        box("Support rib",14.55,3,z,0.32,6,0.32,mat.dark,false);
+        const nearRoomEntrance=[2,-31,-49].some(roomZ=>Math.abs(z-roomZ)<2.5);
+        if(!nearRoomEntrance) {
+          box("Support rib",-14.55,3,z,0.32,6,0.32,mat.dark,false);
+          box("Support rib",14.55,3,z,0.32,6,0.32,mat.dark,false);
+        }
         box("Overhead cable tray",0,5.72,z,8.2,0.3,0.55,mat.metal,false);
         box("Cable tray warning",-4.25,5.55,z,0.2,0.12,0.22,redGlowMat,false);
         box("Cable tray status",4.25,5.55,z,0.2,0.12,0.22,cyanGlowMat,false);
@@ -524,6 +527,7 @@
       let best = 4.2;
 
       for(const item of interactables) {
+        if(!item.mesh.visible) continue;
         if(item.name==="Auxiliary power supply" && state.powerCollected) continue;
         if(item.name==="Exit door" && state.doorOpen) continue;
 
@@ -851,7 +855,7 @@
       const nz=camera.position.z+movement.z;
       if(!isBlocked(nx,camera.position.z)) camera.position.x=nx;
       if(!isBlocked(camera.position.x,nz)) camera.position.z=nz;
-      const sideRoomZone=[2,-31,-49].some(roomZ=>Math.abs(camera.position.z-roomZ)<3.7);
+      const sideRoomZone=[2,-31,-49].some(roomZ=>Math.abs(camera.position.z-roomZ)<4.3);
       const xLimit=sideRoomZone?23.35:14.1;
       camera.position.x=THREE.MathUtils.clamp(camera.position.x,-xLimit,xLimit);
       camera.position.z=THREE.MathUtils.clamp(camera.position.z,-57,35);
