@@ -260,7 +260,7 @@
 
       function roomConsole(name,x,z,color,description,action) {
         box(name+" pedestal",x,0.58,z,1.05,1.16,0.8,mat.dark,false);
-        const screen=box(name,x,1.45,z-0.42,0.88,0.62,0.08,new THREE.MeshBasicMaterial({color}),false);
+        const screen=box(name,x,1.45,z+0.42,0.88,0.62,0.08,new THREE.MeshBasicMaterial({color}),false);
         addInteractable(screen,name,description,action);
         return screen;
       }
@@ -308,14 +308,14 @@
               box("GrabPack test target",cx-2.7+n*2.7,1.25,z+0.85,0.65,1.25,0.16,mat.dark,false);
               box("Target indicator",cx-2.7+n*2.7,1.8,z+0.75,0.36,0.12,0.05,n===1?redGlowMat:cyanGlowMat,false);
             }
-            roomConsole("Calibration console",cx,z-1.95,0x29d8ff,"Press E / USE to read the GrabPack calibration log",()=>showToast("CALIBRATION LOG: Blue hand stable. Red hand requires a fresh cable spool."));
+            roomConsole("Calibration console",cx,z+0.25,0x29d8ff,"Press E / USE to read the GrabPack calibration log",()=>showToast("CALIBRATION LOG: Blue hand stable. Red hand requires a fresh cable spool."));
           } else if(z===2 && side===1) {
             makeSign("STAFF BREAK ROOM","LAST SHIFT: 11:47 PM",cx,4.45,z-3.72,0,3.5,0.78);
             box("Break room table",cx,0.82,z+0.45,2.5,0.15,1.25,mat.dark,false);
             for(const dx of [-1.1,1.1]) box("Break room chair",cx+dx,0.42,z+0.45,0.46,0.72,0.46,mat.dark,false);
             box("Vending machine",cx+3.05,1.25,z-1.9,0.72,2.35,0.65,mat.dark,false);
             box("Vending machine screen",cx+3.05,1.58,z-2.24,0.46,0.55,0.04,redGlowMat,false);
-            roomConsole("Break room message terminal",cx-2.65,z-1.65,0xffbd57,"Press E / USE to read the last staff message",()=>showToast("STAFF MESSAGE: If the lights go out, do not follow voices from the prototype wing."));
+            roomConsole("Break room message terminal",cx-2.65,z+0.25,0xffbd57,"Press E / USE to read the last staff message",()=>showToast("STAFF MESSAGE: If the lights go out, do not follow voices from the prototype wing."));
           } else if(z===-31 && side===-1) {
             makeSign("TOY REPAIR BAY","DAMAGED STOCK / DO NOT SHIP",cx,4.45,z-3.72,0,3.5,0.78);
             for(let n=0;n<3;n++) {
@@ -324,14 +324,14 @@
               box("Repair lamp stand",bx,1.35,z+0.1,0.1,1.2,0.1,mat.metal,false);
               box("Repair lamp head",bx,1.98,z+0.1,0.55,0.1,0.32,redGlowMat,false);
             }
-            roomConsole("Toy repair console",cx,z-1.8,0xff3549,"Press E / USE to inspect the repair queue",()=>showToast("REPAIR QUEUE: Three toys unaccounted for. One unit moved to neural systems."));
+            roomConsole("Toy repair console",cx,z+0.25,0xff3549,"Press E / USE to inspect the repair queue",()=>showToast("REPAIR QUEUE: Three toys unaccounted for. One unit moved to neural systems."));
           } else if(z===-31 && side===1) {
             makeSign("NEURAL SYSTEMS","SIGNAL LAB / 1354",cx,4.45,z-3.72,0,3.5,0.78);
             for(let n=0;n<4;n++) {
               box("Neural server rack",cx-3.0+n*1.8,1.45,z+0.55,0.85,2.55,0.72,mat.dark,false);
               for(let r=0;r<3;r++) box("Server indicator",cx-3.0+n*1.8,0.7+r*0.55,z+0.16,0.36,0.08,0.04,r===1?redGlowMat:cyanGlowMat,false);
             }
-            roomConsole("Neural systems console",cx+2.0,z-1.8,0x29d8ff,"Press E / USE to inspect Sawyer's signal logs",()=>showToast("SIGNAL LOG: EXPERIMENT 1354 remains conscious. Signal is unstable, but not silent."));
+            roomConsole("Neural systems console",cx+2.0,z+0.25,0x29d8ff,"Press E / USE to inspect Sawyer's signal logs",()=>showToast("SIGNAL LOG: EXPERIMENT 1354 remains conscious. Signal is unstable, but not silent."));
           } else if(z===-49 && side===-1) {
             makeSign("RESTRICTED ARCHIVE","STAFF CLEARANCE REQUIRED",cx,4.45,z-3.72,0,3.5,0.78);
             for(let n=0;n<4;n++) {
@@ -339,7 +339,7 @@
               box("Archive cabinet",bx,1.35,z+0.65,1.35,2.45,0.72,mat.dark,false);
               for(let r=0;r<3;r++) box("Archive drawer handle",bx,0.72+r*0.62,z+0.26,0.42,0.06,0.05,mat.metal,false);
             }
-            roomConsole("Archive terminal",cx,z-1.85,0xffbd57,"Press E / USE to read an archived experiment note",()=>showToast("ARCHIVE NOTE: Experiment 1345 was assigned to assist staff and keep children away from active machinery."));
+            roomConsole("Archive terminal",cx,z+0.25,0xffbd57,"Press E / USE to read an archived experiment note",()=>showToast("ARCHIVE NOTE: Experiment 1345 was assigned to assist staff and keep children away from active machinery."));
           } else if(z===-49 && side===1) {
             makeSign("EXPERIMENT 1345","METAL HEDGE / CONTAINMENT",cx,4.45,z-3.72,0,3.5,0.78);
             // Floor-mounted restraint rails, not floating props.
@@ -944,6 +944,7 @@
       camera.rotation.set(0,0,0);
       powerUnit.visible=true;
       exitDoor.visible=true;
+      syncExitDoorCollision();
       refreshObjective();
       saveStatus.textContent="New game ready.";
     }
