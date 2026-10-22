@@ -1,96 +1,44 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#08070e">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#08070e">
 <title>Poppy Playtime Chapter 6: Better Place</title>
 <style>
-:root{color-scheme:dark;--purple:#77708f;--glow:#b7f8ff}
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#05050a;color:#f5f2ff;font-family:Arial,Helvetica,sans-serif}
-body{background:radial-gradient(ellipse at 50% 45%,#252238 0%,#0c0b14 52%,#020205 100%)}
-#game{position:relative;width:100%;height:100%;min-height:360px;display:grid;place-items:center;isolation:isolate}
-#grain{position:absolute;inset:0;pointer-events:none;opacity:.13;background-image:radial-gradient(#fff 0.6px,transparent .7px);background-size:4px 4px;mix-blend-mode:screen}
-.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;transition:opacity 1.2s ease}
-.hidden{opacity:0;pointer-events:none}
-.lab-light{position:absolute;width:min(70vw,650px);height:min(55vh,420px);background:radial-gradient(ellipse,#41385844,transparent 70%);filter:blur(15px);z-index:-1}
-.computer{width:min(74vw,420px);position:relative;filter:drop-shadow(0 22px 34px #000b);animation:float 4s ease-in-out infinite}
-.monitor{aspect-ratio:1.18;background:linear-gradient(135deg,#aaa0bb,#4c465e 38%,#292538);border:8px solid #514a65;border-radius:8px;padding:22px;box-shadow:inset 0 0 0 3px #b1a1c755,0 0 30px #9580cb20}
-.screen{height:100%;min-height:150px;background:radial-gradient(ellipse,#1b1b32,#080b18 75%);display:grid;place-items:center;overflow:hidden;border:3px solid #26243b}
-.eye{width:68%;aspect-ratio:1.65;border-radius:65% 10% 65% 10%;transform:rotate(45deg);background:#f2f5ff;box-shadow:0 0 18px #c7edff,0 0 50px #9bcdff;display:grid;place-items:center;animation:blink 6s infinite}
-.iris{width:54%;height:78%;border-radius:50%;background:radial-gradient(circle at 45% 40%,#fff 0 5%,#c8e8ff 7%,#8e9bb8 18%,#232a44 55%,#101320 70%);border:3px solid #dceaff;box-shadow:0 0 12px #d8f5ff}
-.eye.closed{transform:rotate(45deg) scaleY(.08)}
-.base{height:85px;background:linear-gradient(90deg,#211f31,#716a85,#252235);width:94%;margin:auto;border-radius:2px 2px 10px 10px;border-bottom:8px solid #171521}
-.keyboard{height:34px;width:100%;margin-top:7px;border-radius:5px;background:repeating-linear-gradient(90deg,#a9a2b7 0 13px,#373344 13px 16px);border:5px solid #514a65}
-.cable{position:absolute;right:-8%;bottom:13%;width:20%;height:50px;border-bottom:4px solid #17151e;border-radius:50%;transform:rotate(12deg)}
-.caption{max-width:800px;min-height:110px;margin-top:26px;text-shadow:0 2px 12px #000;font-size:clamp(17px,2.4vw,24px);line-height:1.55}
-.speaker{display:block;color:#b6dfff;font-weight:800;letter-spacing:.16em;font-size:.68em;margin-bottom:7px}
-.sub{color:#d7d3e5}
-#continue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);padding:13px 24px;border:1px solid #b8b0d8;border-radius:3px;background:#171421dd;color:#fff;letter-spacing:.13em;font-weight:bold;cursor:pointer}
-#continue:hover{background:#38304d}
-#title h1{font-size:clamp(30px,6vw,72px);letter-spacing:.08em;margin:0;text-shadow:0 0 24px #b7f8ff55}
-#title h2{font-size:clamp(15px,2.5vw,25px);letter-spacing:.45em;color:#b6e8ff;margin:16px 0 32px}
-#title p{max-width:580px;color:#b7b2c9;line-height:1.6}
-#glowby{width:150px;height:150px;position:relative;filter:drop-shadow(0 0 25px #a9eaff88);animation:float 3s ease-in-out infinite}
-.star{position:absolute;inset:0;background:linear-gradient(145deg,#fff8c9,#a5e7ff 65%,#8378bc);clip-path:polygon(50% 0%,61% 34%,98% 35%,70% 57%,80% 94%,50% 72%,19% 94%,29% 57%,2% 35%,39% 34%);border:2px solid white}
-.star-eye{position:absolute;top:40%;left:39%;width:24%;height:29%;border-radius:50%;background:#10131f;border:3px solid #e5f9ff;box-shadow:0 0 10px #dffaff}
-.star-eye:after{content:"";position:absolute;top:20%;left:24%;width:25%;height:25%;border-radius:50%;background:white}
-#system{font-family:monospace;color:#a7f5ff;letter-spacing:.1em;margin-top:15px;min-height:24px}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes blink{0%,44%,48%,100%{transform:rotate(45deg) scaleY(1)}46%{transform:rotate(45deg) scaleY(.08)}}
-@media(max-width:500px){.monitor{padding:12px;border-width:6px}.screen{min-height:120px}.base{height:56px}.keyboard{height:25px}.caption{margin-top:18px;min-height:130px}#continue{bottom:15px;width:max-content;max-width:90%}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
-</style>
-</head>
-<body>
-<main id="game" aria-label="Poppy Playtime Chapter 6: Better Place opening scene">
-<div class="lab-light"></div><div id="grain"></div>
-<section class="scene" id="opening" aria-live="polite">
-<div class="computer" aria-label="Doctor Harley Sawyer in his computer form">
-<div class="monitor"><div class="screen"><div class="eye" id="sawyerEye"><div class="iris"></div></div></div></div>
-<div class="base"></div><div class="keyboard"></div><div class="cable"></div>
-</div>
-<div class="caption" id="caption"><span class="speaker">DOCTOR HARLEY SAWYER</span>Well now, this is a rather interesting turn of events. Plug me into that Star Thing. I want to see what it feels like to be mobile again.</div>
-<button id="continue" type="button">CONNECT GLOWBY</button>
+:root{color-scheme:dark;--glow:#b7f8ff}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#05050a;color:#f5f2ff;font-family:Arial,Helvetica,sans-serif}body{background:radial-gradient(ellipse at 50% 45%,#252238 0%,#0c0b14 52%,#020205 100%)}button{font:inherit}
+#game{position:relative;width:100%;height:100%;min-height:360px;display:grid;place-items:center;isolation:isolate}#grain{position:absolute;inset:0;pointer-events:none;opacity:.13;background-image:radial-gradient(#fff .6px,transparent .7px);background-size:4px 4px;mix-blend-mode:screen}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;transition:opacity .7s ease;overflow:auto}.hidden{display:none!important}.lab-light{position:absolute;width:min(70vw,650px);height:min(55vh,420px);background:radial-gradient(ellipse,#41385844,transparent 70%);filter:blur(15px);z-index:-1}
+.computer{width:min(74vw,420px);position:relative;filter:drop-shadow(0 22px 34px #000b);animation:float 4s ease-in-out infinite}.monitor{aspect-ratio:1.18;background:linear-gradient(135deg,#aaa0bb,#4c465e 38%,#292538);border:8px solid #514a65;border-radius:8px;padding:22px;box-shadow:inset 0 0 0 3px #b1a1c755,0 0 30px #9580cb20}.screen{height:100%;min-height:150px;background:radial-gradient(ellipse,#1b1b32,#080b18 75%);display:grid;place-items:center;overflow:hidden;border:3px solid #26243b}.eye{width:68%;aspect-ratio:1.65;border-radius:65% 10% 65% 10%;transform:rotate(45deg);background:#f2f5ff;box-shadow:0 0 18px #c7edff,0 0 50px #9bcdff;display:grid;place-items:center;animation:blink 6s infinite}.iris{width:54%;height:78%;border-radius:50%;background:radial-gradient(circle at 45% 40%,#fff 0 5%,#c8e8ff 7%,#8e9bb8 18%,#232a44 55%,#101320 70%);border:3px solid #dceaff;box-shadow:0 0 12px #d8f5ff}.base{height:85px;background:linear-gradient(90deg,#211f31,#716a85,#252235);width:94%;margin:auto;border-radius:2px 2px 10px 10px;border-bottom:8px solid #171521}.keyboard{height:34px;width:100%;margin-top:7px;border-radius:5px;background:repeating-linear-gradient(90deg,#a9a2b7 0 13px,#373344 13px 16px);border:5px solid #514a65}.cable{position:absolute;right:-8%;bottom:13%;width:20%;height:50px;border-bottom:4px solid #17151e;border-radius:50%;transform:rotate(12deg)}
+.caption{max-width:800px;min-height:90px;margin-top:20px;text-shadow:0 2px 12px #000;font-size:clamp(17px,2.4vw,24px);line-height:1.55}.speaker{display:block;color:#b6dfff;font-weight:800;letter-spacing:.16em;font-size:.68em;margin-bottom:7px}
+.action{padding:12px 22px;border:1px solid #b8b0d8;border-radius:3px;background:#171421eF;color:#fff;letter-spacing:.1em;font-weight:bold;cursor:pointer;margin:5px;min-width:180px}.action:hover{background:#38304d;border-color:#d6caff}.action:disabled{opacity:.4;cursor:default}.menu-actions{display:flex;flex-direction:column;align-items:center;margin-top:12px}.eyebrow{letter-spacing:.38em;color:#b6e8ff;font-size:clamp(12px,2vw,18px);margin:0 0 12px}.logo{font-size:clamp(31px,6.5vw,76px);line-height:1.05;letter-spacing:.06em;margin:0;text-shadow:0 0 24px #b7f8ff55}.logo span{color:#c8b9ed}.small{max-width:620px;color:#b7b2c9;line-height:1.6}.panel{width:min(94vw,560px);padding:20px;background:#100f1beF;border:1px solid #625a7a;box-shadow:0 15px 55px #0009}.save-row{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid #403a52;background:#191725;padding:12px;margin:8px 0;text-align:left}.save-info{font-size:14px;color:#bdb7d0;line-height:1.45}.save-buttons{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.save-buttons .action{min-width:72px;padding:9px;font-size:12px}.back{position:absolute;left:18px;top:18px;min-width:100px}
+#glowby{width:130px;height:130px;position:relative;filter:drop-shadow(0 0 25px #a9eaff88);animation:float 3s ease-in-out infinite}.star{position:absolute;inset:0;background:linear-gradient(145deg,#fff8c9,#a5e7ff 65%,#8378bc);clip-path:polygon(50% 0%,61% 34%,98% 35%,70% 57%,80% 94%,50% 72%,19% 94%,29% 57%,2% 35%,39% 34%)}.star-eye{position:absolute;top:40%;left:39%;width:24%;height:29%;border-radius:50%;background:#10131f;border:3px solid #e5f9ff;box-shadow:0 0 10px #dffaff}.star-eye:after{content:"";position:absolute;top:20%;left:24%;width:25%;height:25%;border-radius:50%;background:white}#system{font-family:monospace;color:#a7f5ff;letter-spacing:.1em;margin-top:15px;min-height:24px}
+#gameplay h2{font-size:clamp(25px,5vw,48px);letter-spacing:.12em}#gameplay p{max-width:620px;line-height:1.7;color:#c6c0d6}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}@keyframes blink{0%,44%,48%,100%{transform:rotate(45deg) scaleY(1)}46%{transform:rotate(45deg) scaleY(.08)}@media(max-width:500px){.monitor{padding:12px;border-width:6px}.screen{min-height:120px}.base{height:56px}.keyboard{height:25px}.caption{margin-top:14px;min-height:80px}.computer{width:min(78vw,330px)}.save-row{align-items:flex-start;flex-direction:column}.save-buttons{justify-content:flex-start}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style></head><body><main id="game" aria-label="Poppy Playtime Chapter 6: Better Place"><div class="lab-light"></div><div id="grain"></div>
+<section class="scene" id="title">
+<p class="eyebrow">A FAN-MADE STORY CONTINUING AFTER CHAPTER 5</p><h1 class="logo">POPPY PLAYTIME</h1><h2 class="logo"><span>CHAPTER 6</span></h2><h2 class="logo" style="font-size:clamp(25px,4.5vw,54px);color:#d5c8f1">BETTER PLACE</h2>
+<p class="small">The Prototype is still on the loose. A new vessel may change Doctor Sawyer forever.</p>
+<div class="menu-actions"><button class="action" id="newGame">NEW GAME</button><button class="action" id="continueGame">CONTINUE</button><button class="action" id="openSaves">SAVE FILES</button></div><p class="small" id="menuMessage">Progress saves in this browser on this device.</p>
 </section>
-<section class="scene hidden" id="transfer" aria-live="polite">
-<div id="glowby" aria-label="Glowby, the star-shaped companion"><div class="star"></div><div class="star-eye"></div></div>
-<h2>TRANSFERRING SAWYER</h2><div id="system">CONNECTING TO GLOWBY...</div>
-<div class="caption" id="transferCaption"><span class="speaker">SYSTEM</span>Mind transfer initializing.</div>
-</section>
-<section class="scene hidden" id="title" aria-live="polite">
-<h1>POPPY PLAYTIME</h1><h2>CHAPTER 6</h2><h1 style="color:#c8b9ed">BETTER PLACE</h1>
-<p>After Chapter 5, the Prototype is still on the loose. Sawyer's mind has found a new vessel — and with it, something he has never understood before.</p>
-<div class="caption"><span class="speaker">SAWYER</span>I can feel something. Is this... regret?</div>
-<button id="begin" type="button">BEGIN</button>
-</section>
-</main>
-<script>
-(() => {
- const opening=document.getElementById('opening'), transfer=document.getElementById('transfer'), title=document.getElementById('title');
- const caption=document.getElementById('caption'), button=document.getElementById('continue'), system=document.getElementById('system'), transferCaption=document.getElementById('transferCaption');
- let started=false;
- function show(el){[opening,transfer,title].forEach(s=>s.classList.add('hidden'));el.classList.remove('hidden');}
- button.addEventListener('click',()=>{
-   if(started)return;started=true;show(transfer);button.disabled=true;
-   const steps=[
-    ['CONNECTING TO GLOWBY...','SYSTEM','Mind transfer initializing.'],
-    ['TRANSFERRING MEMORY...','SYSTEM','Moving Sawyer’s mind from the computer into the new vessel.'],
-    ['VESSEL LINK STABLE','DOCTOR HARLEY SAWYER','Oh... I can feel something.'],
-    ['TRANSFER COMPLETE','DOCTOR HARLEY SAWYER','I remember. The children... What have I done?']
-   ];let i=0;
-   function next(){
-    if(i>=steps.length){setTimeout(()=>show(title),1400);return;}
-    system.textContent=steps[i][0];transferCaption.innerHTML='<span class="speaker">'+steps[i][1]+'</span>'+steps[i][2];
-    i++;setTimeout(next,2600);
-   }next();
- });
- document.getElementById('begin').addEventListener('click',()=>{
-   document.getElementById('title').innerHTML='<h1>CHAPTER 6</h1><h2>BETTER PLACE</h2><p style="font-size:1.1rem">The opening cutscene is complete.</p><p>Next up: first-person movement, the GrabPack, and Metal Hedge — Experiment 1345.</p><button id="replay" type="button">REPLAY CUTSCENE</button>';
-   document.getElementById('replay').addEventListener('click',()=>location.reload());
- });
+<section class="scene hidden" id="saves"><button class="action back" id="backMenu">← BACK</button><h2>SAVE FILES</h2><p class="small">Choose a slot to load or save your progress. Saves stay in this browser on this device.</p><div class="panel" id="saveList"></div></section>
+<section class="scene hidden" id="opening" aria-live="polite"><div class="computer" aria-label="Doctor Harley Sawyer in computer form"><div class="monitor"><div class="screen"><div class="eye"><div class="iris"></div></div></div></div><div class="base"></div><div class="keyboard"></div><div class="cable"></div></div><div class="caption" id="caption"><span class="speaker">DOCTOR HARLEY SAWYER</span>Well now, this is a rather interesting turn of events. Plug me into that Star Thing. I want to see what it feels like to be mobile again.</div><button class="action" id="connect">CONNECT GLOWBY</button></section>
+<section class="scene hidden" id="transfer" aria-live="polite"><div id="glowby" aria-label="Glowby, the star-shaped companion"><div class="star"></div><div class="star-eye"></div></div><h2>TRANSFERRING SAWYER</h2><div id="system">CONNECTING TO GLOWBY...</div><div class="caption" id="transferCaption"><span class="speaker">SYSTEM</span>Mind transfer initializing.</div></section>
+<section class="scene hidden" id="gameplay"><p class="eyebrow">CHAPTER 6 · BETTER PLACE</p><h2>THE JOURNEY BEGINS</h2><div id="glowby" aria-label="Glowby with Sawyer's eye"><div class="star"></div><div class="star-eye"></div></div><p id="gameText">Glowby is with you. Sawyer's eye watches from the star as he tries to understand the feelings awakening inside him.</p><p class="small">This is the current story prototype. First-person exploration and GrabPack gameplay will be added next.</p><div><button class="action" id="saveNow">SAVE GAME</button><button class="action" id="toTitle">TITLE SCREEN</button></div><p id="saveMessage" class="small" aria-live="polite"></p></section>
+</main><script>
+(()=>{
+const $=id=>document.getElementById(id);
+const scenes=['title','saves','opening','transfer','gameplay'];
+function show(id){scenes.forEach(s=>$(s).classList.toggle('hidden',s!==id));}
+const KEY='betterPlaceSaveSlotsV1';let activeSlot=0;let progress='start';
+function getSaves(){try{return JSON.parse(localStorage.getItem(KEY))||[null,null,null]}catch(e){return [null,null,null]}}
+function setSave(slot,data){const saves=getSaves();saves[slot]=data;localStorage.setItem(KEY,JSON.stringify(saves));}
+function saveProgress(slot=activeSlot){activeSlot=slot;setSave(slot,{chapter:6,progress:progress,updated:new Date().toLocaleString(),title:'Poppy Playtime: Better Place'});$('saveMessage').textContent='Saved to Slot '+(slot+1)+'.';$('menuMessage').textContent='Progress saved in Slot '+(slot+1)+'.';}
+function loadProgress(slot){const s=getSaves()[slot];if(!s)return;activeSlot=slot;progress=s.progress||'start';if(progress==='gameplay')show('gameplay');else startCutscene(true);}
+function renderSaves(){const list=$('saveList');list.innerHTML='';getSaves().forEach((s,i)=>{const row=document.createElement('div');row.className='save-row';const info=document.createElement('div');info.className='save-info';info.innerHTML='<strong>Slot '+(i+1)+'</strong><br>'+ (s?'Chapter '+s.chapter+' · '+(s.progress==='gameplay'?'After opening cutscene':'Beginning')+'<br>'+s.updated:'EMPTY SLOT');const actions=document.createElement('div');actions.className='save-buttons';const load=document.createElement('button');load.className='action';load.textContent='LOAD';load.disabled=!s;load.onclick=()=>loadProgress(i);const save=document.createElement('button');save.className='action';save.textContent='SAVE HERE';save.onclick=()=>{activeSlot=i;saveProgress(i);renderSaves();};actions.append(load,save);row.append(info,actions);list.append(row);});}
+$('openSaves').onclick=()=>{renderSaves();show('saves')};$('backMenu').onclick=()=>show('title');
+$('continueGame').onclick=()=>{const saves=getSaves();const idx=saves.findIndex(Boolean);if(idx<0){$('menuMessage').textContent='No save found yet. Choose NEW GAME to begin.';return}loadProgress(idx)};
+$('newGame').onclick=()=>{activeSlot=0;progress='start';startCutscene(false)};
+function startCutscene(fromSave){progress='cutscene';show('opening');$('connect').disabled=false;if(!fromSave){$('caption').innerHTML='<span class="speaker">DOCTOR HARLEY SAWYER</span>Well now, this is a rather interesting turn of events. Plug me into that Star Thing. I want to see what it feels like to be mobile again.';}}
+$('connect').onclick=()=>{progress='transfer';$('connect').disabled=true;show('transfer');const steps=[['CONNECTING TO GLOWBY...','SYSTEM','Mind transfer initializing.'],['TRANSFERRING MEMORY...','SYSTEM','Moving Sawyer’s mind from the computer into the new vessel.'],['VESSEL LINK STABLE','DOCTOR HARLEY SAWYER','Oh... I can feel something.'],['TRANSFER COMPLETE','DOCTOR HARLEY SAWYER','I remember. The children... What have I done?']];let i=0;function next(){if(i>=steps.length){progress='gameplay';saveProgress(activeSlot);setTimeout(()=>show('gameplay'),900);return}$('system').textContent=steps[i][0];$('transferCaption').innerHTML='<span class="speaker">'+steps[i][1]+'</span>'+steps[i][2];i++;setTimeout(next,2200)}next();};
+$('saveNow').onclick=()=>saveProgress(activeSlot);$('toTitle').onclick=()=>{show('title');$('connect').disabled=false;}; 
 })();
-</script>
-</body>
-</html>
+</script></body></html>
