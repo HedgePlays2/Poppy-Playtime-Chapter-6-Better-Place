@@ -419,47 +419,117 @@
           box("Side room storage crate",side*21.4,0.55,z+1.8,1.2,1.1,1.2,mat.dark,false);
           const floorGlow=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.025,5.4),new THREE.MeshBasicMaterial({color:side===-1?0x2bd9ff:0xffb53d}));
           floorGlow.position.set(side*16.5,0.015,z); scene.add(floorGlow);
+
+          // Give every side room a distinct identity instead of repeating the same empty lab.
+          if (z===2 && side===-1) {
+            makeSign("GRABPACK CALIBRATION","TEST RANGE 04 // AUTHORIZED STAFF",cx,4.45,z-3.75,0,3.4,0.8);
+            for(let n=0;n<3;n++) {
+              box("GrabPack test target",cx-2.7+n*2.7,1.55,z+0.7,0.65,1.7,0.16,mat.dark,false);
+              box("Target indicator",cx-2.7+n*2.7,2.35,z+0.58,0.38,0.18,0.05,n===1?redGlowMat:cyanGlowMat,false);
+            }
+            box("Calibration control desk",cx,0.72,z-2.1,3.7,1.05,0.9,mat.dark,false);
+            box("Calibration monitor",cx,1.48,z-2.48,1.65,0.72,0.08,cyanGlowMat,false);
+          } else if (z===2 && side===1) {
+            makeSign("STAFF BREAK ROOM","SHIFT LOG: LAST ENTRY 11:47 PM",cx,4.45,z-3.75,0,3.4,0.8);
+            box("Break room table",cx,0.82,z+0.35,2.8,0.16,1.5,mat.dark,false);
+            for(const dx of [-1.25,1.25]) box("Break room chair",cx+dx,0.45,z+0.35,0.48,0.8,0.48,hedgeDark,false);
+            box("Vending machine",cx+3.0,1.3,z-2.2,0.85,2.5,0.7,mat.dark,false);
+            box("Vending machine display",cx+2.98,1.65,z-2.58,0.54,0.65,0.04,redGlowMat,false);
+            box("Dropped mug",cx-2.5,1.0,z-1.5,0.22,0.2,0.22,whiteLabelMat,false);
+          } else if (z===-31 && side===-1) {
+            makeSign("TOY REPAIR BAY","DAMAGED STOCK // DO NOT SHIP",cx,4.45,z-3.75,0,3.4,0.8);
+            for(let n=0;n<3;n++) {
+              box("Toy repair bench",cx-2.6+n*2.6,0.78,z+0.2,1.8,0.18,1.1,mat.dark,false);
+              box("Repair lamp",cx-2.6+n*2.6,1.65,z-0.1,0.12,1.55,0.12,mat.silver,false);
+              box("Repair lamp head",cx-2.6+n*2.6,2.42,z-0.1,0.65,0.12,0.42,redGlowMat,false);
+            }
+            box("Toy parts bin",cx+3.25,0.5,z+2.5,0.9,0.8,0.8,mat.dark,false);
+            box("Toy parts label",cx+3.25,0.95,z+2.08,0.58,0.22,0.04,whiteLabelMat,false);
+          } else if (z===-31 && side===1) {
+            makeSign("NEURAL SYSTEMS","EXPERIMENT 1354 // SIGNAL LAB",cx,4.45,z-3.75,0,3.4,0.8);
+            box("Neural processing rack",cx-2.8,1.8,z+0.4,1.0,3.3,0.8,mat.dark,false);
+            for(let n=0;n<4;n++) box("Rack status light",cx-2.8,2.85-n*0.52,z-0.03,0.58,0.12,0.04,n%2?redGlowMat:cyanGlowMat,false);
+            box("Neural signal table",cx+1.0,0.8,z+1.2,2.4,0.18,1.5,mat.dark,false);
+            for(let n=0;n<3;n++) {
+              const orb=new THREE.Mesh(new THREE.SphereGeometry(0.22,12,10),new THREE.MeshBasicMaterial({color:[0x55ddff,0xb47aff,0xff5577][n]}));
+              orb.position.set(cx+0.3+n*0.7,1.18,z+1.2); scene.add(orb);
+            }
+          } else if (z===-49 && side===-1) {
+            makeSign("RESTRICTED ARCHIVE","STAFF CLEARANCE REQUIRED",cx,4.45,z-3.75,0,3.4,0.8);
+            for(let n=0;n<4;n++) {
+              box("Archive file cabinet",cx-3.1+n*1.9,1.45,z+0.5,1.45,2.7,0.75,mat.dark,false);
+              for(let r=0;r<3;r++) box("Archive drawer handle",cx-3.1+n*1.9,0.7+r*0.72,z+0.09,0.48,0.07,0.05,mat.silver,false);
+            }
+            box("Archive evidence table",cx,0.72,z-2.1,2.8,0.12,1.0,mat.dark,false);
+            box("Evidence folder",cx-0.35,0.82,z-2.1,0.55,0.06,0.75,redGlowMat,false);
+          } else if (z===-49 && side===1) {
+            makeSign("EXPERIMENT 1345","METAL HEDGE // CONTAINMENT BAY",cx,4.45,z-3.75,0,3.4,0.8);
+            for(let n=0;n<3;n++) {
+              const rail=box("Containment floor rail",cx-2.7+n*2.7,0.08,z+1.3,0.08,0.12,4.5,mat.silver,false);
+              rail.rotation.y=0;
+            }
+            box("Containment power console",cx+3.0,1.1,z-1.5,0.9,1.9,0.7,mat.dark,false);
+            box("Containment console screen",cx+3.0,1.65,z-1.88,0.62,0.48,0.04,redGlowMat,false);
+            box("Broken restraint clamp",cx-3.0,0.22,z+2.5,1.0,0.24,0.55,mat.silver,false);
+          }
         }
       }
 
       // Experiment 1345: Metal Hedge, a friendly green robotic hedgehog.
       const metalHedge = new THREE.Group();
       metalHedge.name = "Experiment 1345 - Metal Hedge";
-      metalHedge.position.set(10,0,-42);
+      metalHedge.position.set(17.7,0,-48.5);
       scene.add(metalHedge);
-      const hedgeGreen = new THREE.MeshStandardMaterial({color:0x26c65b,metalness:0.72,roughness:0.28,emissive:0x082d12});
-      const hedgeDark = new THREE.MeshStandardMaterial({color:0x25313b,metalness:0.78,roughness:0.3});
+      const hedgeGreen = new THREE.MeshStandardMaterial({color:0x20b94b,metalness:0.58,roughness:0.3,emissive:0x082d12});
+      const hedgeDark = new THREE.MeshStandardMaterial({color:0x202b34,metalness:0.82,roughness:0.26});
       const hedgeSilver = new THREE.MeshStandardMaterial({color:0xc7d3df,metalness:0.88,roughness:0.2});
       const hedgeRed = new THREE.MeshBasicMaterial({color:0xff304b});
-      const hedgeWhite = new THREE.MeshBasicMaterial({color:0xf3f8ff});
+      const hedgeWhite = new THREE.MeshStandardMaterial({color:0xf3f8ff,metalness:0.12,roughness:0.22});
       function hedgePart(geometry,material,x,y,z,rx=0,ry=0,rz=0) {
         const part=new THREE.Mesh(geometry,material);
         part.position.set(x,y,z); part.rotation.set(rx,ry,rz);
         metalHedge.add(part); return part;
       }
-      hedgePart(new THREE.SphereGeometry(0.52,20,16),hedgeGreen,0,1.55,0); // torso
-      const hedgeChest=hedgePart(new THREE.SphereGeometry(0.38,18,14),hedgeSilver,0,1.55,-0.36);
-      hedgeChest.scale.set(1,1.05,0.45);
-      hedgePart(new THREE.SphereGeometry(0.53,20,16),hedgeGreen,0,2.35,-0.08); // head
-      hedgePart(new THREE.SphereGeometry(0.17,14,12),hedgeWhite,-0.19,2.42,-0.55);
-      hedgePart(new THREE.SphereGeometry(0.17,14,12),hedgeWhite,0.19,2.42,-0.55);
-      hedgePart(new THREE.SphereGeometry(0.075,12,10),hedgeRed,-0.19,2.42,-0.69);
-      hedgePart(new THREE.SphereGeometry(0.075,12,10),hedgeRed,0.19,2.42,-0.69);
-      hedgePart(new THREE.ConeGeometry(0.24,0.72,8),hedgeGreen,-0.35,2.82,0.18,-0.35,0,-0.35);
-      hedgePart(new THREE.ConeGeometry(0.24,0.78,8),hedgeGreen,0,2.9,0.2,-0.48,0,0);
-      hedgePart(new THREE.ConeGeometry(0.24,0.72,8),hedgeGreen,0.35,2.82,0.18,-0.35,0,0.35);
-      hedgePart(new THREE.ConeGeometry(0.18,0.52,8),hedgeGreen,-0.48,2.48,0.1,-0.1,0,-0.65);
-      hedgePart(new THREE.ConeGeometry(0.18,0.52,8),hedgeGreen,0.48,2.48,0.1,-0.1,0,0.65);
-      hedgePart(new THREE.CylinderGeometry(0.12,0.15,0.52,12),hedgeSilver,-0.3,0.95,0,0,0,-0.08);
-      hedgePart(new THREE.CylinderGeometry(0.12,0.15,0.52,12),hedgeSilver,0.3,0.95,0,0,0,0.08);
-      hedgePart(new THREE.BoxGeometry(0.38,0.16,0.42),hedgeRed,-0.3,0.62,-0.04);
-      hedgePart(new THREE.BoxGeometry(0.38,0.16,0.42),hedgeRed,0.3,0.62,-0.04);
-      hedgePart(new THREE.CylinderGeometry(0.13,0.16,0.62,12),hedgeSilver,-0.66,1.72,0,-0.15,0,-0.55);
-      hedgePart(new THREE.CylinderGeometry(0.13,0.16,0.62,12),hedgeSilver,0.66,1.72,0,-0.15,0,0.55);
-      // Left-arm blaster: layered barrel, muzzle, and glowing red core.
-      hedgePart(new THREE.CylinderGeometry(0.24,0.3,0.68,16),hedgeDark,-0.94,1.72,-0.1,0,0,Math.PI/2);
-      hedgePart(new THREE.CylinderGeometry(0.19,0.19,0.18,16),hedgeSilver,-1.34,1.72,-0.1,0,0,Math.PI/2);
-      hedgePart(new THREE.SphereGeometry(0.12,12,10),hedgeRed,-1.45,1.72,-0.1);
+      // Compact Sonic-like silhouette: tapered muzzle, swept-back quills, jointed limbs and shoes.
+      hedgePart(new THREE.SphereGeometry(0.43,24,18),hedgeGreen,0,1.62,0); // torso
+      const hedgeChest=hedgePart(new THREE.SphereGeometry(0.34,20,16),hedgeSilver,0,1.62,-0.31);
+      hedgeChest.scale.set(1,1.08,0.48);
+      hedgePart(new THREE.SphereGeometry(0.49,24,18),hedgeGreen,0,2.35,-0.08); // head
+      hedgePart(new THREE.SphereGeometry(0.24,18,14),hedgeGreen,0,2.17,-0.49); // muzzle
+      hedgePart(new THREE.SphereGeometry(0.075,14,10),hedgeDark,0,2.21,-0.69); // nose
+      hedgePart(new THREE.BoxGeometry(0.25,0.035,0.035),hedgeDark,0,2.04,-0.675); // mouth seam
+      hedgePart(new THREE.SphereGeometry(0.18,16,12),hedgeWhite,-0.19,2.43,-0.48);
+      hedgePart(new THREE.SphereGeometry(0.18,16,12),hedgeWhite,0.19,2.43,-0.48);
+      hedgePart(new THREE.SphereGeometry(0.083,14,10),hedgeRed,-0.19,2.43,-0.635);
+      hedgePart(new THREE.SphereGeometry(0.083,14,10),hedgeRed,0.19,2.43,-0.635);
+      hedgePart(new THREE.ConeGeometry(0.19,0.38,10),hedgeGreen,-0.31,2.75,-0.05,-0.22,0,-0.2); // ears
+      hedgePart(new THREE.ConeGeometry(0.19,0.38,10),hedgeGreen,0.31,2.75,-0.05,-0.22,0,0.2);
+      // Six long swept quills form a recognizable spiky silhouette behind the head.
+      hedgePart(new THREE.ConeGeometry(0.24,0.92,10),hedgeGreen,-0.34,2.55,0.42,-0.78,0,-0.28);
+      hedgePart(new THREE.ConeGeometry(0.25,1.05,10),hedgeGreen,0,2.62,0.48,-0.88,0,0);
+      hedgePart(new THREE.ConeGeometry(0.24,0.92,10),hedgeGreen,0.34,2.55,0.42,-0.78,0,0.28);
+      hedgePart(new THREE.ConeGeometry(0.2,0.72,10),hedgeGreen,-0.47,2.3,0.28,-0.62,0,-0.52);
+      hedgePart(new THREE.ConeGeometry(0.2,0.72,10),hedgeGreen,0.47,2.3,0.28,-0.62,0,0.52);
+      hedgePart(new THREE.ConeGeometry(0.17,0.62,10),hedgeGreen,0,2.08,0.38,-0.62,0,0);
+      // Shoulder sockets, visible elbow joints, and silver lower arms.
+      hedgePart(new THREE.SphereGeometry(0.2,16,12),hedgeDark,-0.53,1.86,-0.02);
+      hedgePart(new THREE.SphereGeometry(0.2,16,12),hedgeDark,0.53,1.86,-0.02);
+      hedgePart(new THREE.CylinderGeometry(0.12,0.15,0.48,12),hedgeSilver,-0.66,1.52,-0.03,0,0,-0.22);
+      hedgePart(new THREE.CylinderGeometry(0.12,0.15,0.48,12),hedgeSilver,0.66,1.52,-0.03,0,0,0.22);
+      hedgePart(new THREE.SphereGeometry(0.13,12,10),hedgeDark,-0.69,1.27,-0.05);
+      hedgePart(new THREE.SphereGeometry(0.13,12,10),hedgeDark,0.69,1.27,-0.05);
+      hedgePart(new THREE.CylinderGeometry(0.13,0.16,0.46,12),hedgeSilver,-0.31,1.0,0,0,0,-0.06);
+      hedgePart(new THREE.CylinderGeometry(0.13,0.16,0.46,12),hedgeSilver,0.31,1.0,0,0,0,0.06);
+      // Oversized red-and-silver shoes with ankle cuffs.
+      hedgePart(new THREE.BoxGeometry(0.52,0.22,0.7),hedgeRed,-0.34,0.48,-0.12);
+      hedgePart(new THREE.BoxGeometry(0.52,0.22,0.7),hedgeRed,0.34,0.48,-0.12);
+      hedgePart(new THREE.BoxGeometry(0.54,0.08,0.72),hedgeSilver,-0.34,0.36,-0.13);
+      hedgePart(new THREE.BoxGeometry(0.54,0.08,0.72),hedgeSilver,0.34,0.36,-0.13);
+      // His LEFT arm (character's left, on the viewer's right) carries the signature blaster.
+      hedgePart(new THREE.CylinderGeometry(0.23,0.29,0.68,16),hedgeDark,0.91,1.56,-0.12,0,0,Math.PI/2);
+      hedgePart(new THREE.CylinderGeometry(0.2,0.2,0.2,16),hedgeSilver,1.3,1.56,-0.12,0,0,Math.PI/2);
+      hedgePart(new THREE.TorusGeometry(0.17,0.045,8,16),hedgeRed,1.42,1.56,-0.12,0,Math.PI/2,0);
+      hedgePart(new THREE.SphereGeometry(0.12,12,10),hedgeRed,1.43,1.56,-0.12);
       const hedgeInteract = hedgePart(new THREE.SphereGeometry(0.57,12,10),new THREE.MeshBasicMaterial({transparent:true,opacity:0.001,depthWrite:false}),0,1.8,-0.1);
       hedgeInteract.name = "Metal Hedge";
       addInteractable(hedgeInteract,"Metal Hedge","Press E / USE to speak with Experiment 1345",()=>showToast("METAL HEDGE: Sawyer? You actually made it. Good. Let's get Poppy back."));
