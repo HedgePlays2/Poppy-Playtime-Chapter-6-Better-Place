@@ -440,7 +440,7 @@
             makeSign("TOY REPAIR BAY","DAMAGED STOCK // DO NOT SHIP",cx,4.45,z-3.75,0,3.4,0.8);
             for(let n=0;n<3;n++) {
               box("Toy repair bench",cx-2.6+n*2.6,0.78,z+0.2,1.8,0.18,1.1,mat.dark,false);
-              box("Repair lamp",cx-2.6+n*2.6,1.65,z-0.1,0.12,1.55,0.12,mat.silver,false);
+              box("Repair lamp",cx-2.6+n*2.6,1.65,z-0.1,0.12,1.55,0.12,mat.metal,false);
               box("Repair lamp head",cx-2.6+n*2.6,2.42,z-0.1,0.65,0.12,0.42,redGlowMat,false);
             }
             box("Toy parts bin",cx+3.25,0.5,z+2.5,0.9,0.8,0.8,mat.dark,false);
@@ -458,19 +458,19 @@
             makeSign("RESTRICTED ARCHIVE","STAFF CLEARANCE REQUIRED",cx,4.45,z-3.75,0,3.4,0.8);
             for(let n=0;n<4;n++) {
               box("Archive file cabinet",cx-3.1+n*1.9,1.45,z+0.5,1.45,2.7,0.75,mat.dark,false);
-              for(let r=0;r<3;r++) box("Archive drawer handle",cx-3.1+n*1.9,0.7+r*0.72,z+0.09,0.48,0.07,0.05,mat.silver,false);
+              for(let r=0;r<3;r++) box("Archive drawer handle",cx-3.1+n*1.9,0.7+r*0.72,z+0.09,0.48,0.07,0.05,mat.metal,false);
             }
             box("Archive evidence table",cx,0.72,z-2.1,2.8,0.12,1.0,mat.dark,false);
             box("Evidence folder",cx-0.35,0.82,z-2.1,0.55,0.06,0.75,redGlowMat,false);
           } else if (z===-49 && side===1) {
             makeSign("EXPERIMENT 1345","METAL HEDGE // CONTAINMENT BAY",cx,4.45,z-3.75,0,3.4,0.8);
             for(let n=0;n<3;n++) {
-              const rail=box("Containment floor rail",cx-2.7+n*2.7,0.08,z+1.3,0.08,0.12,4.5,mat.silver,false);
+              const rail=box("Containment floor rail",cx-2.7+n*2.7,0.08,z+1.3,0.08,0.12,4.5,mat.metal,false);
               rail.rotation.y=0;
             }
             box("Containment power console",cx+3.0,1.1,z-1.5,0.9,1.9,0.7,mat.dark,false);
             box("Containment console screen",cx+3.0,1.65,z-1.88,0.62,0.48,0.04,redGlowMat,false);
-            box("Broken restraint clamp",cx-3.0,0.22,z+2.5,1.0,0.24,0.55,mat.silver,false);
+            box("Broken restraint clamp",cx-3.0,0.22,z+2.5,1.0,0.24,0.55,mat.metal,false);
           }
         }
       }
