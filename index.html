@@ -1,44 +1,316 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#08070e">
-<title>Poppy Playtime Chapter 6: Better Place</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Poppy Playtime: Chapter 6 — A Better Place</title>
 <style>
-:root{color-scheme:dark;--glow:#b7f8ff}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#05050a;color:#f5f2ff;font-family:Arial,Helvetica,sans-serif}body{background:radial-gradient(ellipse at 50% 45%,#252238 0%,#0c0b14 52%,#020205 100%)}button{font:inherit}
-#game{position:relative;width:100%;height:100%;min-height:360px;display:grid;place-items:center;isolation:isolate}#grain{position:absolute;inset:0;pointer-events:none;opacity:.13;background-image:radial-gradient(#fff .6px,transparent .7px);background-size:4px 4px;mix-blend-mode:screen}
-.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;transition:opacity .7s ease;overflow:auto}.hidden{display:none!important}.lab-light{position:absolute;width:min(70vw,650px);height:min(55vh,420px);background:radial-gradient(ellipse,#41385844,transparent 70%);filter:blur(15px);z-index:-1}
-.computer{width:min(74vw,420px);position:relative;filter:drop-shadow(0 22px 34px #000b);animation:float 4s ease-in-out infinite}.monitor{aspect-ratio:1.18;background:linear-gradient(135deg,#aaa0bb,#4c465e 38%,#292538);border:8px solid #514a65;border-radius:8px;padding:22px;box-shadow:inset 0 0 0 3px #b1a1c755,0 0 30px #9580cb20}.screen{height:100%;min-height:150px;background:radial-gradient(ellipse,#1b1b32,#080b18 75%);display:grid;place-items:center;overflow:hidden;border:3px solid #26243b}.eye{width:68%;aspect-ratio:1.65;border-radius:65% 10% 65% 10%;transform:rotate(45deg);background:#f2f5ff;box-shadow:0 0 18px #c7edff,0 0 50px #9bcdff;display:grid;place-items:center;animation:blink 6s infinite}.iris{width:54%;height:78%;border-radius:50%;background:radial-gradient(circle at 45% 40%,#fff 0 5%,#c8e8ff 7%,#8e9bb8 18%,#232a44 55%,#101320 70%);border:3px solid #dceaff;box-shadow:0 0 12px #d8f5ff}.base{height:85px;background:linear-gradient(90deg,#211f31,#716a85,#252235);width:94%;margin:auto;border-radius:2px 2px 10px 10px;border-bottom:8px solid #171521}.keyboard{height:34px;width:100%;margin-top:7px;border-radius:5px;background:repeating-linear-gradient(90deg,#a9a2b7 0 13px,#373344 13px 16px);border:5px solid #514a65}.cable{position:absolute;right:-8%;bottom:13%;width:20%;height:50px;border-bottom:4px solid #17151e;border-radius:50%;transform:rotate(12deg)}
-.caption{max-width:800px;min-height:90px;margin-top:20px;text-shadow:0 2px 12px #000;font-size:clamp(17px,2.4vw,24px);line-height:1.55}.speaker{display:block;color:#b6dfff;font-weight:800;letter-spacing:.16em;font-size:.68em;margin-bottom:7px}
-.action{padding:12px 22px;border:1px solid #b8b0d8;border-radius:3px;background:#171421eF;color:#fff;letter-spacing:.1em;font-weight:bold;cursor:pointer;margin:5px;min-width:180px}.action:hover{background:#38304d;border-color:#d6caff}.action:disabled{opacity:.4;cursor:default}.menu-actions{display:flex;flex-direction:column;align-items:center;margin-top:12px}.eyebrow{letter-spacing:.38em;color:#b6e8ff;font-size:clamp(12px,2vw,18px);margin:0 0 12px}.logo{font-size:clamp(31px,6.5vw,76px);line-height:1.05;letter-spacing:.06em;margin:0;text-shadow:0 0 24px #b7f8ff55}.logo span{color:#c8b9ed}.small{max-width:620px;color:#b7b2c9;line-height:1.6}.panel{width:min(94vw,560px);padding:20px;background:#100f1beF;border:1px solid #625a7a;box-shadow:0 15px 55px #0009}.save-row{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid #403a52;background:#191725;padding:12px;margin:8px 0;text-align:left}.save-info{font-size:14px;color:#bdb7d0;line-height:1.45}.save-buttons{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.save-buttons .action{min-width:72px;padding:9px;font-size:12px}.back{position:absolute;left:18px;top:18px;min-width:100px}
-#glowby{width:130px;height:130px;position:relative;filter:drop-shadow(0 0 25px #a9eaff88);animation:float 3s ease-in-out infinite}.star{position:absolute;inset:0;background:linear-gradient(145deg,#fff8c9,#a5e7ff 65%,#8378bc);clip-path:polygon(50% 0%,61% 34%,98% 35%,70% 57%,80% 94%,50% 72%,19% 94%,29% 57%,2% 35%,39% 34%)}.star-eye{position:absolute;top:40%;left:39%;width:24%;height:29%;border-radius:50%;background:#10131f;border:3px solid #e5f9ff;box-shadow:0 0 10px #dffaff}.star-eye:after{content:"";position:absolute;top:20%;left:24%;width:25%;height:25%;border-radius:50%;background:white}#system{font-family:monospace;color:#a7f5ff;letter-spacing:.1em;margin-top:15px;min-height:24px}
-#gameplay h2{font-size:clamp(25px,5vw,48px);letter-spacing:.12em}#gameplay p{max-width:620px;line-height:1.7;color:#c6c0d6}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}@keyframes blink{0%,44%,48%,100%{transform:rotate(45deg) scaleY(1)}46%{transform:rotate(45deg) scaleY(.08)}@media(max-width:500px){.monitor{padding:12px;border-width:6px}.screen{min-height:120px}.base{height:56px}.keyboard{height:25px}.caption{margin-top:14px;min-height:80px}.computer{width:min(78vw,330px)}.save-row{align-items:flex-start;flex-direction:column}.save-buttons{justify-content:flex-start}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
-</style></head><body><main id="game" aria-label="Poppy Playtime Chapter 6: Better Place"><div class="lab-light"></div><div id="grain"></div>
-<section class="scene" id="title">
-<p class="eyebrow">A FAN-MADE STORY CONTINUING AFTER CHAPTER 5</p><h1 class="logo">POPPY PLAYTIME</h1><h2 class="logo"><span>CHAPTER 6</span></h2><h2 class="logo" style="font-size:clamp(25px,4.5vw,54px);color:#d5c8f1">BETTER PLACE</h2>
-<p class="small">The Prototype is still on the loose. A new vessel may change Doctor Sawyer forever.</p>
-<div class="menu-actions"><button class="action" id="newGame">NEW GAME</button><button class="action" id="continueGame">CONTINUE</button><button class="action" id="openSaves">SAVE FILES</button></div><p class="small" id="menuMessage">Progress saves in this browser on this device.</p>
-</section>
-<section class="scene hidden" id="saves"><button class="action back" id="backMenu">← BACK</button><h2>SAVE FILES</h2><p class="small">Choose a slot to load or save your progress. Saves stay in this browser on this device.</p><div class="panel" id="saveList"></div></section>
-<section class="scene hidden" id="opening" aria-live="polite"><div class="computer" aria-label="Doctor Harley Sawyer in computer form"><div class="monitor"><div class="screen"><div class="eye"><div class="iris"></div></div></div></div><div class="base"></div><div class="keyboard"></div><div class="cable"></div></div><div class="caption" id="caption"><span class="speaker">DOCTOR HARLEY SAWYER</span>Well now, this is a rather interesting turn of events. Plug me into that Star Thing. I want to see what it feels like to be mobile again.</div><button class="action" id="connect">CONNECT GLOWBY</button></section>
-<section class="scene hidden" id="transfer" aria-live="polite"><div id="glowby" aria-label="Glowby, the star-shaped companion"><div class="star"></div><div class="star-eye"></div></div><h2>TRANSFERRING SAWYER</h2><div id="system">CONNECTING TO GLOWBY...</div><div class="caption" id="transferCaption"><span class="speaker">SYSTEM</span>Mind transfer initializing.</div></section>
-<section class="scene hidden" id="gameplay"><p class="eyebrow">CHAPTER 6 · BETTER PLACE</p><h2>THE JOURNEY BEGINS</h2><div id="glowby" aria-label="Glowby with Sawyer's eye"><div class="star"></div><div class="star-eye"></div></div><p id="gameText">Glowby is with you. Sawyer's eye watches from the star as he tries to understand the feelings awakening inside him.</p><p class="small">This is the current story prototype. First-person exploration and GrabPack gameplay will be added next.</p><div><button class="action" id="saveNow">SAVE GAME</button><button class="action" id="toTitle">TITLE SCREEN</button></div><p id="saveMessage" class="small" aria-live="polite"></p></section>
-</main><script>
-(()=>{
-const $=id=>document.getElementById(id);
-const scenes=['title','saves','opening','transfer','gameplay'];
-function show(id){scenes.forEach(s=>$(s).classList.toggle('hidden',s!==id));}
-const KEY='betterPlaceSaveSlotsV1';let activeSlot=0;let progress='start';
-function getSaves(){try{return JSON.parse(localStorage.getItem(KEY))||[null,null,null]}catch(e){return [null,null,null]}}
-function setSave(slot,data){const saves=getSaves();saves[slot]=data;localStorage.setItem(KEY,JSON.stringify(saves));}
-function saveProgress(slot=activeSlot){activeSlot=slot;setSave(slot,{chapter:6,progress:progress,updated:new Date().toLocaleString(),title:'Poppy Playtime: Better Place'});$('saveMessage').textContent='Saved to Slot '+(slot+1)+'.';$('menuMessage').textContent='Progress saved in Slot '+(slot+1)+'.';}
-function loadProgress(slot){const s=getSaves()[slot];if(!s)return;activeSlot=slot;progress=s.progress||'start';if(progress==='gameplay')show('gameplay');else startCutscene(true);}
-function renderSaves(){const list=$('saveList');list.innerHTML='';getSaves().forEach((s,i)=>{const row=document.createElement('div');row.className='save-row';const info=document.createElement('div');info.className='save-info';info.innerHTML='<strong>Slot '+(i+1)+'</strong><br>'+ (s?'Chapter '+s.chapter+' · '+(s.progress==='gameplay'?'After opening cutscene':'Beginning')+'<br>'+s.updated:'EMPTY SLOT');const actions=document.createElement('div');actions.className='save-buttons';const load=document.createElement('button');load.className='action';load.textContent='LOAD';load.disabled=!s;load.onclick=()=>loadProgress(i);const save=document.createElement('button');save.className='action';save.textContent='SAVE HERE';save.onclick=()=>{activeSlot=i;saveProgress(i);renderSaves();};actions.append(load,save);row.append(info,actions);list.append(row);});}
-$('openSaves').onclick=()=>{renderSaves();show('saves')};$('backMenu').onclick=()=>show('title');
-$('continueGame').onclick=()=>{const saves=getSaves();const idx=saves.findIndex(Boolean);if(idx<0){$('menuMessage').textContent='No save found yet. Choose NEW GAME to begin.';return}loadProgress(idx)};
-$('newGame').onclick=()=>{activeSlot=0;progress='start';startCutscene(false)};
-function startCutscene(fromSave){progress='cutscene';show('opening');$('connect').disabled=false;if(!fromSave){$('caption').innerHTML='<span class="speaker">DOCTOR HARLEY SAWYER</span>Well now, this is a rather interesting turn of events. Plug me into that Star Thing. I want to see what it feels like to be mobile again.';}}
-$('connect').onclick=()=>{progress='transfer';$('connect').disabled=true;show('transfer');const steps=[['CONNECTING TO GLOWBY...','SYSTEM','Mind transfer initializing.'],['TRANSFERRING MEMORY...','SYSTEM','Moving Sawyer’s mind from the computer into the new vessel.'],['VESSEL LINK STABLE','DOCTOR HARLEY SAWYER','Oh... I can feel something.'],['TRANSFER COMPLETE','DOCTOR HARLEY SAWYER','I remember. The children... What have I done?']];let i=0;function next(){if(i>=steps.length){progress='gameplay';saveProgress(activeSlot);setTimeout(()=>show('gameplay'),900);return}$('system').textContent=steps[i][0];$('transferCaption').innerHTML='<span class="speaker">'+steps[i][1]+'</span>'+steps[i][2];i++;setTimeout(next,2200)}next();};
-$('saveNow').onclick=()=>saveProgress(activeSlot);$('toTitle').onclick=()=>{show('title');$('connect').disabled=false;}; 
-})();
-</script></body></html>
+*{box-sizing:border-box}
+body{margin:0;overflow:hidden;background:#05090d;color:#eafaff;font-family:Arial,sans-serif}
+canvas{display:block}
+#hud{position:fixed;inset:0;pointer-events:none;text-shadow:0 2px 5px #000}
+#title{position:absolute;top:18px;left:20px;letter-spacing:3px;font-size:12px;color:#8cf4ff}
+#objective{position:absolute;top:48px;left:20px;padding:12px;border-left:3px solid #77efff;background:#07141ccc}
+#objective small{display:block;color:#91aeb5;margin-bottom:6px}
+#crosshair{position:absolute;left:50%;top:50%;width:10px;height:10px;border:1px solid #c9fbff;border-radius:50%;transform:translate(-50%,-50%)}
+#hint{position:absolute;bottom:13%;width:100%;text-align:center;color:#aaf7ff}
+#help{position:absolute;bottom:15px;left:20px;font-size:11px;color:#9cb6bc}
+#screen{position:fixed;inset:0;z-index:5;display:grid;place-items:center;background:#02070bf0;padding:20px}
+#panel{width:min(500px,100%);padding:30px;background:#0a171df5;border:1px solid #64e7f477}
+h1{font-size:clamp(35px,8vw,58px);line-height:.95;margin:12px 0}
+h1 span{color:#7cf1ff}
+p{color:#a7bec3;line-height:1.6}
+button{border:0;background:#8af4ff;color:#061015;font-weight:bold;padding:15px;width:100%;cursor:pointer;letter-spacing:2px}
+#toast{position:fixed;top:25%;left:50%;transform:translateX(-50%);background:#07141df2;border:1px solid #76efff;padding:12px;z-index:4;display:none;text-align:center}
+#touch{position:fixed;bottom:18px;left:15px;right:15px;display:none;justify-content:space-between;z-index:3}
+.pad{display:grid;grid-template-columns:44px 44px 44px;grid-template-rows:44px 44px 44px;gap:4px}
+.touchbutton{background:#10252dcc;color:white;border:1px solid #8cf4ff88;border-radius:8px;touch-action:none}
+#up{grid-column:2}#left{grid-column:1;grid-row:2}#down{grid-column:2;grid-row:2}#right{grid-column:3;grid-row:2}
+@media(max-width:700px){#touch{display:flex}#help{bottom:150px}#hint{bottom:145px}}
+</style>
+</head>
+<body>
+<div id="hud">
+ <div id="title">PLAYTIME CO. // RESTRICTED</div>
+ <div id="objective"><small>CURRENT OBJECTIVE</small><strong id="goal">Enter the laboratory</strong></div>
+ <div id="crosshair"></div>
+ <div id="hint"></div>
+ <div id="help">WASD: MOVE · MOUSE: LOOK · SHIFT: SPRINT · E: INTERACT</div>
+</div>
+<div id="toast"></div>
+<div id="screen">
+ <div id="panel">
+  <div style="color:#7cf1ff;letter-spacing:4px;font-size:11px">PLAYTIME CO. // INTERNAL ACCESS</div>
+  <h1>A BETTER<br><span>PLACE.</span></h1>
+  <p>The elevator has taken you below the facility. Emergency lights flicker. The specimen chambers are silent. Something is wrong down here.</p>
+  <p>WASD to move · Mouse to look · Shift to sprint · E to use the terminal.</p>
+  <button id="start">ENTER FACILITY</button>
+ </div>
+</div>
+<div id="touch">
+ <div class="pad">
+  <button class="touchbutton" id="up">▲</button>
+  <button class="touchbutton" id="left">◀</button>
+  <button class="touchbutton" id="down">▼</button>
+  <button class="touchbutton" id="right">▶</button>
+ </div>
+ <div style="display:flex;gap:8px;align-items:end">
+  <button class="touchbutton" id="run" style="width:55px;height:55px">RUN</button>
+  <button class="touchbutton" id="use" style="width:55px;height:55px">USE</button>
+ </div>
+</div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x050a0e);
+scene.fog=new THREE.FogExp2(0x081116,.025);
+
+const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,120);
+camera.position.set(0,1.7,12);
+
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+renderer.shadowMap.enabled=true;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.HemisphereLight(0x91d6df,0x111419,1.2));
+
+const solid=(color,emissive=0)=>new THREE.MeshStandardMaterial({
+ color,roughness:.78,metalness:.25,emissive,emissiveIntensity:1
+});
+const concrete=solid(0x303a3d),floorMat=solid(0x202a2d);
+const metal=solid(0x526164),dark=solid(0x11191c);
+const glass=new THREE.MeshStandardMaterial({
+ color:0x62d7df,transparent:true,opacity:.19,metalness:.25,roughness:.2
+});
+const colliders=[];
+const flickers=[];
+
+function block(x,y,z,w,h,d,material,collision=true){
+ const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);
+ mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;
+ scene.add(mesh);
+ if(collision)colliders.push({
+  minX:x-w/2,maxX:x+w/2,minZ:z-d/2,maxZ:z+d/2
+ });
+ return mesh;
+}
+function lamp(x,y,z,color=0x77efff){
+ const bulb=block(x,y,z,.13,.06,1.5,solid(color,color),false);
+ const light=new THREE.PointLight(color,2.5,12);
+ light.position.set(x,y-.25,z);scene.add(light);flickers.push(light);
+}
+function tube(x,y,z,r,h,material){
+ const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,16),material);
+ mesh.position.set(x,y,z);mesh.castShadow=true;scene.add(mesh);return mesh;
+}
+
+// Main corridor
+block(0,-.2,-4,22,.4,62,floorMat,false);
+block(0,4.2,-4,22,.4,62,concrete,false);
+block(-11,2,-4,.5,4.5,62,concrete);
+block(11,2,-4,.5,4.5,62,concrete);
+block(0,2,-35,22,4.5,.5,concrete);
+
+// Corridor beams, lights, and hazard markings
+for(let z=15;z>-34;z-=4){
+ block(0,4,z,21,.18,.25,dark,false);
+ lamp(-3.6,3.8,z,z%8===0?0xffbd65:0x77efff);
+ lamp(3.6,3.8,z,z%8===0?0xffbd65:0x77efff);
+ block(0,.015,z,7,.025,.08,solid(0x98752e),false);
+}
+
+// Side laboratories, partition walls, specimen tanks
+for(const side of [-1,1]){
+ for(const z of [10,2,-6,-14,-22]){
+  block(side*7.7,2,z,6.1,4,.35,concrete);
+  const x=side*7.5;
+  block(x,.4,z,2.5,.8,2.5,dark);
+  tube(x,1.95,z,.85,2.4,glass);
+  tube(x,.75,z,.95,.18,metal);
+  tube(x,3.2,z,.95,.18,metal);
+  tube(x,1.9,z,.18,1.6,solid(0x25858b,0x12646a));
+  block(x-.7,1.9,z,.07,2.3,.07,metal,false);
+  block(x+.7,1.9,z,.07,2.3,.07,metal,false);
+  const glow=new THREE.PointLight(side<0?0x54edf1:0xffb15b,.9,5);
+  glow.position.set(x,2,z);scene.add(glow);
+  block(x,3.55,z,1.7,.25,.07,dark,false);
+ }
+ // Wall pipes
+ for(let i=0;i<3;i++){
+  const p=tube(side*(9.1+i*.45),3.2,-4,.09,59,metal);
+  p.rotation.x=Math.PI/2;
+ }
+}
+
+// Workbenches and equipment
+for(const side of [-1,1]){
+ for(const z of [6,-2,-10,-18,-26]){
+  const x=side*5.2;
+  block(x,.9,z,2.3,.18,1.1,metal);
+  block(x,1.55,z-.3,.75,.55,.1,dark,false);
+  block(x,1.55,z-.23,.61,.4,.025,solid(0x14515a,0x147d86),false);
+  for(const dx of [-.9,.9])
+   block(x+dx,.43,z,.12,.8,.12,dark,false);
+ }
+}
+for(const z of [4,-12,-20]){
+ for(const x of [-2.8,2.8]){
+  block(x,1.5,z,1.1,3,.9,dark);
+  for(let i=0;i<6;i++){
+   block(x,.45+i*.4,z-.47,.7,.12,.03,dark,false);
+   block(x+.3,.45+i*.4,z-.44,.06,.06,.03,solid(0x45edb1,0x13a86a),false);
+  }
+ }
+}
+
+// Crates and floor grates
+for(const [x,z,s] of [[-3.4,8,1.1],[3.3,-4,.9],[-3.5,-16,1.2],[3.3,-25,1]]){
+ block(x,s/2,z,s,s,s,solid(0x41483c));
+}
+for(const z of [5,-3,-11,-19,-27]){
+ block(0,.02,z,2.4,.04,1.1,dark,false);
+ for(let i=-5;i<=5;i++)block(i*.19,.05,z,.035,.03,1,metal,false);
+}
+
+// Signs
+function sign(x,y,z,text,rotation=0){
+ const c=document.createElement('canvas');c.width=512;c.height=128;
+ const ctx=c.getContext('2d');ctx.fillStyle='#08151a';ctx.fillRect(0,0,512,128);
+ ctx.strokeStyle='#7df1ff';ctx.lineWidth=5;ctx.strokeRect(4,4,504,120);
+ ctx.fillStyle='#aaf7ff';ctx.font='bold 34px Arial';ctx.fillText(text,20,77);
+ const tex=new THREE.CanvasTexture(c);
+ const mesh=new THREE.Mesh(new THREE.PlaneGeometry(3.6,.9),
+ new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide}));
+ mesh.position.set(x,y,z);mesh.rotation.y=rotation;scene.add(mesh);
+}
+sign(0,3.2,16.7,'PLAYTIME CO. // LOWER LAB');
+sign(-10.7,3,-2,'SECTOR 06',Math.PI/2);
+sign(10.7,3,-18,'AUTHORIZED STAFF',-Math.PI/2);
+
+// Security terminal
+block(0,.5,-30,2.3,1,1,dark);
+block(0,1.55,-30.35,1.8,1.2,.4,metal);
+block(0,1.65,-30.12,1.5,.85,.04,solid(0x0b3941,0x157d88),false);
+const terminalLight=new THREE.PointLight(0x52e8f3,1.5,8);
+terminalLight.position.set(0,2,-29);scene.add(terminalLight);
+
+let terminalUsed=false,started=false;
+const keys={};
+let yaw=0,pitch=0,locked=false;
+const radius=.35;
+function blocked(x,z){
+ for(const c of colliders){
+  const px=Math.max(c.minX,Math.min(x,c.maxX));
+  const pz=Math.max(c.minZ,Math.min(z,c.maxZ));
+  if((x-px)**2+(z-pz)**2<radius**2)return true;
+ }
+ return false;
+}
+function move(dx,dz){
+ const x=camera.position.x+dx;
+ if(!blocked(x,camera.position.z))camera.position.x=x;
+ const z=camera.position.z+dz;
+ if(!blocked(camera.position.x,z))camera.position.z=z;
+}
+function toast(message){
+ const el=document.getElementById('toast');
+ el.textContent=message;el.style.display='block';
+ clearTimeout(toast.timer);
+ toast.timer=setTimeout(()=>el.style.display='none',2600);
+}
+function interact(){
+ if(Math.hypot(camera.position.x,camera.position.z+30)<3.7){
+  if(!terminalUsed){
+   terminalUsed=true;
+   document.getElementById('goal').textContent='Find the auxiliary power supply';
+   toast('TERMINAL CONNECTED — AUXILIARY POWER OFFLINE');
+  }else toast('ACCESS DENIED — AUXILIARY POWER REQUIRED');
+ }else toast('There is nothing to use nearby.');
+}
+document.getElementById('start').onclick=()=>{
+ started=true;document.getElementById('screen').style.display='none';
+ if(innerWidth>700)renderer.domElement.requestPointerLock();
+ toast('OBJECTIVE: INVESTIGATE THE LABORATORY');
+};
+document.addEventListener('pointerlockchange',()=>{
+ locked=document.pointerLockElement===renderer.domElement;
+});
+renderer.domElement.addEventListener('click',()=>{
+ if(started&&innerWidth>700&&!locked)renderer.domElement.requestPointerLock();
+});
+document.addEventListener('mousemove',e=>{
+ if(!locked)return;
+ yaw-=e.movementX*.002;
+ pitch=Math.max(-1.3,Math.min(1.3,pitch-e.movementY*.002));
+});
+document.addEventListener('keydown',e=>{
+ keys[e.code]=true;
+ if(e.code==='KeyE'&&!e.repeat&&started)interact();
+});
+document.addEventListener('keyup',e=>keys[e.code]=false);
+
+function hold(id,key){
+ const el=document.getElementById(id);
+ const down=e=>{e.preventDefault();keys[key]=true};
+ const up=e=>{e.preventDefault();keys[key]=false};
+ el.addEventListener('pointerdown',down);
+ ['pointerup','pointercancel','pointerleave'].forEach(ev=>el.addEventListener(ev,up));
+}
+hold('up','KeyW');hold('down','KeyS');
+hold('left','KeyA');hold('right','KeyD');hold('run','ShiftLeft');
+document.getElementById('use').addEventListener('pointerdown',e=>{
+ e.preventDefault();interact();
+});
+
+// Touch-drag camera look
+let touch=null;
+renderer.domElement.addEventListener('touchstart',e=>{
+ if(e.touches.length===1)touch={x:e.touches[0].clientX,y:e.touches[0].clientY};
+},{passive:true});
+renderer.domElement.addEventListener('touchmove',e=>{
+ if(!started||!touch||e.touches.length!==1)return;
+ const t=e.touches[0],dx=t.clientX-touch.x,dy=t.clientY-touch.y;
+ yaw-=dx*.004;pitch=Math.max(-1.3,Math.min(1.3,pitch-dy*.004));
+ touch={x:t.clientX,y:t.clientY};
+},{passive:true});
+renderer.domElement.addEventListener('touchend',()=>touch=null);
+
+const clock=new THREE.Clock();
+function animate(){
+ requestAnimationFrame(animate);
+ const dt=Math.min(clock.getDelta(),.04),time=clock.elapsedTime;
+ if(started){
+  camera.rotation.order='YXZ';
+  camera.rotation.y=yaw;camera.rotation.x=pitch;
+  let dx=0,dz=0;
+  const speed=(keys.ShiftLeft||keys.ShiftRight)?6.2:4;
+  if(keys.KeyW||keys.ArrowUp){dx-=Math.sin(yaw);dz-=Math.cos(yaw)}
+  if(keys.KeyS||keys.ArrowDown){dx+=Math.sin(yaw);dz+=Math.cos(yaw)}
+  if(keys.KeyA||keys.ArrowLeft){dx-=Math.cos(yaw);dz+=Math.sin(yaw)}
+  if(keys.KeyD||keys.ArrowRight){dx+=Math.cos(yaw);dz-=Math.sin(yaw)}
+  const length=Math.hypot(dx,dz);
+  if(length){move(dx/length*speed*dt,dz/length*speed*dt)}
+  const near=Math.hypot(camera.position.x,camera.position.z+30)<3.7;
+  document.getElementById('hint').textContent=near?'PRESS E TO USE TERMINAL':'';
+ }
+ flickers.forEach((l,i)=>{
+  l.intensity=Math.sin(time*4+i*3.1)> .985?.15:2.5;
+ });
+ renderer.render(scene,camera);
+}
+animate();
+
+addEventListener('resize',()=>{
+ camera.aspect=innerWidth/innerHeight;
+ camera.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight);
+ renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+});
+</script>
+</body>
+</html>
