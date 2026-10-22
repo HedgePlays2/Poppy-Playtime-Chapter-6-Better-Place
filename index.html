@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08070e">
+<title>Poppy Playtime Chapter 6: Better Place</title>
+<style>
+:root{color-scheme:dark;--purple:#77708f;--glow:#b7f8ff}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#05050a;color:#f5f2ff;font-family:Arial,Helvetica,sans-serif}
+body{background:radial-gradient(ellipse at 50% 45%,#252238 0%,#0c0b14 52%,#020205 100%)}
+#game{position:relative;width:100%;height:100%;min-height:360px;display:grid;place-items:center;isolation:isolate}
+#grain{position:absolute;inset:0;pointer-events:none;opacity:.13;background-image:radial-gradient(#fff 0.6px,transparent .7px);background-size:4px 4px;mix-blend-mode:screen}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;transition:opacity 1.2s ease}
+.hidden{opacity:0;pointer-events:none}
+.lab-light{position:absolute;width:min(70vw,650px);height:min(55vh,420px);background:radial-gradient(ellipse,#41385844,transparent 70%);filter:blur(15px);z-index:-1}
+.computer{width:min(74vw,420px);position:relative;filter:drop-shadow(0 22px 34px #000b);animation:float 4s ease-in-out infinite}
+.monitor{aspect-ratio:1.18;background:linear-gradient(135deg,#aaa0bb,#4c465e 38%,#292538);border:8px solid #514a65;border-radius:8px;padding:22px;box-shadow:inset 0 0 0 3px #b1a1c755,0 0 30px #9580cb20}
+.screen{height:100%;min-height:150px;background:radial-gradient(ellipse,#1b1b32,#080b18 75%);display:grid;place-items:center;overflow:hidden;border:3px solid #26243b}
+.eye{width:68%;aspect-ratio:1.65;border-radius:65% 10% 65% 10%;transform:rotate(45deg);background:#f2f5ff;box-shadow:0 0 18px #c7edff,0 0 50px #9bcdff;display:grid;place-items:center;animation:blink 6s infinite}
+.iris{width:54%;height:78%;border-radius:50%;background:radial-gradient(circle at 45% 40%,#fff 0 5%,#c8e8ff 7%,#8e9bb8 18%,#232a44 55%,#101320 70%);border:3px solid #dceaff;box-shadow:0 0 12px #d8f5ff}
+.eye.closed{transform:rotate(45deg) scaleY(.08)}
+.base{height:85px;background:linear-gradient(90deg,#211f31,#716a85,#252235);width:94%;margin:auto;border-radius:2px 2px 10px 10px;border-bottom:8px solid #171521}
+.keyboard{height:34px;width:100%;margin-top:7px;border-radius:5px;background:repeating-linear-gradient(90deg,#a9a2b7 0 13px,#373344 13px 16px);border:5px solid #514a65}
+.cable{position:absolute;right:-8%;bottom:13%;width:20%;height:50px;border-bottom:4px solid #17151e;border-radius:50%;transform:rotate(12deg)}
+.caption{max-width:800px;min-height:110px;margin-top:26px;text-shadow:0 2px 12px #000;font-size:clamp(17px,2.4vw,24px);line-height:1.55}
+.speaker{display:block;color:#b6dfff;font-weight:800;letter-spacing:.16em;font-size:.68em;margin-bottom:7px}
+.sub{color:#d7d3e5}
+#continue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);padding:13px 24px;border:1px solid #b8b0d8;border-radius:3px;background:#171421dd;color:#fff;letter-spacing:.13em;font-weight:bold;cursor:pointer}
+#continue:hover{background:#38304d}
+#title h1{font-size:clamp(30px,6vw,72px);letter-spacing:.08em;margin:0;text-shadow:0 0 24px #b7f8ff55}
+#title h2{font-size:clamp(15px,2.5vw,25px);letter-spacing:.45em;color:#b6e8ff;margin:16px 0 32px}
+#title p{max-width:580px;color:#b7b2c9;line-height:1.6}
+#glowby{width:150px;height:150px;position:relative;filter:drop-shadow(0 0 25px #a9eaff88);animation:float 3s ease-in-out infinite}
+.star{position:absolute;inset:0;background:linear-gradient(145deg,#fff8c9,#a5e7ff 65%,#8378bc);clip-path:polygon(50% 0%,61% 34%,98% 35%,70% 57%,80% 94%,50% 72%,19% 94%,29% 57%,2% 35%,39% 34%);border:2px solid white}
+.star-eye{position:absolute;top:40%;left:39%;width:24%;height:29%;border-radius:50%;background:#10131f;border:3px solid #e5f9ff;box-shadow:0 0 10px #dffaff}
+.star-eye:after{content:"";position:absolute;top:20%;left:24%;width:25%;height:25%;border-radius:50%;background:white}
+#system{font-family:monospace;color:#a7f5ff;letter-spacing:.1em;margin-top:15px;min-height:24px}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes blink{0%,44%,48%,100%{transform:rotate(45deg) scaleY(1)}46%{transform:rotate(45deg) scaleY(.08)}}
+@media(max-width:500px){.monitor{padding:12px;border-width:6px}.screen{min-height:120px}.base{height:56px}.keyboard{height:25px}.caption{margin-top:18px;min-height:130px}#continue{bottom:15px;width:max-content;max-width:90%}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main id="game" aria-label="Poppy Playtime Chapter 6: Better Place opening scene">
+<div class="lab-light"></div><div id="grain"></div>
+<section class="scene" id="opening" aria-live="polite">
+<div class="computer" aria-label="Doctor Harley Sawyer in his computer form">
+<div class="monitor"><div class="screen"><div class="eye" id="sawyerEye"><div class="iris"></div></div></div></div>
+<div class="base"></div><div class="keyboard"></div><div class="cable"></div>
+</div>
+<div class="caption" id="caption"><span class="speaker">DOCTOR HARLEY SAWYER</span>Well now, this is a rather interesting turn of events. Plug me into that Star Thing. I want to see what it feels like to be mobile again.</div>
+<button id="continue" type="button">CONNECT GLOWBY</button>
+</section>
+<section class="scene hidden" id="transfer" aria-live="polite">
+<div id="glowby" aria-label="Glowby, the star-shaped companion"><div class="star"></div><div class="star-eye"></div></div>
+<h2>TRANSFERRING SAWYER</h2><div id="system">CONNECTING TO GLOWBY...</div>
+<div class="caption" id="transferCaption"><span class="speaker">SYSTEM</span>Mind transfer initializing.</div>
+</section>
+<section class="scene hidden" id="title" aria-live="polite">
+<h1>POPPY PLAYTIME</h1><h2>CHAPTER 6</h2><h1 style="color:#c8b9ed">BETTER PLACE</h1>
+<p>After Chapter 5, the Prototype is still on the loose. Sawyer's mind has found a new vessel — and with it, something he has never understood before.</p>
+<div class="caption"><span class="speaker">SAWYER</span>I can feel something. Is this... regret?</div>
+<button id="begin" type="button">BEGIN</button>
+</section>
+</main>
+<script>
+(() => {
+ const opening=document.getElementById('opening'), transfer=document.getElementById('transfer'), title=document.getElementById('title');
+ const caption=document.getElementById('caption'), button=document.getElementById('continue'), system=document.getElementById('system'), transferCaption=document.getElementById('transferCaption');
+ let started=false;
+ function show(el){[opening,transfer,title].forEach(s=>s.classList.add('hidden'));el.classList.remove('hidden');}
+ button.addEventListener('click',()=>{
+   if(started)return;started=true;show(transfer);button.disabled=true;
+   const steps=[
+    ['CONNECTING TO GLOWBY...','SYSTEM','Mind transfer initializing.'],
+    ['TRANSFERRING MEMORY...','SYSTEM','Moving Sawyer’s mind from the computer into the new vessel.'],
+    ['VESSEL LINK STABLE','DOCTOR HARLEY SAWYER','Oh... I can feel something.'],
+    ['TRANSFER COMPLETE','DOCTOR HARLEY SAWYER','I remember. The children... What have I done?']
+   ];let i=0;
+   function next(){
+    if(i>=steps.length){setTimeout(()=>show(title),1400);return;}
+    system.textContent=steps[i][0];transferCaption.innerHTML='<span class="speaker">'+steps[i][1]+'</span>'+steps[i][2];
+    i++;setTimeout(next,2600);
+   }next();
+ });
+ document.getElementById('begin').addEventListener('click',()=>{
+   document.getElementById('title').innerHTML='<h1>CHAPTER 6</h1><h2>BETTER PLACE</h2><p style="font-size:1.1rem">The opening cutscene is complete.</p><p>Next up: first-person movement, the GrabPack, and Metal Hedge — Experiment 1345.</p><button id="replay" type="button">REPLAY CUTSCENE</button>';
+   document.getElementById('replay').addEventListener('click',()=>location.reload());
+ });
+})();
+</script>
+</body>
+</html>
