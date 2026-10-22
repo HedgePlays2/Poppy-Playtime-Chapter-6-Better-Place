@@ -166,7 +166,7 @@
     const clock = new THREE.Clock();
     const state = {
       running:false, objectiveStep:0, terminalUsed:false,
-      powerCollected:false, doorOpen:false
+      powerCollected:false, doorOpen:false, securityDoorHacked:false, hackingDoor:false
     };
     const keys = {};
     let currentTarget = null, toastTimer = null;
@@ -251,6 +251,19 @@
       box("Exit frame",0,2.3,-39.8,4,4.6,0.35,mat.dark,false);
       exitDoor = box("Exit door",0,2.1,-39.55,3.2,4.1,0.25,mat.red,false);
       addInteractable(exitDoor,"Exit door","Press E / USE to open exit door",useExit);
+
+      // A locked security bulkhead blocks the corridor until Sawyer hacks its control panel.
+      const securityDoor = box("Security bulkhead",0,2,-11,16,4,0.35,mat.dark,true);
+      securityDoor.visible = !state.securityDoorHacked;
+      const securityPanel = new THREE.Mesh(
+        new THREE.BoxGeometry(0.48,0.9,0.09),
+        new THREE.MeshBasicMaterial({color:0x26cfff})
+      );
+      securityPanel.position.set(0,2,-10.77);
+      scene.add(securityPanel);
+      securityPanel.visible = !state.securityDoorHacked;
+      securityPanel.userData.securityDoor = securityDoor;
+      addInteractable(securityPanel,"Security system","Press E / USE to let Sawyer hack the security door",hackSecurityDoor);
     }
 
     function showToast(message) {
@@ -289,6 +302,25 @@
       setObjective("Return to the exit door");
       showToast("Auxiliary power supply collected!");
       saveGame();
+    }
+
+    function hackSecurityDoor() {
+      if(state.securityDoorHacked) return showToast("Sawyer: Security lock already bypassed.");
+      if(state.hackingDoor) return showToast("Sawyer: Still inside the security system...");
+      state.hackingDoor = true;
+      showToast("SAWYER: Connecting to the security network...");
+      setTimeout(() => {
+        state.securityDoorHacked = true;
+        state.hackingDoor = false;
+        const door = scene.getObjectByName("Security bulkhead");
+        if(door) door.visible = false;
+        const panel = interactables.find(item => item.name === "Security system")?.mesh;
+        if(panel) panel.visible = false;
+        const index = colliders.findIndex(c => c.x===0 && c.z===-11 && c.hx===8 && Math.abs(c.hz-0.175)<0.001);
+        if(index !== -1) colliders.splice(index,1);
+        showToast("SAWYER: Lock bypassed. Door is open. Keep moving.");
+        saveGame();
+      }, 1400);
     }
 
     function useExit() {
@@ -424,7 +456,7 @@
       new THREE.ExtrudeGeometry(makeStarShape(0.34,0.245),{depth:0.13,bevelEnabled:true,bevelSegments:5,steps:1,bevelSize:0.075,bevelThickness:0.065,curveSegments:10}),
       glowbyShell
     );
-    star.position.z=-0.035;
+    star.position.z=-0.14;
     glowby.add(star);
 
     // Black circular screen with a fine pale rim: Sawyer's eye is always on it.
@@ -645,6 +677,7 @@
           terminalUsed:state.terminalUsed,
           powerCollected:state.powerCollected,
           doorOpen:state.doorOpen,
+          securityDoorHacked:state.securityDoorHacked,
           player:{
             x:camera.position.x,y:camera.position.y,z:camera.position.z,
             yaw:camera.rotation.y,pitch:camera.rotation.x
@@ -680,6 +713,16 @@
         state.terminalUsed=data.terminalUsed===true;
         state.powerCollected=data.powerCollected===true;
         state.doorOpen=data.doorOpen===true;
+        state.securityDoorHacked=data.securityDoorHacked===true;
+        state.hackingDoor=false;
+        const securityDoor=scene.getObjectByName("Security bulkhead");
+        if(securityDoor) securityDoor.visible=!state.securityDoorHacked;
+        const securityPanel=interactables.find(item=>item.name==="Security system")?.mesh;
+        if(securityPanel) securityPanel.visible=!state.securityDoorHacked;
+        if(state.securityDoorHacked) {
+          const index=colliders.findIndex(c=>c.x===0 && c.z===-11 && c.hx===8 && Math.abs(c.hz-0.175)<0.001);
+          if(index!==-1) colliders.splice(index,1);
+        }
         camera.position.set(p.x,p.y,p.z);
         camera.rotation.y=p.yaw;
         camera.rotation.x=p.pitch;
@@ -702,6 +745,14 @@
       state.terminalUsed=false;
       state.powerCollected=false;
       state.doorOpen=false;
+      state.securityDoorHacked=false;
+      state.hackingDoor=false;
+      const securityDoor=scene.getObjectByName("Security bulkhead");
+      if(securityDoor) securityDoor.visible=true;
+      const securityPanel=interactables.find(item=>item.name==="Security system")?.mesh;
+      if(securityPanel) securityPanel.visible=true;
+      const hasSecurityCollider=colliders.some(c=>c.x===0 && c.z===-11 && c.hx===8 && Math.abs(c.hz-0.175)<0.001);
+      if(!hasSecurityCollider) colliders.push({x:0,z:-11,hx:8,hz:0.175,bottom:0,top:4});
       camera.position.set(0,1.7,12);
       camera.rotation.set(0,0,0);
       powerUnit.visible=true;
@@ -861,7 +912,7 @@
           localStorage.setItem(SAVE_KEY,JSON.stringify({
             version:1,objectiveStep:state.objectiveStep,
             terminalUsed:state.terminalUsed,powerCollected:state.powerCollected,
-            doorOpen:state.doorOpen,
+            doorOpen:state.doorOpen,securityDoorHacked:state.securityDoorHacked,
             player:{x:camera.position.x,y:camera.position.y,z:camera.position.z,
               yaw:camera.rotation.y,pitch:camera.rotation.x}
           }));
