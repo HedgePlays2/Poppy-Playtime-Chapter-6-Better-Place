@@ -415,6 +415,15 @@
       saveGame();
     }
 
+    function syncSecurityDoorCollision() {
+      const index = colliders.findIndex(c => c.x===0 && c.z===-17 && c.hx===14 && Math.abs(c.hz-0.175)<0.001);
+      if(state.securityDoorHacked) {
+        if(index !== -1) colliders.splice(index,1);
+      } else if(index === -1) {
+        colliders.push({x:0,z:-17,hx:14,hz:0.175,bottom:0,top:5});
+      }
+    }
+
     function hackSecurityDoor() {
       if(state.securityDoorHacked) return showToast("Sawyer: Security lock already bypassed.");
       if(state.hackingDoor) return showToast("Sawyer: Still inside the security system...");
@@ -427,8 +436,7 @@
         if(door) door.visible = false;
         const panel = interactables.find(item => item.name === "Security system")?.mesh;
         if(panel) panel.visible = false;
-        const index = colliders.findIndex(c => c.x===0 && c.z===-17 && c.hx===14 && Math.abs(c.hz-0.175)<0.001);
-        if(index !== -1) colliders.splice(index,1);
+        syncSecurityDoorCollision();
         showToast("SAWYER: Lock bypassed. Door is open. Keep moving.");
         saveGame();
       }, 1400);
@@ -830,10 +838,7 @@
         if(securityDoor) securityDoor.visible=!state.securityDoorHacked;
         const securityPanel=interactables.find(item=>item.name==="Security system")?.mesh;
         if(securityPanel) securityPanel.visible=!state.securityDoorHacked;
-        if(state.securityDoorHacked) {
-          const index=colliders.findIndex(c=>c.x===0 && c.z===-11 && c.hx===8 && Math.abs(c.hz-0.175)<0.001);
-          if(index!==-1) colliders.splice(index,1);
-        }
+        syncSecurityDoorCollision();
         camera.position.set(p.x,p.y,p.z);
         camera.rotation.y=p.yaw;
         camera.rotation.x=p.pitch;
@@ -862,8 +867,7 @@
       if(securityDoor) securityDoor.visible=true;
       const securityPanel=interactables.find(item=>item.name==="Security system")?.mesh;
       if(securityPanel) securityPanel.visible=true;
-      const hasSecurityCollider=colliders.some(c=>c.x===0 && c.z===-11 && c.hx===8 && Math.abs(c.hz-0.175)<0.001);
-      if(!hasSecurityCollider) colliders.push({x:0,z:-17,hx:14,hz:0.175,bottom:0,top:5});
+      syncSecurityDoorCollision();
       camera.position.set(0,1.7,12);
       camera.rotation.set(0,0,0);
       powerUnit.visible=true;
@@ -884,8 +888,36 @@
     ];
     let introIndex=0, introActive=false;
 
+    let cinemaTweenId=0;
+    function moveCinematicCamera(index) {
+      if(cinemaTweenId) cancelAnimationFrame(cinemaTweenId);
+      const shots = [
+        {p:[0,1.7,12],t:[0,2,-10]},
+        {p:[-3.2,2.1,7],t:[0,2.4,-17]},
+        {p:[2.8,1.8,3],t:[0,2.5,-17]},
+        {p:[0,2.2,7],t:[0,2,-5]},
+        {p:[-2,1.9,10],t:[0,2.4,-17]},
+        {p:[0,1.7,12],t:[0,2,-17]}
+      ];
+      const shot=shots[Math.min(index,shots.length-1)];
+      const from=camera.position.clone();
+      const fromTarget=new THREE.Vector3(0,2,-17);
+      const to=new THREE.Vector3(...shot.p);
+      const target=new THREE.Vector3(...shot.t);
+      const start=performance.now(), duration=850;
+      function frame(now) {
+        const k=Math.min(1,(now-start)/duration);
+        const eased=k*k*(3-2*k);
+        camera.position.lerpVectors(from,to,eased);
+        camera.lookAt(fromTarget.clone().lerp(target,eased));
+        if(k<1) cinemaTweenId=requestAnimationFrame(frame);
+      }
+      cinemaTweenId=requestAnimationFrame(frame);
+    }
+
     function showIntroLine() {
       const line=introLines[introIndex];
+      moveCinematicCamera(introIndex);
       $("speaker").textContent=line.speaker;
       $("dialogueText").textContent=line.text;
       $("cinemaProgress").textContent="INTRO · "+(introIndex+1)+" / "+introLines.length;
@@ -894,6 +926,9 @@
 
     function finishIntro() {
       introActive=false;
+      if(cinemaTweenId) cancelAnimationFrame(cinemaTweenId);
+      camera.position.set(0,1.7,12);
+      camera.rotation.set(0,0,0);
       $("cutscene").style.display="none";
       state.running=true;
       screen.style.display="none";
@@ -914,6 +949,8 @@
       state.running=false;
       screen.style.display="none";
       $("cutscene").style.display="flex";
+      camera.position.set(0,1.7,12);
+      camera.lookAt(0,2,-17);
       showIntroLine();
     }
 
