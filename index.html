@@ -188,7 +188,12 @@
       mesh.name = name;
       mesh.position.set(x,y,z);
       scene.add(mesh);
-      if (solid) colliders.push({x,z,hx:w/2,hz:d/2,bottom:y-h/2,top:y+h/2});
+      // Physical hitboxes: walls/doors use their explicit collider flag; furniture
+      // gets a matching AABB even when its render mesh is marked decorative.
+      const furnitureHitbox = /workbench|storage crate|break room table|break room chair|vending machine|toy repair bench|repair rack|console pedestal|terminal stand|power stand|cabinet|locker|shelf|crate|containment tank|machine housing/i.test(name);
+      if (solid || furnitureHitbox) {
+        colliders.push({x,z,hx:w/2,hz:d/2,bottom:y-h/2,top:y+h/2,name});
+      }
       return mesh;
     }
 
@@ -381,6 +386,9 @@
       metalHedge.name="Experiment 1345 - Metal Hedge";
       metalHedge.position.set(17.7,0,-48.5);
       scene.add(metalHedge);
+      // Character-sized physical hitbox matching Metal Hedge's standing silhouette.
+      // Kept separate from decorative model pieces so collision stays stable.
+      colliders.push({x:17.7,z:-48.5,hx:0.52,hz:0.58,bottom:0,top:3.05,name:"Metal Hedge hitbox"});
       const hedgeGreen=new THREE.MeshStandardMaterial({color:0x20b94b,metalness:0.58,roughness:0.3,emissive:0x082d12});
       const hedgeDark=new THREE.MeshStandardMaterial({color:0x202b34,metalness:0.82,roughness:0.26});
       const hedgeSilver=new THREE.MeshStandardMaterial({color:0xc7d3df,metalness:0.88,roughness:0.2});
@@ -831,11 +839,15 @@
 
     // Movement and collision.
     function isBlocked(x,z) {
+      // Treat the player as a capsule-like footprint, not a point. Test the
+      // proposed X/Z position against every physical AABB hitbox.
       const radius=0.38, bottom=camera.position.y-1.7, top=camera.position.y+0.1;
       return colliders.some(c=>{
         if(top<c.bottom || bottom>c.top) return false;
-        return x+radius>c.x-c.hx && x-radius<c.x+c.hx &&
-               z+radius>c.z-c.hz && z-radius<c.z+c.hz;
+        const nearestX=THREE.MathUtils.clamp(x,c.x-c.hx,c.x+c.hx);
+        const nearestZ=THREE.MathUtils.clamp(z,c.z-c.hz,c.z+c.hz);
+        const dx=x-nearestX, dz=z-nearestZ;
+        return dx*dx+dz*dz<radius*radius;
       });
     }
 
