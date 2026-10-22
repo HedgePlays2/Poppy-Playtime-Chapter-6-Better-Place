@@ -121,6 +121,7 @@
     const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 100);
     camera.rotation.order = "YXZ";
     camera.position.set(0, 1.7, 12);
+    scene.add(camera);
 
     const renderer = new THREE.WebGLRenderer({ antialias:true });
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -639,10 +640,10 @@
     }
 
     const introLines = [
-      {speaker:"SYSTEM",text:"CONNECTION ESTABLISHED. UNKNOWN CONSCIOUSNESS DETECTED."},
+      {speaker:"SYSTEM",text:"TRANSFER COMPLETE. EXPERIMENT 1354 IS NOW RUNNING THROUGH GLOWBY."},
       {speaker:"GLOWBY",text:"Hey... I'm here with you. Don't worry. You're not alone."},
-      {speaker:"DOCTOR SAWYER",text:"I am Harley Sawyer. Experiment 1354. I have no body left—only a mind running in a machine."},
-      {speaker:"DOCTOR SAWYER",text:"Connect Glowby to the terminal, and I can move into this little vessel. It is the only way you can carry me with you."},
+      {speaker:"DOCTOR SAWYER",text:"Harley Sawyer. Experiment 1354. No physical body—just my consciousness, running in a computer."},
+      {speaker:"DOCTOR SAWYER",text:"You connected Glowby to the computer, and it gave me a way out. I'm here now. Two minds, one little star."},
       {speaker:"GLOWBY",text:"There'll be two of us in here now. I'm still me... and he's going to help us."},
       {speaker:"DOCTOR SAWYER",text:"I remember what happened to the children. I cannot undo it. But I can help you stop the Prototype—and protect the ones still alive."}
     ];
