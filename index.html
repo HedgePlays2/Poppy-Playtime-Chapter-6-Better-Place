@@ -377,7 +377,8 @@
           box("Side room floor",cx,-0.24,z,9,0.48,8.2,mat.floor,false);
           box("Side room ceiling",cx,6.05,z,9,0.25,8.2,mat.dark,false);
           box("Side room outer wall",side*24,3,z,0.4,6,8.2,mat.wall);
-          box("Side room back wall",cx,3,z+(side===-1?4.1:-4.1),9,6,0.4,mat.wall);
+          box("Side room side wall",cx,3,z-4.1,9,6,0.4,mat.wall);
+          box("Side room side wall",cx,3,z+4.1,9,6,0.4,mat.wall);
           box("Side room frame post",side*15.1,2.4,z-1.95,0.22,4.8,0.22,mat.dark,false);
           box("Side room frame post",side*15.1,2.4,z+1.95,0.22,4.8,0.22,mat.dark,false);
           box("Side room frame header",side*15.1,4.9,z,0.22,0.25,4.1,mat.dark,false);
