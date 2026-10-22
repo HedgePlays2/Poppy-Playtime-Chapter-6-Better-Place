@@ -397,27 +397,83 @@
     const glowby = new THREE.Group();
     glowby.position.set(-0.43,-0.30,-1.01);
     glowby.rotation.z=-0.12;
-    const starMaterial = new THREE.MeshStandardMaterial({
-      color:0x6ceaff, emissive:0x168fc2, emissiveIntensity:1.5,
-      metalness:0.15, roughness:0.28
-    });
-    const star = new THREE.Mesh(new THREE.ExtrudeGeometry(makeStarShape(),{depth:0.10,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:0.025,bevelThickness:0.025}),starMaterial);
-    star.position.z=-0.02;
+    const glowbyShell = new THREE.MeshStandardMaterial({color:0xffcf16,roughness:0.3,metalness:0.03});
+    const glowbyTrim = new THREE.MeshStandardMaterial({color:0xffe77a,roughness:0.35});
+    const screenGlass = new THREE.MeshStandardMaterial({color:0x050609,roughness:0.16,metalness:0.18,emissive:0x08080c});
+    const whiteMaterial = new THREE.MeshStandardMaterial({color:0xf6f6ff,emissive:0x777788,emissiveIntensity:0.25});
+    const pinkMaterial = new THREE.MeshStandardMaterial({color:0xff4a9b,roughness:0.35});
+    const greenMaterial = new THREE.MeshStandardMaterial({color:0x35d86b,roughness:0.35});
+
+    // Rounded five-point star plastic casing.
+    const star = new THREE.Mesh(
+      new THREE.ExtrudeGeometry(makeStarShape(0.34,0.245),{depth:0.13,bevelEnabled:true,bevelSegments:5,steps:1,bevelSize:0.075,bevelThickness:0.065,curveSegments:10}),
+      glowbyShell
+    );
+    star.position.z=-0.035;
     glowby.add(star);
-    const eyeSocket = new THREE.Mesh(new THREE.SphereGeometry(0.105,18,12),new THREE.MeshStandardMaterial({color:0x171021,emissive:0x250b42}));
-    eyeSocket.position.set(0,0.015,0.115);
-    eyeSocket.scale.set(1.1,0.78,0.45);
-    glowby.add(eyeSocket);
-    const sawyerEye = new THREE.Mesh(new THREE.SphereGeometry(0.064,18,12),new THREE.MeshStandardMaterial({color:0x44208c,emissive:0x5524b5,emissiveIntensity:1.2}));
-    sawyerEye.position.set(0.005,0.015,0.153);
-    sawyerEye.scale.set(0.78,1.08,0.5);
+
+    // Black circular screen with a fine pale rim: Sawyer's eye is always on it.
+    const screenRim = new THREE.Mesh(new THREE.TorusGeometry(0.145,0.012,8,32),whiteMaterial);
+    screenRim.position.set(0,0.015,0.105);
+    glowby.add(screenRim);
+    const screenFace = new THREE.Mesh(new THREE.CircleGeometry(0.135,32),screenGlass);
+    screenFace.position.set(0,0.015,0.106);
+    glowby.add(screenFace);
+    const sawyerEye = new THREE.Group();
+    const eyeWhite = new THREE.Mesh(new THREE.EllipseCurve(0,0,0.072,0.042,0,Math.PI*2).getPoints(32).length ? new THREE.SphereGeometry(0.064,18,12) : new THREE.SphereGeometry(0.064,18,12),new THREE.MeshBasicMaterial({color:0x5b3b88}));
+    eyeWhite.scale.set(1.05,0.72,0.16);
+    eyeWhite.position.set(0,0,0.012);
+    sawyerEye.add(eyeWhite);
+    const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.026,12,10),new THREE.MeshBasicMaterial({color:0x030208}));
+    pupil.position.set(0.008,0,0.026);
+    sawyerEye.add(pupil);
+    const eyeGlint = new THREE.Mesh(new THREE.SphereGeometry(0.008,8,8),new THREE.MeshBasicMaterial({color:0xffffff}));
+    eyeGlint.position.set(-0.012,0.021,0.03);
+    sawyerEye.add(eyeGlint);
+    sawyerEye.position.set(0,0.015,0.12);
     glowby.add(sawyerEye);
-    const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.027,12,10),new THREE.MeshBasicMaterial({color:0x08040c}));
-    pupil.position.set(0.012,0.015,0.173);
-    glowby.add(pupil);
-    const eyeGlint = new THREE.Mesh(new THREE.SphereGeometry(0.009,8,8),new THREE.MeshBasicMaterial({color:0xffffff}));
-    eyeGlint.position.set(-0.008,0.036,0.184);
-    glowby.add(eyeGlint);
+
+    // Two tiny controls on the middle-right spike: pink triangle and green circle.
+    const buttonBase = new THREE.Mesh(new THREE.BoxGeometry(0.065,0.055,0.025),glowbyTrim);
+    buttonBase.position.set(0.255,0.075,0.09);
+    glowby.add(buttonBase);
+    const pinkButton = new THREE.Mesh(new THREE.CircleGeometry(0.021,20),pinkMaterial);
+    pinkButton.position.set(0.255,0.09,0.107);
+    glowby.add(pinkButton);
+    const triangleIcon = new THREE.Mesh(new THREE.ConeGeometry(0.012,0.022,3),whiteMaterial);
+    triangleIcon.rotation.z=Math.PI;
+    triangleIcon.position.set(0.255,0.09,0.113);
+    glowby.add(triangleIcon);
+    const greenButton = new THREE.Mesh(new THREE.CircleGeometry(0.021,20),greenMaterial);
+    greenButton.position.set(0.255,0.055,0.108);
+    glowby.add(greenButton);
+    const circleIcon = new THREE.Mesh(new THREE.RingGeometry(0.007,0.012,16),whiteMaterial);
+    circleIcon.position.set(0.255,0.055,0.114);
+    glowby.add(circleIcon);
+
+    // Short yellow antenna with a white tip on that same spike.
+    const antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.009,0.012,0.12,8),glowbyShell);
+    antenna.position.set(0.31,0.20,0.055);
+    antenna.rotation.z=-0.45;
+    glowby.add(antenna);
+    const antennaTip = new THREE.Mesh(new THREE.SphereGeometry(0.018,10,8),whiteMaterial);
+    antennaTip.position.set(0.338,0.251,0.055);
+    glowby.add(antennaTip);
+
+    // Speaker holes in a triangular cluster on the lower-left spike.
+    for(const [x,y] of [[-0.235,-0.17],[-0.195,-0.17],[-0.215,-0.205],[-0.255,-0.205],[-0.235,-0.24],[-0.195,-0.24]]) {
+      const hole = new THREE.Mesh(new THREE.CircleGeometry(0.012,12),new THREE.MeshStandardMaterial({color:0x805e0c,roughness:0.8}));
+      hole.position.set(x,y,0.11);
+      glowby.add(hole);
+    }
+
+    // White LED and blacklight lamp on the front panel.
+    const whiteLED = new THREE.Mesh(new THREE.SphereGeometry(0.018,10,8),new THREE.MeshBasicMaterial({color:0xffffff}));
+    whiteLED.position.set(-0.105,-0.19,0.12);
+    glowby.add(whiteLED);
+    const blacklightLED = new THREE.Mesh(new THREE.SphereGeometry(0.018,10,8),new THREE.MeshBasicMaterial({color:0x9e4dff}));
+    blacklightLED.position.set(-0.055,-0.19,0.12);
+    glowby.add(blacklightLED);
     packHardware.add(glowby);
 
     const packBase = new THREE.Mesh(new THREE.BoxGeometry(0.66,0.20,0.18),packMat);
