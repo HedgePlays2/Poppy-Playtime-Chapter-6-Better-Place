@@ -211,95 +211,9 @@
     let terminal, powerUnit, exitDoor;
 
     function buildWorld() {
-      box("Floor",0,-0.25,-9,30,0.5,100,mat.floor,false);
-      box("Ceiling",0,6.5,-9,30,0.5,100,mat.dark,false);
-      // Split the corridor walls around six genuine side-room entrances.
-      const wallSegments=[[22.45,37.1],[-14.5,29.2],[-40,14.2],[-54.95,8.1]];
-      for(const [z,len] of wallSegments) {
-        box("Left wall segment",-15,3,z,0.5,6,len,mat.wall);
-        box("Right wall segment",15,3,z,0.5,6,len,mat.wall);
-      }
-      box("End wall",0,3,-59,30,6,0.5,mat.wall);
-
-      for(let z=35;z>=-49;z-=7) {
-        box("Support",-14.5,3,z,0.35,6,0.35,mat.dark);
-        box("Support",14.5,3,z,0.35,6,0.35,mat.dark);
-        box("Overhead pipe",0,6.05,z,22,0.16,0.16,mat.metal,false);
-        lamp(0,5.8,z,z%2===0?0x80d9ff:0xffc66d,13);
-      }
-
-      for(let z=28;z>=-44;z-=8) {
-        box("Observation window",-14.72,3,z,0.08,2,3,mat.glass,false);
-        box("Observation window",14.72,3,z,0.08,2,3,mat.glass,false);
-      }
-
-      for(const z of [3,-16,-35]) {
-        box("Workbench",-5.6,1,z,3.4,1,1.3,mat.dark);
-        box("Workbench top",-5.6,1.55,z,3.6,0.12,1.5,mat.metal);
-        box("Storage crate",-6.1,0.45,z-2.4,1.2,0.9,1.1,mat.dark);
-        box("Storage crate",5.9,0.45,z-2.4,1.2,0.9,1.1,mat.dark);
-        for(let i=0;i<3;i++) {
-          box("Server rack",6.5,1.5+i*0.6,z,1.2,0.45,1.2,mat.dark);
-          box("Server indicator",5.88,1.55+i*0.6,z-0.25,0.03,0.07,0.1,i===1?mat.red:mat.green,false);
-        }
-      }
-
-      for(const z of [-2,-20,-38]) {
-        for(const x of [-3.8,3.8]) {
-          box("Chamber base",x,0.3,z,2,0.6,2,mat.dark);
-          box("Chamber glass",x,1.9,z,1.5,2.5,1.5,mat.glass,false);
-          box("Chamber cap",x,3.25,z,1.9,0.2,1.9,mat.metal,false);
-          const glow = new THREE.PointLight(0x36a8d7,3,5);
-          glow.position.set(x,2,z);
-          scene.add(glow);
-        }
-      }
-
-      box("Terminal stand",0,0.65,-5,1.8,1.3,0.9,mat.dark);
-      terminal = box("Terminal screen",0,1.65,-5.25,1.4,0.75,0.12,mat.glass,false);
-      addInteractable(terminal,"Laboratory terminal","Press E / USE to access terminal",useTerminal);
-
-      box("Power stand",5.4,0.65,-44,1.6,1.3,1.3,mat.dark);
-      powerUnit = box("Auxiliary power supply",5.4,1.55,-44,1.1,1,0.8,mat.yellow,false);
-      addInteractable(powerUnit,"Auxiliary power supply","Press E / USE to collect power supply",collectPower);
-
-      box("Exit frame",0,3,-56.8,4,5.8,0.35,mat.dark,false);
-      exitDoor = box("Exit door",0,2.7,-56.55,3.2,5.2,0.25,mat.red,false);
-      addInteractable(exitDoor,"Exit door","Press E / USE to open exit door",useExit);
-
-      // The Data Center's damaged neural terminal: Sawyer is still trapped in the system here.
-      box("Neural core housing",0,2.25,-12.7,3.4,3.9,0.8,mat.dark,false);
-      box("Neural core trim",0,4.25,-12.27,3.15,0.08,0.08,mat.metal,false);
-      box("Neural core trim",0,0.35,-12.27,3.15,0.08,0.08,mat.metal,false);
-      const coreScreen = new THREE.Mesh(new THREE.PlaneGeometry(2.65,1.55),new THREE.MeshBasicMaterial({color:0x07131c}));
-      coreScreen.position.set(0,2.55,-12.275);
-      scene.add(coreScreen);
-      const coreCanvas=document.createElement("canvas"); coreCanvas.width=768; coreCanvas.height=448;
-      const coreCtx=coreCanvas.getContext("2d");
-      coreCtx.fillStyle="#06131b"; coreCtx.fillRect(0,0,768,448);
-      coreCtx.strokeStyle="#35d9ff"; coreCtx.lineWidth=5; coreCtx.strokeRect(18,18,732,412);
-      coreCtx.fillStyle="#55e5ff"; coreCtx.font="bold 34px monospace"; coreCtx.fillText("PLAYTIME CO. // NEURAL SYSTEMS",42,72);
-      coreCtx.fillStyle="#e8f7ff"; coreCtx.font="bold 48px monospace"; coreCtx.fillText("HARLEY SAWYER",42,168);
-      coreCtx.fillStyle="#ff5868"; coreCtx.font="28px monospace"; coreCtx.fillText("BACKUP STATUS: INCOMPLETE",42,225);
-      coreCtx.fillStyle="#8ca8b8"; coreCtx.font="24px monospace"; coreCtx.fillText("CONSCIOUSNESS SIGNAL DETECTED",42,290);
-      coreCtx.fillStyle="#ffbf54"; coreCtx.fillText("DO NOT DISCONNECT POWER",42,355);
-      const coreTexture=new THREE.CanvasTexture(coreCanvas); coreTexture.colorSpace=THREE.SRGBColorSpace;
-      coreScreen.material.map=coreTexture; coreScreen.material.color.set(0xffffff); coreScreen.material.needsUpdate=true;
-      const coreLight=new THREE.PointLight(0x26bfff,18,10); coreLight.position.set(0,2.8,-11.8); scene.add(coreLight);
-      // A locked security bulkhead blocks the corridor until the security system is bypassed.
-      const securityDoor = box("Security bulkhead",0,2.5,-17,28,5,0.35,mat.dark,true);
-      securityDoor.visible = !state.securityDoorHacked;
-      const securityPanel = new THREE.Mesh(
-        new THREE.BoxGeometry(0.48,0.9,0.09),
-        new THREE.MeshBasicMaterial({color:0x26cfff})
-      );
-      securityPanel.position.set(0,2.5,-16.77);
-      scene.add(securityPanel);
-      securityPanel.visible = !state.securityDoorHacked;
-      securityPanel.userData.securityDoor = securityDoor;
-      addInteractable(securityPanel,"Security system","Press E / USE to interface with the locked security panel",hackSecurityDoor);
-
-      // Environmental storytelling: the lab should feel abandoned, used, and dangerous.
+      // REBUILT MAP: one readable main corridor, six grounded rooms, clear sightlines,
+      // and consistent door openings/colliders. Room props are deliberately non-solid
+      // unless they are meant to block the player.
       const stripeMat = new THREE.MeshBasicMaterial({color:0xf0bd35});
       const blackStripeMat = new THREE.MeshBasicMaterial({color:0x20232a});
       const whiteLabelMat = new THREE.MeshBasicMaterial({color:0xd8e6ee});
@@ -309,230 +223,155 @@
       const toyBlueMat = new THREE.MeshBasicMaterial({color:0x3188e8});
       const toyYellowMat = new THREE.MeshBasicMaterial({color:0xffd34d});
 
+      // Main corridor floor and ceiling.
+      box("Floor",0,-0.25,-11,30,0.5,96,mat.floor,false);
+      box("Ceiling",0,6.5,-11,30,0.5,96,mat.dark,false);
+
+      // Walls have openings centered exactly on each side-room entrance.
+      const wallSegments = [[19.6,30.8],[-14.5,28.6],[-40,13.6],[-55.1,7.8]];
+      for(const [z,len] of wallSegments) {
+        box("Left corridor wall",-15,3,z,0.5,6,len,mat.wall);
+        box("Right corridor wall",15,3,z,0.5,6,len,mat.wall);
+      }
+      box("Far corridor wall",0,3,-59,30,6,0.5,mat.wall);
+      box("Entrance bulkhead frame",0,3,36,30,6,0.5,mat.dark,false);
+
       function makeSign(text, subtext, x, y, z, rotationY=0, width=3.8, height=1.1) {
-        const canvas = document.createElement("canvas");
-        canvas.width = 768; canvas.height = 220;
-        const ctx = canvas.getContext("2d");
-        ctx.fillStyle = "#111923"; ctx.fillRect(0,0,768,220);
-        ctx.fillStyle = "#253747"; ctx.fillRect(12,12,744,196);
-        ctx.strokeStyle = "#65dcff"; ctx.lineWidth = 5; ctx.strokeRect(12,12,744,196);
-        ctx.fillStyle = "#f3f7fa"; ctx.font = "bold 43px Arial";
-        ctx.textAlign = "center"; ctx.fillText(text,384,95);
-        ctx.fillStyle = "#72dfff"; ctx.font = "24px Arial";
-        ctx.fillText(subtext,384,151);
-        const texture = new THREE.CanvasTexture(canvas);
-        texture.colorSpace = THREE.SRGBColorSpace;
-        const sign = new THREE.Mesh(new THREE.PlaneGeometry(width,height),new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide}));
+        const canvas=document.createElement("canvas");
+        canvas.width=768; canvas.height=220;
+        const ctx=canvas.getContext("2d");
+        ctx.fillStyle="#111923"; ctx.fillRect(0,0,768,220);
+        ctx.fillStyle="#253747"; ctx.fillRect(12,12,744,196);
+        ctx.strokeStyle="#65dcff"; ctx.lineWidth=5; ctx.strokeRect(12,12,744,196);
+        ctx.fillStyle="#f3f7fa"; ctx.font="bold 43px Arial"; ctx.textAlign="center";
+        ctx.fillText(text,384,95);
+        ctx.fillStyle="#72dfff"; ctx.font="24px Arial"; ctx.fillText(subtext,384,151);
+        const texture=new THREE.CanvasTexture(canvas); texture.colorSpace=THREE.SRGBColorSpace;
+        const sign=new THREE.Mesh(new THREE.PlaneGeometry(width,height),new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide}));
         sign.position.set(x,y,z); sign.rotation.y=rotationY; scene.add(sign);
         return sign;
       }
 
-      function hazardTape(x,z,length,rotation=0) {
-        box("Hazard stripe base",x,0.018,z,length,0.025,0.16,blackStripeMat,false).rotation.y=rotation;
-        for(let i=-length/2+0.2;i<length/2;i+=0.55) {
-          const stripe=box("Yellow hazard marking",x+i,0.034,z,0.22,0.018,0.17,stripeMat,false);
-          stripe.rotation.y=rotation;
-        }
+      function wallLamp(x,z,color=0x72dfff) {
+        box("Wall light housing",x,4.7,z,0.55,0.2,0.45,mat.dark,false);
+        box("Wall light lens",x,4.68,z+(x<0?0.24:-0.24),0.38,0.09,0.05,new THREE.MeshBasicMaterial({color}),false);
+        lamp(x,4.65,z,color,8);
       }
 
-      // Floor markings and numbered zones make the oversized space readable.
-      for(const z of [8,-7,-24,-41]) {
-        hazardTape(-10.2,z,5.5);
-        hazardTape(10.2,z,5.5);
-      }
-      makeSign("PLAYTIME CO.  /  RESEARCH","AUTHORIZED STAFF ONLY",-14.68,4.35,8,Math.PI/2,4.5,1.25);
-      makeSign("EXPERIMENT STORAGE","SECTOR 04  •  KEEP DOORS SEALED",14.68,4.35,-8,-Math.PI/2,4.8,1.25);
-      makeSign("NEURAL SYSTEMS","EXPERIMENT 1354  •  ACCESS RESTRICTED",-14.68,4.35,-31,Math.PI/2,4.8,1.25);
-      makeSign("EMERGENCY EXIT","AUXILIARY POWER REQUIRED",0,4.7,-58.72,0,4.8,1.15);
-
-      // Chunky overhead utility ducts and wall-mounted warning beacons.
-      for(const z of [24,10,-4,-18,-32,-46]) {
-        box("Overhead duct",0,5.45,z,8.5,0.42,0.65,mat.metal,false);
-        box("Duct warning light",-4.35,5.25,z,0.24,0.12,0.28,redGlowMat,false);
-        box("Duct status light",4.35,5.25,z,0.24,0.12,0.28,cyanGlowMat,false);
-        for(const x of [-13.8,13.8]) {
-          box("Wall conduit",x,3.7,z,0.16,0.16,5.5,mat.metal,false);
-          box("Wall warning beacon",x,4.35,z,0.18,0.32,0.18,(z%2===0?redGlowMat:cyanGlowMat),false);
-        }
+      function roomConsole(name,x,z,color,description,action) {
+        box(name+" pedestal",x,0.58,z,1.05,1.16,0.8,mat.dark,false);
+        const screen=box(name,x,1.45,z-0.42,0.88,0.62,0.08,new THREE.MeshBasicMaterial({color}),false);
+        addInteractable(screen,name,description,action);
+        return screen;
       }
 
-      // Toy assembly lines: conveyor belts, colorful parts, and abandoned carts.
-      for(const z of [15,-11,-30]) {
-        for(const x of [-10.3,10.3]) {
-          box("Conveyor frame",x,0.48,z,3.3,0.65,7.2,mat.dark,false);
-          box("Conveyor belt",x,0.84,z,3.05,0.08,6.9,blackStripeMat,false);
-          for(let k=-2.5;k<=2.5;k+=1) {
-            box("Conveyor roller",x,0.78,z+k,3.08,0.08,0.12,mat.metal,false);
-          }
-          box("Toy parts crate",x-0.5,1.35,z-1.5,0.8,0.9,0.8,mat.dark,false);
-          const ball = new THREE.Mesh(new THREE.SphereGeometry(0.28,14,10),x<0?toyPinkMat:toyBlueMat);
-          ball.position.set(x+0.5,1.22,z+1.1); scene.add(ball);
-          const block = new THREE.Mesh(new THREE.BoxGeometry(0.48,0.48,0.48),toyYellowMat);
-          block.position.set(x-0.35,1.18,z+2.2); block.rotation.set(0.2,0.5,0.15); scene.add(block);
-        }
+      // Corridor support ribs, overhead cable trays, and floor-zone markings.
+      for(let z=31;z>=-53;z-=7) {
+        box("Support rib",-14.55,3,z,0.32,6,0.32,mat.dark,false);
+        box("Support rib",14.55,3,z,0.32,6,0.32,mat.dark,false);
+        box("Overhead cable tray",0,5.72,z,8.2,0.3,0.55,mat.metal,false);
+        box("Cable tray warning",-4.25,5.55,z,0.2,0.12,0.22,redGlowMat,false);
+        box("Cable tray status",4.25,5.55,z,0.2,0.12,0.22,cyanGlowMat,false);
+        lamp(0,5.55,z,z%2===0?0x70dfff:0xffbd57,10);
       }
-
-      // Oversized containment pods with hazard rings and a few deliberately empty cells.
-      for(const [x,z,color] of [[-5.3,-8,0x4ddfff],[5.3,-25,0xff4d75],[-5.3,-43,0xb16cff]]) {
-        const podGlass = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.9,1.05,3.3,20,1,true),
-          new THREE.MeshBasicMaterial({color,transparent:true,opacity:0.22,side:THREE.DoubleSide})
-        );
-        podGlass.position.set(x,2.1,z); scene.add(podGlass);
-        const topRing = new THREE.Mesh(new THREE.TorusGeometry(0.95,0.09,8,24),new THREE.MeshBasicMaterial({color}));
-        topRing.rotation.x=Math.PI/2; topRing.position.set(x,3.8,z); scene.add(topRing);
-        const bottomRing = topRing.clone(); bottomRing.position.y=0.48; scene.add(bottomRing);
-        box("Containment console",x+1.4,1.0,z,0.75,1.7,0.65,mat.dark,false);
-        box("Containment screen",x+1.4,1.65,z-0.34,0.48,0.45,0.04,(color===0xff4d75?redGlowMat:cyanGlowMat),false);
-        makeSign("CELL "+(Math.abs(Math.round(z))%50).toString().padStart(2,"0"),"STATUS: "+(z===-25?"UNSTABLE":"EMPTY"),x,4.65,z,0,2.6,0.72);
+      for(const z of [9,-8,-25,-42]) {
+        box("Yellow floor safety line",-10.8,0.018,z,5.8,0.025,0.12,stripeMat,false);
+        box("Yellow floor safety line",10.8,0.018,z,5.8,0.025,0.12,stripeMat,false);
       }
+      makeSign("PLAYTIME CO. / RESEARCH","AUTHORIZED PERSONNEL ONLY",-14.7,4.3,8,Math.PI/2,4.4,1.1);
+      makeSign("NEURAL SYSTEMS","EXPERIMENT 1354",-14.7,4.3,-31,Math.PI/2,4.2,1.1);
+      makeSign("EMERGENCY EXIT","AUXILIARY POWER REQUIRED",0,5.15,-58.68,0,4.8,1.0);
 
-      // Broken toys and scattered evidence hint that the staff left in a hurry.
-      for(const [x,z,rot] of [[-7,18,0.4],[7,1,-0.7],[-7,-18,0.9],[7,-37,-0.3]]) {
-        const torso = new THREE.Mesh(new THREE.BoxGeometry(0.65,0.85,0.38),x<0?toyPinkMat:toyBlueMat);
-        torso.position.set(x,0.55,z); torso.rotation.y=rot; scene.add(torso);
-        const head = new THREE.Mesh(new THREE.SphereGeometry(0.34,12,10),toyYellowMat);
-        head.position.set(x,1.12,z); scene.add(head);
-        const arm1 = box("Discarded toy limb",x-0.48,0.55,z,0.55,0.13,0.13,toyPinkMat,false);
-        arm1.rotation.z=0.6;
-        const arm2 = box("Discarded toy limb",x+0.45,0.35,z-0.12,0.5,0.13,0.13,toyBlueMat,false);
-        arm2.rotation.z=-0.45;
-        box("Dropped clipboard",x+0.8,0.08,z+0.55,0.45,0.05,0.6,whiteLabelMat,false).rotation.y=0.35;
-      }
-
-      // Six explorable side rooms, each with real floor space and solid outer walls.
+      // Six distinct side rooms. Their floor, ceiling, and side walls all meet cleanly.
       for(const z of [2,-31,-49]) {
         for(const side of [-1,1]) {
           const cx=side*19.5;
-          box("Side room floor",cx,-0.24,z,9,0.48,8.2,mat.floor,false);
-          box("Side room ceiling",cx,6.05,z,9,0.25,8.2,mat.dark,false);
-          box("Side room outer wall",side*24,3,z,0.4,6,8.2,mat.wall);
-          box("Side room side wall",cx,3,z-4.1,9,6,0.4,mat.wall);
-          box("Side room side wall",cx,3,z+4.1,9,6,0.4,mat.wall);
-          box("Side room frame post",side*15.1,2.4,z-1.95,0.22,4.8,0.22,mat.dark,false);
-          box("Side room frame post",side*15.1,2.4,z+1.95,0.22,4.8,0.22,mat.dark,false);
-          box("Side room frame header",side*15.1,4.9,z,0.22,0.25,4.1,mat.dark,false);
-          box("Side room status panel",side*15.28,2.7,z-1.45,0.06,0.5,0.28,cyanGlowMat,false);
-          lamp(side*19.5,5.45,z,side===-1?0x6be8ff:0xffc66d,8);
-          box("Side room workbench",side*19.5,0.75,z-1.7,3.2,1.1,1.2,mat.dark,false);
-          box("Side room monitor",side*19.5,1.65,z-2.1,1.1,0.7,0.08,mat.glass,false);
-          box("Side room storage crate",side*21.4,0.55,z+1.8,1.2,1.1,1.2,mat.dark,false);
-          const floorGlow=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.025,5.4),new THREE.MeshBasicMaterial({color:side===-1?0x2bd9ff:0xffb53d}));
-          floorGlow.position.set(side*16.5,0.015,z); scene.add(floorGlow);
+          box("Room floor",cx,-0.24,z,9,0.48,8.2,mat.floor,false);
+          box("Room ceiling",cx,6.05,z,9,0.25,8.2,mat.dark,false);
+          box("Room outer wall",side*24,3,z,0.4,6,8.2,mat.wall);
+          box("Room rear wall",cx,3,z-4.1,9,6,0.4,mat.wall);
+          box("Room front wall",cx,3,z+4.1,9,6,0.4,mat.wall);
+          // Door frame at the corridor opening; no invisible door collider across the entrance.
+          box("Room door jamb",side*15.12,2.45,z-2.02,0.22,4.9,0.22,mat.dark,false);
+          box("Room door jamb",side*15.12,2.45,z+2.02,0.22,4.9,0.22,mat.dark,false);
+          box("Room door header",side*15.12,4.95,z,0.22,0.25,4.2,mat.dark,false);
+          box("Room access light",side*15.28,2.65,z-1.45,0.05,0.38,0.26,cyanGlowMat,false);
+          lamp(cx,5.45,z,side<0?0x6be8ff:0xffc66d,7);
+          box("Room workbench",cx,0.78,z-1.55,3.0,0.18,1.0,mat.dark,false);
+          box("Room workbench legs",cx-1.25,0.38,z-1.55,0.12,0.65,0.12,mat.metal,false);
+          box("Room workbench legs",cx+1.25,0.38,z-1.55,0.12,0.65,0.12,mat.metal,false);
+          box("Room storage crate",side*21.7,0.48,z+1.75,1.0,0.95,0.95,mat.dark,false);
 
-          // Give every side room a distinct identity instead of repeating the same empty lab.
-          if (z===2 && side===-1) {
-            makeSign("GRABPACK CALIBRATION","TEST RANGE 04 // AUTHORIZED STAFF",cx,4.45,z-3.75,0,3.4,0.8);
+          if(z===2 && side===-1) {
+            makeSign("GRABPACK CALIBRATION","TEST RANGE 04",cx,4.45,z-3.72,0,3.5,0.78);
             for(let n=0;n<3;n++) {
-              box("GrabPack test target",cx-2.7+n*2.7,1.55,z+0.7,0.65,1.7,0.16,mat.dark,false);
-              box("Target indicator",cx-2.7+n*2.7,2.35,z+0.58,0.38,0.18,0.05,n===1?redGlowMat:cyanGlowMat,false);
+              box("GrabPack test target",cx-2.7+n*2.7,1.25,z+0.85,0.65,1.25,0.16,mat.dark,false);
+              box("Target indicator",cx-2.7+n*2.7,1.8,z+0.75,0.36,0.12,0.05,n===1?redGlowMat:cyanGlowMat,false);
             }
-            box("Calibration control desk",cx,0.72,z-2.1,3.7,1.05,0.9,mat.dark,false);
-            box("Calibration monitor",cx,1.48,z-2.48,1.65,0.72,0.08,cyanGlowMat,false);
-          } else if (z===2 && side===1) {
-            makeSign("STAFF BREAK ROOM","SHIFT LOG: LAST ENTRY 11:47 PM",cx,4.45,z-3.75,0,3.4,0.8);
-            box("Break room table",cx,0.82,z+0.35,2.8,0.16,1.5,mat.dark,false);
-            for(const dx of [-1.25,1.25]) box("Break room chair",cx+dx,0.45,z+0.35,0.48,0.8,0.48,mat.dark,false);
-            box("Vending machine",cx+3.0,1.3,z-2.2,0.85,2.5,0.7,mat.dark,false);
-            box("Vending machine display",cx+2.98,1.65,z-2.58,0.54,0.65,0.04,redGlowMat,false);
-            box("Dropped mug",cx-2.5,1.0,z-1.5,0.22,0.2,0.22,whiteLabelMat,false);
-          } else if (z===-31 && side===-1) {
-            makeSign("TOY REPAIR BAY","DAMAGED STOCK // DO NOT SHIP",cx,4.45,z-3.75,0,3.4,0.8);
+            roomConsole("Calibration console",cx,z-1.95,0x29d8ff,"Press E / USE to read the GrabPack calibration log",()=>showToast("CALIBRATION LOG: Blue hand stable. Red hand requires a fresh cable spool."));
+          } else if(z===2 && side===1) {
+            makeSign("STAFF BREAK ROOM","LAST SHIFT: 11:47 PM",cx,4.45,z-3.72,0,3.5,0.78);
+            box("Break room table",cx,0.82,z+0.45,2.5,0.15,1.25,mat.dark,false);
+            for(const dx of [-1.1,1.1]) box("Break room chair",cx+dx,0.42,z+0.45,0.46,0.72,0.46,mat.dark,false);
+            box("Vending machine",cx+3.05,1.25,z-1.9,0.72,2.35,0.65,mat.dark,false);
+            box("Vending machine screen",cx+3.05,1.58,z-2.24,0.46,0.55,0.04,redGlowMat,false);
+            roomConsole("Break room message terminal",cx-2.65,z-1.65,0xffbd57,"Press E / USE to read the last staff message",()=>showToast("STAFF MESSAGE: If the lights go out, do not follow voices from the prototype wing."));
+          } else if(z===-31 && side===-1) {
+            makeSign("TOY REPAIR BAY","DAMAGED STOCK / DO NOT SHIP",cx,4.45,z-3.72,0,3.5,0.78);
             for(let n=0;n<3;n++) {
-              box("Toy repair bench",cx-2.6+n*2.6,0.78,z+0.2,1.8,0.18,1.1,mat.dark,false);
-              box("Repair lamp",cx-2.6+n*2.6,1.65,z-0.1,0.12,1.55,0.12,mat.metal,false);
-              box("Repair lamp head",cx-2.6+n*2.6,2.42,z-0.1,0.65,0.12,0.42,redGlowMat,false);
+              const bx=cx-2.6+n*2.6;
+              box("Toy repair bench",bx,0.72,z+0.45,1.7,0.16,1.0,mat.dark,false);
+              box("Repair lamp stand",bx,1.35,z+0.1,0.1,1.2,0.1,mat.metal,false);
+              box("Repair lamp head",bx,1.98,z+0.1,0.55,0.1,0.32,redGlowMat,false);
             }
-            box("Toy parts bin",cx+3.25,0.5,z+2.5,0.9,0.8,0.8,mat.dark,false);
-            box("Toy parts label",cx+3.25,0.95,z+2.08,0.58,0.22,0.04,whiteLabelMat,false);
-          } else if (z===-31 && side===1) {
-            makeSign("NEURAL SYSTEMS","EXPERIMENT 1354 // SIGNAL LAB",cx,4.45,z-3.75,0,3.4,0.8);
-            box("Neural processing rack",cx-2.8,1.8,z+0.4,1.0,3.3,0.8,mat.dark,false);
-            for(let n=0;n<4;n++) box("Rack status light",cx-2.8,2.85-n*0.52,z-0.03,0.58,0.12,0.04,n%2?redGlowMat:cyanGlowMat,false);
-            box("Neural signal table",cx+1.0,0.8,z+1.2,2.4,0.18,1.5,mat.dark,false);
-            for(let n=0;n<3;n++) {
-              const orb=new THREE.Mesh(new THREE.SphereGeometry(0.22,12,10),new THREE.MeshBasicMaterial({color:[0x55ddff,0xb47aff,0xff5577][n]}));
-              orb.position.set(cx+0.3+n*0.7,1.18,z+1.2); scene.add(orb);
-            }
-          } else if (z===-49 && side===-1) {
-            makeSign("RESTRICTED ARCHIVE","STAFF CLEARANCE REQUIRED",cx,4.45,z-3.75,0,3.4,0.8);
+            roomConsole("Toy repair console",cx,z-1.8,0xff3549,"Press E / USE to inspect the repair queue",()=>showToast("REPAIR QUEUE: Three toys unaccounted for. One unit moved to neural systems."));
+          } else if(z===-31 && side===1) {
+            makeSign("NEURAL SYSTEMS","SIGNAL LAB / 1354",cx,4.45,z-3.72,0,3.5,0.78);
             for(let n=0;n<4;n++) {
-              box("Archive file cabinet",cx-3.1+n*1.9,1.45,z+0.5,1.45,2.7,0.75,mat.dark,false);
-              for(let r=0;r<3;r++) box("Archive drawer handle",cx-3.1+n*1.9,0.7+r*0.72,z+0.09,0.48,0.07,0.05,mat.metal,false);
+              box("Neural server rack",cx-3.0+n*1.8,1.45,z+0.55,0.85,2.55,0.72,mat.dark,false);
+              for(let r=0;r<3;r++) box("Server indicator",cx-3.0+n*1.8,0.7+r*0.55,z+0.16,0.36,0.08,0.04,r===1?redGlowMat:cyanGlowMat,false);
             }
-            box("Archive evidence table",cx,0.72,z-2.1,2.8,0.12,1.0,mat.dark,false);
-            box("Evidence folder",cx-0.35,0.82,z-2.1,0.55,0.06,0.75,redGlowMat,false);
-          } else if (z===-49 && side===1) {
-            makeSign("EXPERIMENT 1345","METAL HEDGE // CONTAINMENT BAY",cx,4.45,z-3.75,0,3.4,0.8);
-            for(let n=0;n<3;n++) {
-              const rail=box("Containment floor rail",cx-2.7+n*2.7,0.08,z+1.3,0.08,0.12,4.5,mat.metal,false);
-              rail.rotation.y=0;
+            roomConsole("Neural systems console",cx+2.0,z-1.8,0x29d8ff,"Press E / USE to inspect Sawyer's signal logs",()=>showToast("SIGNAL LOG: EXPERIMENT 1354 remains conscious. Signal is unstable, but not silent."));
+          } else if(z===-49 && side===-1) {
+            makeSign("RESTRICTED ARCHIVE","STAFF CLEARANCE REQUIRED",cx,4.45,z-3.72,0,3.5,0.78);
+            for(let n=0;n<4;n++) {
+              const bx=cx-3.1+n*1.95;
+              box("Archive cabinet",bx,1.35,z+0.65,1.35,2.45,0.72,mat.dark,false);
+              for(let r=0;r<3;r++) box("Archive drawer handle",bx,0.72+r*0.62,z+0.26,0.42,0.06,0.05,mat.metal,false);
             }
-            box("Containment power console",cx+3.0,1.1,z-1.5,0.9,1.9,0.7,mat.dark,false);
-            box("Containment console screen",cx+3.0,1.65,z-1.88,0.62,0.48,0.04,redGlowMat,false);
-            box("Broken restraint clamp",cx-3.0,0.22,z+2.5,1.0,0.24,0.55,mat.metal,false);
+            roomConsole("Archive terminal",cx,z-1.85,0xffbd57,"Press E / USE to read an archived experiment note",()=>showToast("ARCHIVE NOTE: Experiment 1345 was assigned to assist staff and keep children away from active machinery."));
+          } else if(z===-49 && side===1) {
+            makeSign("EXPERIMENT 1345","METAL HEDGE / CONTAINMENT",cx,4.45,z-3.72,0,3.5,0.78);
+            // Floor-mounted restraint rails, not floating props.
+            for(let n=0;n<3;n++) box("Containment floor rail",cx-2.5+n*2.5,0.08,z+1.15,0.08,0.12,3.4,mat.metal,false);
+            box("Containment console pedestal",cx+3.0,0.82,z-1.25,0.85,1.55,0.65,mat.dark,false);
+            const cScreen=box("Containment console",cx+3.0,1.42,z-1.61,0.58,0.42,0.04,redGlowMat,false);
+            addInteractable(cScreen,"Containment console","Press E / USE to inspect Metal Hedge's containment status",()=>showToast("CONTAINMENT STATUS: restraints released. Experiment 1345 is cooperative."));
+            box("Broken restraint clamp",cx-3.0,0.16,z+2.25,0.85,0.18,0.45,mat.metal,false);
           }
         }
       }
 
-      // Experiment 1345: Metal Hedge, a friendly green robotic hedgehog.
-      const metalHedge = new THREE.Group();
-      metalHedge.name = "Experiment 1345 - Metal Hedge";
-      metalHedge.position.set(17.7,0,-48.5);
-      scene.add(metalHedge);
-      const hedgeGreen = new THREE.MeshStandardMaterial({color:0x20b94b,metalness:0.58,roughness:0.3,emissive:0x082d12});
-      const hedgeDark = new THREE.MeshStandardMaterial({color:0x202b34,metalness:0.82,roughness:0.26});
-      const hedgeSilver = new THREE.MeshStandardMaterial({color:0xc7d3df,metalness:0.88,roughness:0.2});
-      const hedgeRed = new THREE.MeshBasicMaterial({color:0xff304b});
-      const hedgeWhite = new THREE.MeshStandardMaterial({color:0xf3f8ff,metalness:0.12,roughness:0.22});
-      function hedgePart(geometry,material,x,y,z,rx=0,ry=0,rz=0) {
-        const part=new THREE.Mesh(geometry,material);
-        part.position.set(x,y,z); part.rotation.set(rx,ry,rz);
-        metalHedge.add(part); return part;
-      }
-      // Compact Sonic-like silhouette: tapered muzzle, swept-back quills, jointed limbs and shoes.
-      hedgePart(new THREE.SphereGeometry(0.43,24,18),hedgeGreen,0,1.62,0); // torso
-      const hedgeChest=hedgePart(new THREE.SphereGeometry(0.34,20,16),hedgeSilver,0,1.62,-0.31);
-      hedgeChest.scale.set(1,1.08,0.48);
-      hedgePart(new THREE.SphereGeometry(0.49,24,18),hedgeGreen,0,2.35,-0.08); // head
-      hedgePart(new THREE.SphereGeometry(0.24,18,14),hedgeGreen,0,2.17,-0.49); // muzzle
-      hedgePart(new THREE.SphereGeometry(0.075,14,10),hedgeDark,0,2.21,-0.69); // nose
-      hedgePart(new THREE.BoxGeometry(0.25,0.035,0.035),hedgeDark,0,2.04,-0.675); // mouth seam
-      hedgePart(new THREE.SphereGeometry(0.18,16,12),hedgeWhite,-0.19,2.43,-0.48);
-      hedgePart(new THREE.SphereGeometry(0.18,16,12),hedgeWhite,0.19,2.43,-0.48);
-      hedgePart(new THREE.SphereGeometry(0.083,14,10),hedgeRed,-0.19,2.43,-0.635);
-      hedgePart(new THREE.SphereGeometry(0.083,14,10),hedgeRed,0.19,2.43,-0.635);
-      hedgePart(new THREE.ConeGeometry(0.19,0.38,10),hedgeGreen,-0.31,2.75,-0.05,-0.22,0,-0.2); // ears
-      hedgePart(new THREE.ConeGeometry(0.19,0.38,10),hedgeGreen,0.31,2.75,-0.05,-0.22,0,0.2);
-      // Six long swept quills form a recognizable spiky silhouette behind the head.
-      hedgePart(new THREE.ConeGeometry(0.24,0.92,10),hedgeGreen,-0.34,2.55,0.42,-0.78,0,-0.28);
-      hedgePart(new THREE.ConeGeometry(0.25,1.05,10),hedgeGreen,0,2.62,0.48,-0.88,0,0);
-      hedgePart(new THREE.ConeGeometry(0.24,0.92,10),hedgeGreen,0.34,2.55,0.42,-0.78,0,0.28);
-      hedgePart(new THREE.ConeGeometry(0.2,0.72,10),hedgeGreen,-0.47,2.3,0.28,-0.62,0,-0.52);
-      hedgePart(new THREE.ConeGeometry(0.2,0.72,10),hedgeGreen,0.47,2.3,0.28,-0.62,0,0.52);
-      hedgePart(new THREE.ConeGeometry(0.17,0.62,10),hedgeGreen,0,2.08,0.38,-0.62,0,0);
-      // Shoulder sockets, visible elbow joints, and silver lower arms.
-      hedgePart(new THREE.SphereGeometry(0.2,16,12),hedgeDark,-0.53,1.86,-0.02);
-      hedgePart(new THREE.SphereGeometry(0.2,16,12),hedgeDark,0.53,1.86,-0.02);
-      hedgePart(new THREE.CylinderGeometry(0.12,0.15,0.48,12),hedgeSilver,-0.66,1.52,-0.03,0,0,-0.22);
-      hedgePart(new THREE.CylinderGeometry(0.12,0.15,0.48,12),hedgeSilver,0.66,1.52,-0.03,0,0,0.22);
-      hedgePart(new THREE.SphereGeometry(0.13,12,10),hedgeDark,-0.69,1.27,-0.05);
-      hedgePart(new THREE.SphereGeometry(0.13,12,10),hedgeDark,0.69,1.27,-0.05);
-      hedgePart(new THREE.CylinderGeometry(0.13,0.16,0.46,12),hedgeSilver,-0.31,1.0,0,0,0,-0.06);
-      hedgePart(new THREE.CylinderGeometry(0.13,0.16,0.46,12),hedgeSilver,0.31,1.0,0,0,0,0.06);
-      // Oversized red-and-silver shoes with ankle cuffs.
-      hedgePart(new THREE.BoxGeometry(0.52,0.22,0.7),hedgeRed,-0.34,0.48,-0.12);
-      hedgePart(new THREE.BoxGeometry(0.52,0.22,0.7),hedgeRed,0.34,0.48,-0.12);
-      hedgePart(new THREE.BoxGeometry(0.54,0.08,0.72),hedgeSilver,-0.34,0.36,-0.13);
-      hedgePart(new THREE.BoxGeometry(0.54,0.08,0.72),hedgeSilver,0.34,0.36,-0.13);
-      // His LEFT arm (character's left, on the viewer's right) carries the signature blaster.
-      hedgePart(new THREE.CylinderGeometry(0.23,0.29,0.68,16),hedgeDark,0.91,1.56,-0.12,0,0,Math.PI/2);
-      hedgePart(new THREE.CylinderGeometry(0.2,0.2,0.2,16),hedgeSilver,1.3,1.56,-0.12,0,0,Math.PI/2);
-      hedgePart(new THREE.TorusGeometry(0.17,0.045,8,16),hedgeRed,1.42,1.56,-0.12,0,Math.PI/2,0);
-      hedgePart(new THREE.SphereGeometry(0.12,12,10),hedgeRed,1.43,1.56,-0.12);
-      const hedgeInteract = hedgePart(new THREE.SphereGeometry(0.57,12,10),new THREE.MeshBasicMaterial({transparent:true,opacity:0.001,depthWrite:false}),0,1.8,-0.1);
-      hedgeInteract.name = "Metal Hedge";
-      addInteractable(hedgeInteract,"Metal Hedge","Press E / USE to speak with Experiment 1345",()=>showToast("METAL HEDGE: Sawyer? You actually made it. Good. Let's get Poppy back."));
+      // Main objective: terminal, locked bulkhead, power supply, then exit.
+      box("Terminal stand",0,0.58,-5,1.8,1.16,0.9,mat.dark,false);
+      terminal=box("Terminal screen",0,1.42,-5.48,1.35,0.72,0.08,mat.glass,false);
+      addInteractable(terminal,"Laboratory terminal","Press E / USE to access terminal",useTerminal);
+
+      // A visible bulkhead spans only the corridor, and its collider exactly matches
+      // syncSecurityDoorCollision() so unlocking it cannot leave an invisible wall.
+      const securityDoor=box("Security bulkhead",0,2.5,-17,28,5,0.35,mat.dark,true);
+      securityDoor.visible=!state.securityDoorHacked;
+      const securityPanel=box("Security panel",0,2.25,-16.72,0.62,1.0,0.1,cyanGlowMat,false);
+      securityPanel.visible=!state.securityDoorHacked;
+      addInteractable(securityPanel,"Security system","Press E / USE to interface with the locked security panel",hackSecurityDoor);
+
+      box("Power stand",5.4,0.58,-44,1.6,1.16,1.2,mat.dark,false);
+      powerUnit=box("Auxiliary power supply",5.4,1.42,-44,0.9,0.85,0.72,mat.yellow,false);
+      addInteractable(powerUnit,"Auxiliary power supply","Press E / USE to collect power supply",collectPower);
+
+      box("Exit frame",0,3,-56.8,4,5.8,0.35,mat.dark,false);
+      exitDoor=box("Exit door",0,2.7,-56.55,3.2,5.2,0.25,mat.red,false);
+      addInteractable(exitDoor,"Exit door","Press E / USE to open exit door",useExit);
     }
 
     function showToast(message) {
@@ -616,7 +455,7 @@
     function updateTarget() {
       const direction = new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion);
       currentTarget = null;
-      let best = 3.3;
+      let best = 4.2;
 
       for(const item of interactables) {
         if(item.name==="Auxiliary power supply" && state.powerCollected) continue;
@@ -625,7 +464,7 @@
         const p = item.mesh.getWorldPosition(new THREE.Vector3());
         const diff = p.clone().sub(camera.position);
         const distance = diff.length();
-        if(distance<best && direction.dot(diff.normalize())>0.72) {
+        if(distance<best && direction.dot(diff.normalize())>0.62) {
           currentTarget=item;
           best=distance;
         }
