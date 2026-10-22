@@ -479,16 +479,17 @@
     function refreshObjective() {
       if(state.doorOpen) setObjective("Exit unlocked — chapter prototype complete!");
       else if(state.powerCollected) setObjective("Return to the exit door");
-      else if(state.terminalUsed) setObjective("Find the auxiliary power supply");
-      else setObjective("Explore the laboratory and find the terminal");
+      else if(state.securityDoorHacked) setObjective("Find the auxiliary power supply");
+      else if(state.terminalUsed) setObjective("Bypass the security bulkhead");
+      else setObjective("Access the neural terminal");
     }
 
     function useTerminal() {
       if(state.terminalUsed) return showToast("Terminal: no new messages.");
       state.terminalUsed = true;
       state.objectiveStep = 1;
-      setObjective("Find the auxiliary power supply");
-      showToast("Terminal: power supply location identified.");
+      setObjective("Bypass the security bulkhead");
+      showToast("Terminal: security access granted. Bulkhead controls located.");
       saveGame();
     }
 
@@ -513,6 +514,7 @@
     }
 
     function hackSecurityDoor() {
+      if(!state.terminalUsed) return showToast("GLOWBY: The terminal should tell us how to access this panel.");
       if(state.securityDoorHacked) return showToast("Security lock already bypassed.");
       if(state.hackingDoor) return showToast("GLOWBY: The panel is still working...");
       state.hackingDoor = true;
@@ -525,6 +527,7 @@
         const panel = interactables.find(item => item.name === "Security system")?.mesh;
         if(panel) panel.visible = false;
         syncSecurityDoorCollision();
+        setObjective("Find the auxiliary power supply");
         showToast("SECURITY: Bulkhead unlocked. The way forward is clear.");
         saveGame();
       }, 1400);
@@ -981,7 +984,7 @@
       {speaker:"SYSTEM",text:"SIGNAL TRANSFER INITIATED. EXPERIMENT 1354 — LINK ESTABLISHED."},
       {speaker:"GLOWBY",text:"Whoa! I can hear you in here now. I still don't know you, but... I guess we're sharing this little body."},
       {speaker:"DOCTOR SAWYER",text:"Fair enough. I'll earn your trust. First, let's get that security bulkhead open."},
-      {speaker:"SYSTEM",text:"NEW OBJECTIVE: BYPASS THE SECURITY BULKHEAD. FIND A ROUTE TO THE DATA CENTER BACKUP."}
+      {speaker:"SYSTEM",text:"NEW OBJECTIVE: ACCESS THE NEURAL TERMINAL, THEN BYPASS THE SECURITY BULKHEAD."}
     ];
     let introIndex=0, introActive=false;
 
@@ -1031,7 +1034,7 @@
       state.running=true;
       screen.style.display="none";
       if(matchMedia("(pointer:fine)").matches) renderer.domElement.requestPointerLock?.();
-      showToast("New objective: bypass the security bulkhead.");
+      showToast("New objective: access the neural terminal.");
     }
 
     function advanceIntro() {
