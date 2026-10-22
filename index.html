@@ -114,6 +114,20 @@
     const objectiveElement = $("objective"), hint = $("hint");
     const toastElement = $("toast"), saveStatus = $("saveStatus");
 
+    // Show startup/runtime errors on-screen instead of leaving a silent black canvas.
+    window.addEventListener("error", event => {
+      const message = document.createElement("div");
+      message.style.cssText = "position:fixed;z-index:9999;left:12px;right:12px;bottom:12px;padding:12px;background:#7f1111;color:#fff;font:14px monospace;white-space:pre-wrap;overflow-wrap:anywhere;border:2px solid #ff7777";
+      message.textContent = "GAME ERROR: " + (event.message || "Unknown JavaScript error") + (event.filename ? "\\n" + event.filename.split("/").pop() + ":" + event.lineno : "");
+      document.body.appendChild(message);
+    });
+    window.addEventListener("unhandledrejection", event => {
+      const message = document.createElement("div");
+      message.style.cssText = "position:fixed;z-index:9999;left:12px;right:12px;bottom:12px;padding:12px;background:#7f1111;color:#fff;font:14px monospace;white-space:pre-wrap;overflow-wrap:anywhere;border:2px solid #ff7777";
+      message.textContent = "GAME ERROR: " + String(event.reason);
+      document.body.appendChild(message);
+    });
+
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x080d15);
     scene.fog = new THREE.Fog(0x080d15, 13, 62);
@@ -127,7 +141,7 @@
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     renderer.setSize(innerWidth, innerHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMapping = THREE.NoToneMapping;
     renderer.toneMappingExposure = 2.0;
     game.appendChild(renderer.domElement);
 
@@ -138,9 +152,9 @@
     scene.add(mainLight);
 
     const mat = {
-      floor:new THREE.MeshStandardMaterial({color:0x596575,emissive:0x171e29,roughness:0.85}),
-      wall:new THREE.MeshStandardMaterial({color:0x8795a5,emissive:0x202833,roughness:0.9}),
-      dark:new THREE.MeshStandardMaterial({color:0x303b4b,emissive:0x101722,roughness:0.7}),
+      floor:new THREE.MeshBasicMaterial({color:0x596575}),
+      wall:new THREE.MeshBasicMaterial({color:0x8795a5}),
+      dark:new THREE.MeshBasicMaterial({color:0x303b4b}),
       metal:new THREE.MeshStandardMaterial({color:0x647b8c,metalness:0.65,roughness:0.4}),
       glass:new THREE.MeshStandardMaterial({color:0x2b7c91,emissive:0x082735,metalness:0.3,roughness:0.25}),
       yellow:new THREE.MeshStandardMaterial({color:0xe0b53f,emissive:0x302000}),
