@@ -7,221 +7,34 @@
   <meta name="theme-color" content="#080b10">
   <title>Poppy Playtime: Chapter 6 — A Better Place</title>
   <link rel="stylesheet" href="style.css">
-
   <style>
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #080b10;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
-
-    #game {
-      position: fixed;
-      inset: 0;
-      overflow: hidden;
-    }
-
-    #game canvas {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    #hud {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    #objective {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      max-width: 75%;
-      padding: 12px 16px;
-      border-left: 3px solid #65d9ff;
-      background: #07101bd9;
-      font-size: 15px;
-    }
-
-    #crosshair {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 8px;
-      height: 8px;
-      transform: translate(-50%, -50%);
-      border: 1px solid #fff;
-      border-radius: 50%;
-      opacity: .8;
-    }
-
-    #hint {
-      position: absolute;
-      bottom: 17%;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 10px 15px;
-      background: #05080ddd;
-      border-radius: 6px;
-      text-align: center;
-      font-size: 14px;
-    }
-
-    #help {
-      position: absolute;
-      bottom: 18px;
-      left: 18px;
-      padding: 10px 13px;
-      color: #d0d8e4;
-      background: #07101bd9;
-      border-radius: 5px;
-      font-size: 12px;
-      line-height: 1.7;
-    }
-
-    #screen {
-      position: fixed;
-      inset: 0;
-      z-index: 5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background:
-        radial-gradient(ellipse at center, #17202ddd 0%, #05070bf5 75%);
-    }
-
-    #panel {
-      width: min(460px, 100%);
-      padding: 30px;
-      border: 1px solid #536272;
-      border-radius: 12px;
-      background: #0b1019f2;
-      box-shadow: 0 0 50px #000a;
-      text-align: center;
-    }
-
-    #panel h1 {
-      margin: 0 0 8px;
-      font-size: clamp(25px, 5vw, 39px);
-      line-height: 1.1;
-      letter-spacing: 1px;
-    }
-
-    #panel h2 {
-      margin: 0 0 20px;
-      color: #6bdcff;
-      font-size: 15px;
-      font-weight: normal;
-      letter-spacing: 3px;
-    }
-
-    #panel p {
-      color: #c4ccd7;
-      line-height: 1.5;
-    }
-
-    #panel button {
-      display: block;
-      width: 100%;
-      margin-top: 10px;
-      padding: 13px;
-      border: 1px solid #50687a;
-      border-radius: 5px;
-      color: #fff;
-      background: #182838;
-      font-size: 15px;
-      cursor: pointer;
-    }
-
-    #panel button:hover {
-      background: #24506a;
-      border-color: #6bdcff;
-    }
-
-    #panel #start {
-      color: #071019;
-      background: #6bdcff;
-      border-color: #6bdcff;
-      font-weight: bold;
-    }
-
-    #saveStatus {
-      min-height: 18px;
-      margin-bottom: 0;
-      font-size: 12px;
-    }
-
-    #toast {
-      position: fixed;
-      z-index: 8;
-      top: 20px;
-      right: 20px;
-      padding: 12px 16px;
-      border: 1px solid #6bdcff;
-      border-radius: 5px;
-      background: #07101bf2;
-      color: #fff;
-    }
-
-    #touch {
-      display: none;
-      position: fixed;
-      inset: auto 0 20px;
-      z-index: 4;
-      justify-content: space-between;
-      padding: 0 20px;
-      pointer-events: none;
-    }
-
-    .pad, .touch-actions {
-      display: grid;
-      gap: 7px;
-      pointer-events: auto;
-    }
-
-    .pad {
-      grid-template-columns: repeat(3, 48px);
-      grid-template-rows: repeat(2, 48px);
-    }
-
-    .touch-actions {
-      align-content: end;
-    }
-
-    .touchbutton {
-      min-width: 48px;
-      min-height: 48px;
-      border: 1px solid #b9eaff99;
-      border-radius: 10px;
-      color: white;
-      background: #101e30b8;
-      font-size: 17px;
-      touch-action: none;
-      user-select: none;
-    }
-
-    #up { grid-column: 2; }
-    #left { grid-column: 1; grid-row: 2; }
-    #down { grid-column: 2; grid-row: 2; }
-    #right { grid-column: 3; grid-row: 2; }
-
-    @media (pointer: coarse), (max-width: 700px) {
-      #touch { display: flex; }
-      #help { display: none; }
-      #objective { top: 10px; left: 10px; font-size: 12px; }
-      #hint { bottom: 155px; width: max-content; max-width: 85%; }
-      #panel { padding: 22px; }
-    }
+    html, body { margin:0; width:100%; height:100%; overflow:hidden; background:#080b10; color:white; font-family:Arial,sans-serif }
+    #game { position:fixed; inset:0; overflow:hidden }
+    #game canvas { display:block; width:100%; height:100% }
+    #hud { position:fixed; inset:0; pointer-events:none; z-index:2 }
+    #objective { position:absolute; top:18px; left:18px; max-width:80%; padding:12px 16px; border-left:3px solid #66d9ff; background:#07101bd9; font-size:14px }
+    #crosshair { position:absolute; top:50%; left:50%; width:7px; height:7px; border:1px solid white; border-radius:50%; transform:translate(-50%,-50%) }
+    #hint { position:absolute; bottom:18%; left:50%; transform:translateX(-50%); padding:10px 14px; border-radius:5px; background:#05080ddd; text-align:center; font-size:13px }
+    #help { position:absolute; bottom:15px; left:15px; padding:10px 12px; border-radius:5px; background:#07101bd9; font-size:12px; line-height:1.65 }
+    #screen { position:fixed; inset:0; z-index:5; display:flex; align-items:center; justify-content:center; padding:18px; background:radial-gradient(ellipse at center,#17202ddd,#05070bf5 75%) }
+    #panel { box-sizing:border-box; width:min(460px,100%); padding:28px; border:1px solid #536272; border-radius:12px; background:#0b1019f5; box-shadow:0 0 50px #000a; text-align:center }
+    #panel h1 { margin:0 0 8px; font-size:clamp(25px,5vw,39px) }
+    #panel h2 { margin:0 0 18px; color:#6bdcff; font-size:14px; font-weight:normal; letter-spacing:3px }
+    #panel p { color:#c4ccd7; line-height:1.5 }
+    #panel button { display:block; width:100%; margin-top:9px; padding:12px; border:1px solid #50687a; border-radius:5px; color:white; background:#182838; font-size:14px; cursor:pointer }
+    #panel button:hover { background:#24506a; border-color:#6bdcff }
+    #panel #start { color:#071019; background:#6bdcff; border-color:#6bdcff; font-weight:bold }
+    #saveStatus { min-height:18px; font-size:12px }
+    #toast { position:fixed; z-index:8; top:18px; right:18px; padding:12px 16px; border:1px solid #6bdcff; border-radius:5px; background:#07101bf2 }
+    #touch { display:none; position:fixed; inset:auto 0 18px; z-index:4; justify-content:space-between; padding:0 15px; pointer-events:none }
+    .pad,.touch-actions { display:grid; gap:6px; pointer-events:auto }
+    .pad { grid-template-columns:repeat(3,46px); grid-template-rows:repeat(2,46px) }
+    .touch-actions { align-content:end; grid-template-columns:repeat(2,60px) }
+    .touchbutton { min-width:46px; min-height:46px; border:1px solid #b9eaff99; border-radius:9px; color:white; background:#101e30cc; font-size:14px; touch-action:none; user-select:none }
+    #up { grid-column:2 } #left { grid-column:1; grid-row:2 } #down { grid-column:2; grid-row:2 } #right { grid-column:3; grid-row:2 }
+    @media (pointer:coarse),(max-width:700px) { #touch { display:flex } #help { display:none } #objective { top:9px; left:9px; font-size:12px } #hint { bottom:145px; max-width:85% } #panel { padding:20px } }
   </style>
 </head>
-
 <body>
   <div id="game"></div>
 
@@ -231,9 +44,11 @@
     <div id="hint"></div>
     <div id="help">
       WASD — Move<br>
-      Mouse — Look around<br>
+      Mouse — Look<br>
       SHIFT — Sprint<br>
       E — Interact<br>
+      Left Click / Q — Blue Hand<br>
+      Right Click / R — Red Hand<br>
       ESC — Pause
     </div>
   </div>
@@ -248,6 +63,8 @@
     <div class="touch-actions">
       <button class="touchbutton" id="run">RUN</button>
       <button class="touchbutton" id="use">USE</button>
+      <button class="touchbutton" id="blue">BLUE</button>
+      <button class="touchbutton" id="red">RED</button>
     </div>
   </div>
 
@@ -255,636 +72,607 @@
     <div id="panel">
       <h1>POPPY PLAYTIME</h1>
       <h2>CHAPTER 6: A BETTER PLACE</h2>
-      <p>A quiet laboratory. A missing power supply. Something isn't right.</p>
+      <p>Something is wrong inside the laboratory. Find the terminal, restore the power, and discover what happened.</p>
       <button id="start">NEW GAME</button>
       <button id="continueGame">CONTINUE</button>
       <button id="saveGame">SAVE GAME</button>
       <button id="loadGame">LOAD GAME</button>
-      <button id="newGame">RESET SAVE</button>
+      <button id="resetSave">RESET SAVE</button>
       <p id="saveStatus">Checking save...</p>
       <p style="font-size:11px">Fan-made prototype. Not an official game.</p>
     </div>
   </div>
-
   <div id="toast" style="display:none"></div>
 
   <script type="module">
-    import * as THREE from
-      "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+    import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
 
     const SAVE_KEY = "poppyChapter6BetterPlaceSave";
-
-    const game = document.getElementById("game");
-    const screen = document.getElementById("screen");
-    const objectiveElement = document.getElementById("objective");
-    const hint = document.getElementById("hint");
-    const toastElement = document.getElementById("toast");
-    const saveStatus = document.getElementById("saveStatus");
+    const $ = id => document.getElementById(id);
+    const game = $("game"), screen = $("screen");
+    const objectiveElement = $("objective"), hint = $("hint");
+    const toastElement = $("toast"), saveStatus = $("saveStatus");
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x080d15);
-    scene.fog = new THREE.Fog(0x080d15, 12, 65);
+    scene.fog = new THREE.Fog(0x080d15, 13, 62);
 
-    const camera = new THREE.PerspectiveCamera(
-      75, window.innerWidth / window.innerHeight, 0.1, 100
-    );
+    const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 100);
     camera.rotation.order = "YXZ";
     camera.position.set(0, 1.7, 12);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    const renderer = new THREE.WebGLRenderer({ antialias:true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(innerWidth, innerHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.1;
     game.appendChild(renderer.domElement);
 
     scene.add(new THREE.HemisphereLight(0x9bbbdc, 0x17111a, 1.5));
-
-    const mainLight = new THREE.PointLight(0x9bcfff, 45, 50);
-    mainLight.position.set(0, 5, 0);
+    const mainLight = new THREE.PointLight(0x9bcfff, 40, 50);
+    mainLight.position.set(0, 4.8, 0);
     scene.add(mainLight);
 
-    const materials = {
-      floor: new THREE.MeshStandardMaterial({
-        color: 0x303945, roughness: 0.85
-      }),
-      wall: new THREE.MeshStandardMaterial({
-        color: 0x65717e, roughness: 0.9
-      }),
-      dark: new THREE.MeshStandardMaterial({
-        color: 0x141c28, roughness: 0.7
-      }),
-      metal: new THREE.MeshStandardMaterial({
-        color: 0x647b8c, metalness: 0.65, roughness: 0.4
-      }),
-      glass: new THREE.MeshStandardMaterial({
-        color: 0x2b7c91, emissive: 0x082735,
-        metalness: 0.4, roughness: 0.25
-      }),
-      yellow: new THREE.MeshStandardMaterial({
-        color: 0xe0b53f, emissive: 0x302000
-      }),
-      red: new THREE.MeshStandardMaterial({
-        color: 0xb53a42, emissive: 0x260508
-      }),
-      green: new THREE.MeshStandardMaterial({
-        color: 0x4cd58a, emissive: 0x124528
-      })
+    const mat = {
+      floor:new THREE.MeshStandardMaterial({color:0x303945,roughness:0.85}),
+      wall:new THREE.MeshStandardMaterial({color:0x65717e,roughness:0.9}),
+      dark:new THREE.MeshStandardMaterial({color:0x141c28,roughness:0.7}),
+      metal:new THREE.MeshStandardMaterial({color:0x647b8c,metalness:0.65,roughness:0.4}),
+      glass:new THREE.MeshStandardMaterial({color:0x2b7c91,emissive:0x082735,metalness:0.3,roughness:0.25}),
+      yellow:new THREE.MeshStandardMaterial({color:0xe0b53f,emissive:0x302000}),
+      red:new THREE.MeshStandardMaterial({color:0xb53a42,emissive:0x260508}),
+      green:new THREE.MeshStandardMaterial({color:0x4cd58a,emissive:0x124528})
     };
 
-    const colliders = [];
-    const interactables = [];
+    const colliders = [], interactables = [];
     const clock = new THREE.Clock();
-
     const state = {
-      running: false,
-      objectiveStep: 0,
-      terminalUsed: false,
-      powerCollected: false,
-      x: 0,
-      y: 1.7,
-      z: 12,
-      yaw: 0,
-      pitch: 0
+      running:false, objectiveStep:0, terminalUsed:false,
+      powerCollected:false, doorOpen:false
     };
-
     const keys = {};
-    let toastTimer;
-    let currentTarget = null;
-    let touchLookId = null;
-    let previousTouchX = 0;
-    let previousTouchY = 0;
+    let currentTarget = null, toastTimer = null;
+    let lookTouch = null;
 
-    function box(name, x, y, z, w, h, d, material, solid = true) {
-      const mesh = new THREE.Mesh(
-        new THREE.BoxGeometry(w, h, d), material
-      );
+    function box(name,x,y,z,w,h,d,material,solid=true) {
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);
       mesh.name = name;
-      mesh.position.set(x, y, z);
+      mesh.position.set(x,y,z);
       scene.add(mesh);
-
-      if (solid) {
-        colliders.push({
-          x, z, hx: w / 2, hz: d / 2,
-          bottom: y - h / 2, top: y + h / 2
-        });
-      }
+      if (solid) colliders.push({x,z,hx:w/2,hz:d/2,bottom:y-h/2,top:y+h/2});
       return mesh;
     }
 
-    function light(x, y, z, color = 0x7bcfff, intensity = 18) {
-      const lamp = new THREE.PointLight(color, intensity, 12);
-      lamp.position.set(x, y, z);
-      scene.add(lamp);
-
+    function lamp(x,y,z,color=0x7bcfff,intensity=15) {
+      const l = new THREE.PointLight(color,intensity,12);
+      l.position.set(x,y,z);
+      scene.add(l);
       const bulb = new THREE.Mesh(
-        new THREE.BoxGeometry(1.5, 0.08, 0.22),
-        new THREE.MeshBasicMaterial({ color })
+        new THREE.BoxGeometry(1.4,0.08,0.22),
+        new THREE.MeshBasicMaterial({color})
       );
-      bulb.position.set(x, y + 0.25, z);
+      bulb.position.set(x,y+0.2,z);
       scene.add(bulb);
     }
 
-    function addInteractable(mesh, name, description, action) {
-      interactables.push({ mesh, name, description, action });
+    function addInteractable(mesh,name,description,action) {
+      interactables.push({mesh,name,description,action});
     }
 
+    let terminal, powerUnit, exitDoor;
+
     function buildWorld() {
-      box("Floor", 0, -0.25, -8, 18, 0.5, 66, materials.floor, false);
-      box("Ceiling", 0, 5.5, -8, 18, 0.5, 66, materials.dark, false);
-      box("Left wall", -9, 2.5, -8, 0.5, 5, 66, materials.wall);
-      box("Right wall", 9, 2.5, -8, 0.5, 5, 66, materials.wall);
-      box("End wall", 0, 2.5, -40.8, 18, 5, 0.5, materials.wall);
+      box("Floor",0,-0.25,-9,18,0.5,68,mat.floor,false);
+      box("Ceiling",0,5.5,-9,18,0.5,68,mat.dark,false);
+      box("Left wall",-9,2.5,-9,0.5,5,68,mat.wall);
+      box("Right wall",9,2.5,-9,0.5,5,68,mat.wall);
+      box("End wall",0,2.5,-42,18,5,0.5,mat.wall);
 
-      // Wall supports and overhead pipes.
-      for (let z = 19; z >= -35; z -= 7) {
-        box("Support", -8.5, 2.5, z, 0.35, 5, 0.35, materials.dark);
-        box("Support", 8.5, 2.5, z, 0.35, 5, 0.35, materials.dark);
-
-        box("Ceiling pipe", 0, 4.9, z, 12, 0.16, 0.16, materials.metal, false);
-        box("Pipe bracket", -4, 4.7, z, 0.12, 0.4, 0.12, materials.metal, false);
-        box("Pipe bracket", 4, 4.7, z, 0.12, 0.4, 0.12, materials.metal, false);
-
-        light(0, 4.7, z, z % 2 === 0 ? 0x80d9ff : 0xffc66d, 14);
+      for(let z=19;z>=-35;z-=7) {
+        box("Support",-8.5,2.5,z,0.35,5,0.35,mat.dark);
+        box("Support",8.5,2.5,z,0.35,5,0.35,mat.dark);
+        box("Overhead pipe",0,4.9,z,12,0.16,0.16,mat.metal,false);
+        lamp(0,4.65,z,z%2===0?0x80d9ff:0xffc66d,13);
       }
 
-      // Observation windows along the corridor.
-      for (let z = 12; z >= -30; z -= 8) {
-        box("Left observation window", -8.72, 2.5, z, 0.08, 1.6, 3,
-          materials.glass, false);
-        box("Right observation window", 8.72, 2.5, z, 0.08, 1.6, 3,
-          materials.glass, false);
+      for(let z=12;z>=-30;z-=8) {
+        box("Observation window",-8.72,2.5,z,0.08,1.6,3,mat.glass,false);
+        box("Observation window",8.72,2.5,z,0.08,1.6,3,mat.glass,false);
       }
 
-      // Lab workbenches and storage equipment.
-      for (const z of [5, -9, -23]) {
-        box("Workbench", -5.6, 1, z, 3.4, 1, 1.3, materials.dark);
-        box("Workbench top", -5.6, 1.55, z, 3.6, 0.12, 1.5, materials.metal);
-        box("Storage crate", -6.1, 0.45, z - 2.4, 1.2, 0.9, 1.1, materials.dark);
-        box("Storage crate", 5.9, 0.45, z - 2.4, 1.2, 0.9, 1.1, materials.dark);
-
-        for (let i = 0; i < 3; i++) {
-          box("Server rack", 6.5, 1.5 + i * 0.6, z, 1.2, 0.45, 1.2, materials.dark);
-          box("Server indicator", 5.88, 1.55 + i * 0.6, z - 0.25,
-            0.03, 0.07, 0.1, i === 1 ? materials.red : materials.green, false);
+      for(const z of [5,-9,-23]) {
+        box("Workbench",-5.6,1,z,3.4,1,1.3,mat.dark);
+        box("Workbench top",-5.6,1.55,z,3.6,0.12,1.5,mat.metal);
+        box("Storage crate",-6.1,0.45,z-2.4,1.2,0.9,1.1,mat.dark);
+        box("Storage crate",5.9,0.45,z-2.4,1.2,0.9,1.1,mat.dark);
+        for(let i=0;i<3;i++) {
+          box("Server rack",6.5,1.5+i*0.6,z,1.2,0.45,1.2,mat.dark);
+          box("Server indicator",5.88,1.55+i*0.6,z-0.25,0.03,0.07,0.1,i===1?mat.red:mat.green,false);
         }
       }
 
-      // Specimen chambers.
-      for (const z of [0, -14, -28]) {
-        for (const x of [-3.8, 3.8]) {
-          box("Chamber base", x, 0.3, z, 2, 0.6, 2, materials.dark);
-          box("Chamber glass", x, 1.9, z, 1.5, 2.5, 1.5, materials.glass, false);
-          box("Chamber cap", x, 3.25, z, 1.9, 0.2, 1.9, materials.metal, false);
-
-          const tubeLight = new THREE.PointLight(0x36a8d7, 3, 5);
-          tubeLight.position.set(x, 2, z);
-          scene.add(tubeLight);
+      for(const z of [0,-14,-28]) {
+        for(const x of [-3.8,3.8]) {
+          box("Chamber base",x,0.3,z,2,0.6,2,mat.dark);
+          box("Chamber glass",x,1.9,z,1.5,2.5,1.5,mat.glass,false);
+          box("Chamber cap",x,3.25,z,1.9,0.2,1.9,mat.metal,false);
+          const glow = new THREE.PointLight(0x36a8d7,3,5);
+          glow.position.set(x,2,z);
+          scene.add(glow);
         }
       }
 
-      // Terminal the player can use.
-      box("Terminal stand", 0, 0.65, -2, 1.8, 1.3, 0.9, materials.dark);
-      const terminal = box("Terminal screen", 0, 1.65, -2.25,
-        1.4, 0.75, 0.12, materials.glass, false);
+      box("Terminal stand",0,0.65,-2,1.8,1.3,0.9,mat.dark);
+      terminal = box("Terminal screen",0,1.65,-2.25,1.4,0.75,0.12,mat.glass,false);
+      addInteractable(terminal,"Laboratory terminal","Press E / USE to access terminal",useTerminal);
 
-      addInteractable(
-        terminal,
-        "Laboratory terminal",
-        "Press E to access the laboratory terminal",
-        useTerminal
-      );
+      box("Power stand",5.4,0.65,-29,1.6,1.3,1.3,mat.dark);
+      powerUnit = box("Auxiliary power supply",5.4,1.55,-29,1.1,1,0.8,mat.yellow,false);
+      addInteractable(powerUnit,"Auxiliary power supply","Press E / USE to collect power supply",collectPower);
 
-      // Auxiliary power supply, unlocked by using the terminal.
-      box("Power supply stand", 5.4, 0.65, -29, 1.6, 1.3, 1.3, materials.dark);
-      const powerUnit = box("Auxiliary power supply", 5.4, 1.55, -29,
-        1.1, 1, 0.8, materials.yellow, false);
-
-      addInteractable(
-        powerUnit,
-        "Auxiliary power supply",
-        "Press E to collect the auxiliary power supply",
-        collectPower
-      );
-
-      // Exit door.
-      box("Exit door frame", 0, 2.3, -39.8, 4, 4.6, 0.35, materials.dark, false);
-      box("Exit door", 0, 2.1, -39.55, 3.2, 4.1, 0.25, materials.red, false);
-      box("Door light", 0, 4.45, -39.3, 0.6, 0.12, 0.08, materials.red, false);
-
-      const sign = new THREE.Mesh(
-        new THREE.BoxGeometry(3.4, 0.45, 0.08),
-        new THREE.MeshStandardMaterial({
-          color: 0x202b38, emissive: 0x08111a
-        })
-      );
-      sign.position.set(0, 4.4, -38.9);
-      scene.add(sign);
+      box("Exit frame",0,2.3,-39.8,4,4.6,0.35,mat.dark,false);
+      exitDoor = box("Exit door",0,2.1,-39.55,3.2,4.1,0.25,mat.red,false);
+      addInteractable(exitDoor,"Exit door","Press E / USE to open exit door",useExit);
     }
 
     function showToast(message) {
       toastElement.textContent = message;
       toastElement.style.display = "block";
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => {
-        toastElement.style.display = "none";
-      }, 2200);
+      toastTimer = setTimeout(()=>toastElement.style.display="none",2200);
     }
 
     function setObjective(message) {
       objectiveElement.textContent = "OBJECTIVE: " + message;
     }
 
-    function useTerminal() {
-      if (state.terminalUsed) {
-        showToast("The terminal has no other available functions.");
-        return;
-      }
+    function refreshObjective() {
+      if(state.doorOpen) setObjective("Exit unlocked — chapter prototype complete!");
+      else if(state.powerCollected) setObjective("Return to the exit door");
+      else if(state.terminalUsed) setObjective("Find the auxiliary power supply");
+      else setObjective("Explore the laboratory and find the terminal");
+    }
 
+    function useTerminal() {
+      if(state.terminalUsed) return showToast("Terminal: no new messages.");
       state.terminalUsed = true;
       state.objectiveStep = 1;
       setObjective("Find the auxiliary power supply");
-      showToast("TERMINAL: Auxiliary power supply location identified.");
+      showToast("Terminal: power supply location identified.");
       saveGame();
     }
 
     function collectPower() {
-      if (!state.terminalUsed) {
-        showToast("The power supply location is not in your records yet.");
-        return;
-      }
-
-      if (state.powerCollected) {
-        showToast("You already collected the power supply.");
-        return;
-      }
-
+      if(!state.terminalUsed) return showToast("Access the terminal first.");
+      if(state.powerCollected) return showToast("Power supply already collected.");
       state.powerCollected = true;
       state.objectiveStep = 2;
+      powerUnit.visible = false;
       setObjective("Return to the exit door");
       showToast("Auxiliary power supply collected!");
       saveGame();
     }
 
+    function useExit() {
+      if(!state.powerCollected) return showToast("The exit needs auxiliary power.");
+      if(state.doorOpen) return showToast("The exit is already open.");
+      state.doorOpen = true;
+      exitDoor.visible = false;
+      setObjective("Exit unlocked — chapter prototype complete!");
+      showToast("Power restored. Exit unlocked!");
+      saveGame();
+    }
+
     function updateTarget() {
-      const origin = camera.position.clone();
-      const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
-      let closest = null;
-      let closestDistance = 3.2;
+      const direction = new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion);
+      currentTarget = null;
+      let best = 3.3;
 
-      for (const item of interactables) {
-        if (item.name === "Auxiliary power supply" && state.powerCollected) continue;
+      for(const item of interactables) {
+        if(item.name==="Auxiliary power supply" && state.powerCollected) continue;
+        if(item.name==="Exit door" && state.doorOpen) continue;
 
-        const targetPosition = item.mesh.position.clone();
-        const distance = origin.distanceTo(targetPosition);
-        if (distance > closestDistance) continue;
-
-        const toTarget = targetPosition.sub(origin).normalize();
-        if (direction.dot(toTarget) < 0.72) continue;
-
-        closest = item;
-        closestDistance = distance;
+        const p = item.mesh.getWorldPosition(new THREE.Vector3());
+        const diff = p.clone().sub(camera.position);
+        const distance = diff.length();
+        if(distance<best && direction.dot(diff.normalize())>0.72) {
+          currentTarget=item;
+          best=distance;
+        }
       }
-
-      currentTarget = closest;
-      hint.textContent = closest ? closest.description : "";
+      hint.textContent = currentTarget ? currentTarget.description : "";
     }
 
     function interact() {
-      if (!state.running || !currentTarget) return;
-      currentTarget.action();
+      if(state.running && currentTarget) currentTarget.action();
     }
 
-    function saveGame() {
-      try {
-        const data = {
-          version: 1,
-          objectiveStep: state.objectiveStep,
-          terminalUsed: state.terminalUsed,
-          powerCollected: state.powerCollected,
-          player: {
-            x: camera.position.x,
-            y: camera.position.y,
-            z: camera.position.z,
-            yaw: camera.rotation.y,
-            pitch: camera.rotation.x
-          },
-          savedAt: new Date().toISOString()
-        };
+    // GrabPack: two independent hands with visible cables.
+    const grabPack = {hands:[], maxRange:18, speed:28};
 
-        localStorage.setItem(SAVE_KEY, JSON.stringify(data));
-        saveStatus.textContent = "Save stored in this browser.";
-        showToast("Game saved!");
-        return true;
-      } catch (error) {
-        saveStatus.textContent = "Saving failed. Browser storage may be blocked.";
-        return false;
+    function createHand(color,side) {
+      const group = new THREE.Group();
+      const glove = new THREE.Mesh(
+        new THREE.SphereGeometry(0.16,16,12),
+        new THREE.MeshStandardMaterial({color,roughness:0.4,metalness:0.1})
+      );
+      const palm = new THREE.Mesh(
+        new THREE.BoxGeometry(0.25,0.11,0.23),
+        new THREE.MeshStandardMaterial({color})
+      );
+      palm.position.z=-0.12;
+      group.add(glove,palm);
+      scene.add(group);
+      group.visible=false;
+
+      const cableMaterial = new THREE.LineBasicMaterial({color});
+      const cable = new THREE.Line(
+        new THREE.BufferGeometry(),
+        cableMaterial
+      );
+      scene.add(cable);
+
+      const hand = {
+        group,cable,side,state:"idle",
+        position:new THREE.Vector3(),
+        target:new THREE.Vector3(),
+        direction:new THREE.Vector3(),
+        attached:null,attachedTime:0
+      };
+      grabPack.hands.push(hand);
+      return hand;
+    }
+
+    const blueHand = createHand(0x2196ff,-1);
+    const redHand = createHand(0xff3434,1);
+
+    function handOrigin(hand) {
+      const forward=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion);
+      const right=new THREE.Vector3(1,0,0).applyQuaternion(camera.quaternion);
+      return camera.position.clone()
+        .addScaledVector(forward,0.55)
+        .addScaledVector(right,hand.side*0.28)
+        .add(new THREE.Vector3(0,-0.2,0));
+    }
+
+    function shootHand(hand) {
+      if(!state.running) return;
+      if(hand.state!=="idle") {
+        hand.state="returning";
+        hand.attached=null;
+        return;
       }
+
+      hand.position.copy(handOrigin(hand));
+      hand.direction.set(0,0,-1).applyQuaternion(camera.quaternion).normalize();
+      hand.target.copy(hand.position).addScaledVector(hand.direction,grabPack.maxRange);
+      hand.state="flying";
+      hand.group.visible=true;
+      hand.attached=null;
+      hand.attachedTime=0;
     }
 
-    function loadGame(showMessage = true) {
-      try {
-        const raw = localStorage.getItem(SAVE_KEY);
-        if (!raw) {
-          saveStatus.textContent = "No saved game found.";
-          if (showMessage) showToast("No save found.");
-          return false;
+    function updateGrabPack(delta) {
+      for(const hand of grabPack.hands) {
+        if(hand.state==="idle") {
+          hand.group.visible=false;
+          hand.cable.visible=false;
+          continue;
         }
 
-        const data = JSON.parse(raw);
-        const p = data.player;
+        hand.cable.visible=true;
 
-        if (
-          data.version !== 1 ||
-          !p ||
-          ![p.x, p.y, p.z, p.yaw, p.pitch].every(Number.isFinite)
-        ) {
-          saveStatus.textContent = "Save file is invalid.";
-          return false;
+        if(hand.state==="flying") {
+          const step=grabPack.speed*delta;
+          if(hand.position.distanceTo(hand.target)<=step) {
+            hand.position.copy(hand.target);
+            hand.state="returning";
+          } else {
+            hand.position.addScaledVector(hand.direction,step);
+          }
+
+          // Only attach to visible, interactive targets.
+          for(const item of interactables) {
+            if(item.name==="Auxiliary power supply" && state.powerCollected) continue;
+            if(item.name==="Exit door" && state.doorOpen) continue;
+            const p=item.mesh.getWorldPosition(new THREE.Vector3());
+            if(hand.position.distanceTo(p)<0.6) {
+              hand.position.copy(p);
+              hand.attached=item;
+              hand.state="attached";
+              showToast("GrabPack hand attached!");
+              break;
+            }
+          }
+        } else if(hand.state==="attached") {
+          if(!hand.attached || !hand.attached.mesh.visible) {
+            hand.state="returning";
+          } else {
+            hand.position.copy(hand.attached.mesh.getWorldPosition(new THREE.Vector3()));
+            hand.attachedTime+=delta;
+            if(hand.attachedTime>0.7) {
+              hand.attachedTime=0;
+              hand.attached=null;
+              hand.state="returning";
+            }
+          }
+        } else if(hand.state==="returning") {
+          const origin=handOrigin(hand);
+          const difference=origin.sub(hand.position);
+          const distance=difference.length();
+          if(distance<=grabPack.speed*1.5*delta) {
+            hand.position.copy(handOrigin(hand));
+            hand.state="idle";
+            hand.group.visible=false;
+            hand.cable.visible=false;
+            continue;
+          }
+          hand.position.addScaledVector(difference.normalize(),grabPack.speed*1.5*delta);
         }
 
-        state.objectiveStep = Number.isInteger(data.objectiveStep)
-          ? data.objectiveStep : 0;
-        state.terminalUsed = data.terminalUsed === true;
-        state.powerCollected = data.powerCollected === true;
-
-        camera.position.set(p.x, p.y, p.z);
-        camera.rotation.y = p.yaw;
-        camera.rotation.x = p.pitch;
-
-        refreshObjective();
-        saveStatus.textContent = "Saved game loaded.";
-        if (showMessage) showToast("Game loaded!");
-        return true;
-      } catch (error) {
-        saveStatus.textContent = "Could not read the saved game.";
-        return false;
+        hand.group.position.copy(hand.position);
+        hand.group.lookAt(camera.position);
+        hand.cable.geometry.dispose();
+        hand.cable.geometry=new THREE.BufferGeometry().setFromPoints([
+          handOrigin(hand),hand.position
+        ]);
       }
     }
 
-    function refreshObjective() {
-      if (state.powerCollected) {
-        setObjective("Return to the exit door");
-      } else if (state.terminalUsed) {
-        setObjective("Find the auxiliary power supply");
-      } else {
-        setObjective("Explore the laboratory and find the terminal");
-      }
-    }
+    window.addEventListener("mousedown",event=>{
+      if(!state.running) return;
+      if(event.button===0) shootHand(blueHand);
+      if(event.button===2) shootHand(redHand);
+    });
 
-    function startGame(loadExisting = false) {
-      if (loadExisting && !loadGame(false)) {
-        showToast("No saved game found. Starting a new game.");
-        resetProgress(false);
-      } else if (!loadExisting) {
-        resetProgress(false);
-      }
+    window.addEventListener("contextmenu",event=>{
+      if(state.running) event.preventDefault();
+    });
 
-      state.running = true;
-      screen.style.display = "none";
-      clock.getDelta();
+    window.addEventListener("keydown",event=>{
+      if(event.repeat || !state.running) return;
+      if(event.code==="KeyQ") shootHand(blueHand);
+      if(event.code==="KeyR") shootHand(redHand);
+    });
 
-      if (matchMedia("(pointer:fine)").matches) {
-        renderer.domElement.requestPointerLock?.();
-      }
-    }
-
-    function resetProgress(eraseSave = true) {
-      if (eraseSave) localStorage.removeItem(SAVE_KEY);
-
-      state.objectiveStep = 0;
-      state.terminalUsed = false;
-      state.powerCollected = false;
-      camera.position.set(0, 1.7, 12);
-      camera.rotation.set(0, 0, 0);
-      refreshObjective();
-      saveStatus.textContent = "New game ready.";
-    }
-
-    function pauseGame() {
-      state.running = false;
-      screen.style.display = "flex";
-      document.exitPointerLock?.();
-      saveStatus.textContent = localStorage.getItem(SAVE_KEY)
-        ? "A saved game is available."
-        : "No saved game yet.";
-    }
-
-    function isBlocked(x, z) {
-      const radius = 0.38;
-      const playerBottom = camera.position.y - 1.7;
-      const playerTop = camera.position.y + 0.1;
-
-      return colliders.some(c => {
-        if (playerTop < c.bottom || playerBottom > c.top) return false;
-
-        return (
-          x + radius > c.x - c.hx &&
-          x - radius < c.x + c.hx &&
-          z + radius > c.z - c.hz &&
-          z - radius < c.z + c.hz
-        );
+    // Movement and collision.
+    function isBlocked(x,z) {
+      const radius=0.38, bottom=camera.position.y-1.7, top=camera.position.y+0.1;
+      return colliders.some(c=>{
+        if(top<c.bottom || bottom>c.top) return false;
+        return x+radius>c.x-c.hx && x-radius<c.x+c.hx &&
+               z+radius>c.z-c.hz && z-radius<c.z+c.hz;
       });
     }
 
     function movePlayer(delta) {
-      const forward = new THREE.Vector3(
-        -Math.sin(camera.rotation.y), 0, -Math.cos(camera.rotation.y)
-      );
-      const right = new THREE.Vector3(
-        Math.cos(camera.rotation.y), 0, -Math.sin(camera.rotation.y)
-      );
+      const forward=new THREE.Vector3(-Math.sin(camera.rotation.y),0,-Math.cos(camera.rotation.y));
+      const right=new THREE.Vector3(Math.cos(camera.rotation.y),0,-Math.sin(camera.rotation.y));
+      const movement=new THREE.Vector3();
 
-      const movement = new THREE.Vector3();
-      if (keys.KeyW || keys.ArrowUp) movement.add(forward);
-      if (keys.KeyS || keys.ArrowDown) movement.sub(forward);
-      if (keys.KeyD || keys.ArrowRight) movement.add(right);
-      if (keys.KeyA || keys.ArrowLeft) movement.sub(right);
+      if(keys.KeyW||keys.ArrowUp) movement.add(forward);
+      if(keys.KeyS||keys.ArrowDown) movement.sub(forward);
+      if(keys.KeyD||keys.ArrowRight) movement.add(right);
+      if(keys.KeyA||keys.ArrowLeft) movement.sub(right);
+      if(!movement.lengthSq()) return;
 
-      if (movement.lengthSq() === 0) return;
-      movement.normalize();
-
-      const speed = keys.ShiftLeft || keys.ShiftRight ? 7.3 : 4.3;
-      const step = movement.multiplyScalar(speed * delta);
-
-      const nextX = camera.position.x + step.x;
-      const nextZ = camera.position.z + step.z;
-
-      if (!isBlocked(nextX, camera.position.z)) camera.position.x = nextX;
-      if (!isBlocked(camera.position.x, nextZ)) camera.position.z = nextZ;
-
-      camera.position.x = THREE.MathUtils.clamp(camera.position.x, -8.1, 8.1);
-      camera.position.z = THREE.MathUtils.clamp(camera.position.z, -39, 20);
+      movement.normalize().multiplyScalar((keys.ShiftLeft||keys.ShiftRight?7.2:4.3)*delta);
+      const nx=camera.position.x+movement.x;
+      const nz=camera.position.z+movement.z;
+      if(!isBlocked(nx,camera.position.z)) camera.position.x=nx;
+      if(!isBlocked(camera.position.x,nz)) camera.position.z=nz;
+      camera.position.x=THREE.MathUtils.clamp(camera.position.x,-8.1,8.1);
+      camera.position.z=THREE.MathUtils.clamp(camera.position.z,-40,20);
     }
 
-    function bindHoldButton(id, key) {
-      const button = document.getElementById(id);
-      if (!button) return;
+    function saveGame() {
+      try {
+        localStorage.setItem(SAVE_KEY,JSON.stringify({
+          version:1,
+          objectiveStep:state.objectiveStep,
+          terminalUsed:state.terminalUsed,
+          powerCollected:state.powerCollected,
+          doorOpen:state.doorOpen,
+          player:{
+            x:camera.position.x,y:camera.position.y,z:camera.position.z,
+            yaw:camera.rotation.y,pitch:camera.rotation.x
+          },
+          savedAt:new Date().toISOString()
+        }));
+        saveStatus.textContent="Game saved in this browser.";
+        showToast("Game saved!");
+        return true;
+      } catch(error) {
+        saveStatus.textContent="Could not save. Browser storage may be blocked.";
+        return false;
+      }
+    }
 
-      button.addEventListener("pointerdown", event => {
-        event.preventDefault();
-        keys[key] = true;
+    function loadGame(showMessage=true) {
+      try {
+        const raw=localStorage.getItem(SAVE_KEY);
+        if(!raw) {
+          saveStatus.textContent="No save found.";
+          if(showMessage) showToast("No saved game found.");
+          return false;
+        }
+
+        const data=JSON.parse(raw),p=data.player;
+        if(data.version!==1 || !p ||
+           ![p.x,p.y,p.z,p.yaw,p.pitch].every(Number.isFinite)) {
+          saveStatus.textContent="Save file is invalid.";
+          return false;
+        }
+
+        state.objectiveStep=Number.isInteger(data.objectiveStep)?data.objectiveStep:0;
+        state.terminalUsed=data.terminalUsed===true;
+        state.powerCollected=data.powerCollected===true;
+        state.doorOpen=data.doorOpen===true;
+        camera.position.set(p.x,p.y,p.z);
+        camera.rotation.y=p.yaw;
+        camera.rotation.x=p.pitch;
+
+        powerUnit.visible=!state.powerCollected;
+        exitDoor.visible=!state.doorOpen;
+        refreshObjective();
+        saveStatus.textContent="Saved game loaded.";
+        if(showMessage) showToast("Save loaded!");
+        return true;
+      } catch(error) {
+        saveStatus.textContent="Could not load the save.";
+        return false;
+      }
+    }
+
+    function resetProgress() {
+      localStorage.removeItem(SAVE_KEY);
+      state.objectiveStep=0;
+      state.terminalUsed=false;
+      state.powerCollected=false;
+      state.doorOpen=false;
+      camera.position.set(0,1.7,12);
+      camera.rotation.set(0,0,0);
+      powerUnit.visible=true;
+      exitDoor.visible=true;
+      refreshObjective();
+      saveStatus.textContent="New game ready.";
+    }
+
+    function startGame(continueExisting=false) {
+      if(continueExisting) {
+        if(!loadGame(false)) {
+          showToast("No save found. Starting a new game.");
+          resetProgress();
+        }
+      } else {
+        resetProgress();
+      }
+      state.running=true;
+      screen.style.display="none";
+      if(matchMedia("(pointer:fine)").matches) renderer.domElement.requestPointerLock?.();
+    }
+
+    function pauseGame() {
+      state.running=false;
+      screen.style.display="flex";
+      document.exitPointerLock?.();
+      saveStatus.textContent=localStorage.getItem(SAVE_KEY)?"A save is available.":"No save yet.";
+    }
+
+    function bindHold(id,key) {
+      const button=$(id);
+      button.addEventListener("pointerdown",event=>{
+        event.preventDefault(); keys[key]=true;
         button.setPointerCapture?.(event.pointerId);
       });
-
-      const release = event => {
-        event.preventDefault();
-        keys[key] = false;
-      };
-
-      button.addEventListener("pointerup", release);
-      button.addEventListener("pointercancel", release);
-      button.addEventListener("lostpointercapture", () => {
-        keys[key] = false;
-      });
+      const release=event=>{event.preventDefault();keys[key]=false;};
+      button.addEventListener("pointerup",release);
+      button.addEventListener("pointercancel",release);
+      button.addEventListener("lostpointercapture",()=>keys[key]=false);
     }
 
-    bindHoldButton("up", "KeyW");
-    bindHoldButton("down", "KeyS");
-    bindHoldButton("left", "KeyA");
-    bindHoldButton("right", "KeyD");
-    bindHoldButton("run", "ShiftLeft");
+    bindHold("up","KeyW");
+    bindHold("down","KeyS");
+    bindHold("left","KeyA");
+    bindHold("right","KeyD");
+    bindHold("run","ShiftLeft");
 
-    document.getElementById("use").addEventListener("pointerdown", event => {
-      event.preventDefault();
-      interact();
-    });
+    $("use").addEventListener("pointerdown",event=>{event.preventDefault();interact();});
+    $("blue").addEventListener("pointerdown",event=>{event.preventDefault();shootHand(blueHand);});
+    $("red").addEventListener("pointerdown",event=>{event.preventDefault();shootHand(redHand);});
 
-    renderer.domElement.addEventListener("pointerdown", event => {
-      if (event.pointerType === "touch") {
-        touchLookId = event.pointerId;
-        previousTouchX = event.clientX;
-        previousTouchY = event.clientY;
+    renderer.domElement.addEventListener("pointerdown",event=>{
+      if(event.pointerType==="touch") {
+        lookTouch=event.pointerId;
+        renderer.domElement.setPointerCapture?.(event.pointerId);
+        renderer.dataset.lastX=event.clientX;
+        renderer.dataset.lastY=event.clientY;
       }
     });
 
-    renderer.domElement.addEventListener("pointermove", event => {
-      if (event.pointerType === "touch" && event.pointerId === touchLookId && state.running) {
-        const dx = event.clientX - previousTouchX;
-        const dy = event.clientY - previousTouchY;
-        previousTouchX = event.clientX;
-        previousTouchY = event.clientY;
-
-        camera.rotation.y -= dx * 0.004;
-        camera.rotation.x -= dy * 0.004;
-        camera.rotation.x = THREE.MathUtils.clamp(camera.rotation.x, -1.4, 1.4);
-      }
+    renderer.domElement.addEventListener("pointermove",event=>{
+      if(event.pointerType!=="touch" || event.pointerId!==lookTouch || !state.running) return;
+      const dx=event.clientX-Number(renderer.dataset.lastX||event.clientX);
+      const dy=event.clientY-Number(renderer.dataset.lastY||event.clientY);
+      renderer.dataset.lastX=event.clientX;
+      renderer.dataset.lastY=event.clientY;
+      camera.rotation.y-=dx*0.004;
+      camera.rotation.x=THREE.MathUtils.clamp(camera.rotation.x-dy*0.004,-1.4,1.4);
     });
 
-    renderer.domElement.addEventListener("pointerup", event => {
-      if (event.pointerId === touchLookId) touchLookId = null;
+    renderer.domElement.addEventListener("pointerup",event=>{
+      if(event.pointerId===lookTouch) lookTouch=null;
     });
 
-    document.addEventListener("mousemove", event => {
-      if (!state.running || document.pointerLockElement !== renderer.domElement) return;
-
-      camera.rotation.y -= event.movementX * 0.002;
-      camera.rotation.x -= event.movementY * 0.002;
-      camera.rotation.x = THREE.MathUtils.clamp(camera.rotation.x, -1.4, 1.4);
+    document.addEventListener("mousemove",event=>{
+      if(!state.running || document.pointerLockElement!==renderer.domElement) return;
+      camera.rotation.y-=event.movementX*0.002;
+      camera.rotation.x=THREE.MathUtils.clamp(camera.rotation.x-event.movementY*0.002,-1.4,1.4);
     });
 
-    document.addEventListener("keydown", event => {
-      keys[event.code] = true;
-
-      if (event.code === "KeyE" && !event.repeat) interact();
-
-      if (event.code === "Escape" && state.running) {
-        pauseGame();
-      }
+    document.addEventListener("keydown",event=>{
+      keys[event.code]=true;
+      if(event.code==="KeyE"&&!event.repeat) interact();
+      if(event.code==="Escape"&&state.running) pauseGame();
     });
+    document.addEventListener("keyup",event=>keys[event.code]=false);
 
-    document.addEventListener("keyup", event => {
-      keys[event.code] = false;
+    $("start").addEventListener("click",()=>startGame(false));
+    $("continueGame").addEventListener("click",()=>{
+      if(localStorage.getItem(SAVE_KEY)) startGame(true);
+      else { saveStatus.textContent="No save found. Choose New Game."; showToast("No save found."); }
     });
-
-    document.getElementById("start").addEventListener("click", () => {
-      startGame(false);
+    $("saveGame").addEventListener("click",saveGame);
+    $("loadGame").addEventListener("click",()=>{
+      if(loadGame()) startGame(true);
     });
-
-    document.getElementById("continueGame").addEventListener("click", () => {
-      if (localStorage.getItem(SAVE_KEY)) {
-        startGame(true);
-      } else {
-        saveStatus.textContent = "No saved game found. Choose New Game.";
-        showToast("No save found.");
-      }
-    });
-
-    document.getElementById("saveGame").addEventListener("click", () => {
-      saveGame();
-    });
-
-    document.getElementById("loadGame").addEventListener("click", () => {
-      if (loadGame()) {
-        startGame(true);
-      }
-    });
-
-    document.getElementById("newGame").addEventListener("click", () => {
-      resetProgress(true);
-      saveStatus.textContent = "Save reset. Choose New Game to begin.";
+    $("resetSave").addEventListener("click",()=>{
+      resetProgress();
       showToast("Save reset.");
     });
 
-    document.addEventListener("pointerlockchange", () => {
-      if (!document.pointerLockElement && state.running &&
-          matchMedia("(pointer:fine)").matches) {
-        pauseGame();
-      }
+    document.addEventListener("pointerlockchange",()=>{
+      if(!document.pointerLockElement && state.running && matchMedia("(pointer:fine)").matches) pauseGame();
     });
 
-    window.addEventListener("beforeunload", () => {
-      if (state.running) {
+    window.addEventListener("beforeunload",()=>{
+      if(state.running) {
         try {
-          localStorage.setItem(SAVE_KEY, JSON.stringify({
-            version: 1,
-            objectiveStep: state.objectiveStep,
-            terminalUsed: state.terminalUsed,
-            powerCollected: state.powerCollected,
-            player: {
-              x: camera.position.x,
-              y: camera.position.y,
-              z: camera.position.z,
-              yaw: camera.rotation.y,
-              pitch: camera.rotation.x
-            },
-            savedAt: new Date().toISOString()
+          localStorage.setItem(SAVE_KEY,JSON.stringify({
+            version:1,objectiveStep:state.objectiveStep,
+            terminalUsed:state.terminalUsed,powerCollected:state.powerCollected,
+            doorOpen:state.doorOpen,
+            player:{x:camera.position.x,y:camera.position.y,z:camera.position.z,
+              yaw:camera.rotation.y,pitch:camera.rotation.x}
           }));
-        } catch (error) {
-          // Browser storage might be disabled.
-        }
+        } catch(error) {}
       }
     });
 
-    window.addEventListener("resize", () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
+    window.addEventListener("resize",()=>{
+      camera.aspect=innerWidth/innerHeight;
       camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+      renderer.setSize(innerWidth,innerHeight);
     });
 
     function animate() {
       requestAnimationFrame(animate);
-      const delta = Math.min(clock.getDelta(), 0.05);
-
-      if (state.running) {
+      const delta=Math.min(clock.getDelta(),0.05);
+      if(state.running) {
         movePlayer(delta);
         updateTarget();
       }
-
-      renderer.render(scene, camera);
+      updateGrabPack(delta);
+      renderer.render(scene,camera);
     }
 
     buildWorld();
     refreshObjective();
-
-    if (localStorage.getItem(SAVE_KEY)) {
-      saveStatus.textContent = "A saved game was found in this browser.";
-    } else {
-      saveStatus.textContent = "No save found yet.";
-    }
-
+    saveStatus.textContent=localStorage.getItem(SAVE_KEY)
+      ?"A saved game was found in this browser."
+      :"No save found yet.";
     animate();
   </script>
 </body>
