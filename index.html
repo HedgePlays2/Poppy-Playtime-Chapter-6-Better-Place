@@ -12,6 +12,16 @@
     #game { position:fixed; inset:0; overflow:hidden }
     #game canvas { display:block; width:100%; height:100% }
     #hud { position:fixed; inset:0; pointer-events:none; z-index:2 }
+    #vignette { position:fixed; inset:0; z-index:1; pointer-events:none; background:radial-gradient(ellipse at center,transparent 42%,#02040a55 78%,#02040ad9 125%); }
+    #hud::after { content:""; position:absolute; inset:0; opacity:.12; background:repeating-linear-gradient(0deg,transparent 0 3px,#8bdcff12 4px,transparent 5px); }
+    #objective { box-shadow:0 5px 22px #0008; border:1px solid #6bdcff33; border-left:3px solid #66d9ff; backdrop-filter:blur(6px); }
+    #hint { box-shadow:0 5px 24px #0009; border:1px solid #6bdcff66; max-width:min(620px,88vw); }
+    #screen { background:radial-gradient(ellipse at 50% 42%,#172638e8,#03060bf9 72%),repeating-linear-gradient(0deg,#ffffff05 0 1px,transparent 1px 4px); }
+    #panel { border-color:#3b596b; background:linear-gradient(145deg,#101c29f7,#070b12fa); text-align:left; }
+    #panel h1,#panel h2 { text-align:center; }
+    #panel button { transition:background .15s,border-color .15s,transform .15s; }
+    #panel button:hover { transform:translateX(3px); }
+    #panel #start { text-align:center; }
     #objective { position:absolute; top:18px; left:18px; max-width:80%; padding:12px 16px; border-left:3px solid #66d9ff; background:#07101bd9; font-size:14px }
     #crosshair { position:absolute; top:50%; left:50%; width:7px; height:7px; border:1px solid white; border-radius:50%; transform:translate(-50%,-50%) }
     #hint { position:absolute; bottom:18%; left:50%; transform:translateX(-50%); padding:10px 14px; border-radius:5px; background:#05080ddd; text-align:center; font-size:13px }
@@ -47,6 +57,7 @@
 </head>
 <body>
   <div id="game"></div>
+  <div id="vignette"></div>
 
   <div id="hud">
     <div id="objective">OBJECTIVE: Explore the laboratory</div>
@@ -256,7 +267,26 @@
       exitDoor = box("Exit door",0,2.7,-56.55,3.2,5.2,0.25,mat.red,false);
       addInteractable(exitDoor,"Exit door","Press E / USE to open exit door",useExit);
 
-      // A locked security bulkhead blocks the corridor until Sawyer hacks its control panel.
+      // The Data Center's damaged neural terminal: Sawyer is still trapped in the system here.
+      box("Neural core housing",0,2.25,-12.7,3.4,3.9,0.8,mat.dark,false);
+      box("Neural core trim",0,4.25,-12.27,3.15,0.08,0.08,mat.metal,false);
+      box("Neural core trim",0,0.35,-12.27,3.15,0.08,0.08,mat.metal,false);
+      const coreScreen = new THREE.Mesh(new THREE.PlaneGeometry(2.65,1.55),new THREE.MeshBasicMaterial({color:0x07131c}));
+      coreScreen.position.set(0,2.55,-12.275);
+      scene.add(coreScreen);
+      const coreCanvas=document.createElement("canvas"); coreCanvas.width=768; coreCanvas.height=448;
+      const coreCtx=coreCanvas.getContext("2d");
+      coreCtx.fillStyle="#06131b"; coreCtx.fillRect(0,0,768,448);
+      coreCtx.strokeStyle="#35d9ff"; coreCtx.lineWidth=5; coreCtx.strokeRect(18,18,732,412);
+      coreCtx.fillStyle="#55e5ff"; coreCtx.font="bold 34px monospace"; coreCtx.fillText("PLAYTIME CO. // NEURAL SYSTEMS",42,72);
+      coreCtx.fillStyle="#e8f7ff"; coreCtx.font="bold 48px monospace"; coreCtx.fillText("HARLEY SAWYER",42,168);
+      coreCtx.fillStyle="#ff5868"; coreCtx.font="28px monospace"; coreCtx.fillText("BACKUP STATUS: INCOMPLETE",42,225);
+      coreCtx.fillStyle="#8ca8b8"; coreCtx.font="24px monospace"; coreCtx.fillText("CONSCIOUSNESS SIGNAL DETECTED",42,290);
+      coreCtx.fillStyle="#ffbf54"; coreCtx.fillText("DO NOT DISCONNECT POWER",42,355);
+      const coreTexture=new THREE.CanvasTexture(coreCanvas); coreTexture.colorSpace=THREE.SRGBColorSpace;
+      coreScreen.material.map=coreTexture; coreScreen.material.color.set(0xffffff); coreScreen.material.needsUpdate=true;
+      const coreLight=new THREE.PointLight(0x26bfff,18,10); coreLight.position.set(0,2.8,-11.8); scene.add(coreLight);
+      // A locked security bulkhead blocks the corridor until the security system is bypassed.
       const securityDoor = box("Security bulkhead",0,2.5,-17,28,5,0.35,mat.dark,true);
       securityDoor.visible = !state.securityDoorHacked;
       const securityPanel = new THREE.Mesh(
@@ -267,7 +297,7 @@
       scene.add(securityPanel);
       securityPanel.visible = !state.securityDoorHacked;
       securityPanel.userData.securityDoor = securityDoor;
-      addInteractable(securityPanel,"Security system","Press E / USE to let Sawyer hack the security door",hackSecurityDoor);
+      addInteractable(securityPanel,"Security system","Press E / USE to interface with the locked security panel",hackSecurityDoor);
 
       // Environmental storytelling: the lab should feel abandoned, used, and dangerous.
       const stripeMat = new THREE.MeshBasicMaterial({color:0xf0bd35});
@@ -483,10 +513,10 @@
     }
 
     function hackSecurityDoor() {
-      if(state.securityDoorHacked) return showToast("Sawyer: Security lock already bypassed.");
-      if(state.hackingDoor) return showToast("Sawyer: Still inside the security system...");
+      if(state.securityDoorHacked) return showToast("Security lock already bypassed.");
+      if(state.hackingDoor) return showToast("GLOWBY: The panel is still working...");
       state.hackingDoor = true;
-      showToast("SAWYER: Connecting to the security network...");
+      showToast("GLOWBY: Okay, Doctor—let's see what you can do.");
       setTimeout(() => {
         state.securityDoorHacked = true;
         state.hackingDoor = false;
@@ -495,7 +525,7 @@
         const panel = interactables.find(item => item.name === "Security system")?.mesh;
         if(panel) panel.visible = false;
         syncSecurityDoorCollision();
-        showToast("SAWYER: Lock bypassed. Door is open. Keep moving.");
+        showToast("SECURITY: Bulkhead unlocked. The way forward is clear.");
         saveGame();
       }, 1400);
     }
@@ -644,6 +674,7 @@
     screenFace.position.set(0,0.015,0.106);
     glowby.add(screenFace);
     const sawyerEye = new THREE.Group();
+    sawyerEye.visible=false;
     const eyeWhite = new THREE.Mesh(new THREE.EllipseCurve(0,0,0.072,0.042,0,Math.PI*2).getPoints(32).length ? new THREE.SphereGeometry(0.064,18,12) : new THREE.SphereGeometry(0.064,18,12),new THREE.MeshBasicMaterial({color:0x5b3b88}));
     eyeWhite.scale.set(1.05,0.72,0.16);
     eyeWhite.position.set(0,0,0.012);
@@ -842,7 +873,9 @@
       const nz=camera.position.z+movement.z;
       if(!isBlocked(nx,camera.position.z)) camera.position.x=nx;
       if(!isBlocked(camera.position.x,nz)) camera.position.z=nz;
-      camera.position.x=THREE.MathUtils.clamp(camera.position.x,-14.1,14.1);
+      const sideRoomZone=[2,-31,-49].some(roomZ=>Math.abs(camera.position.z-roomZ)<3.7);
+      const xLimit=sideRoomZone?23.35:14.1;
+      camera.position.x=THREE.MathUtils.clamp(camera.position.x,-xLimit,xLimit);
       camera.position.z=THREE.MathUtils.clamp(camera.position.z,-57,35);
     }
 
@@ -897,6 +930,7 @@
         const securityPanel=interactables.find(item=>item.name==="Security system")?.mesh;
         if(securityPanel) securityPanel.visible=!state.securityDoorHacked;
         syncSecurityDoorCollision();
+        sawyerEye.visible=true;
         camera.position.set(p.x,p.y,p.z);
         camera.rotation.y=p.yaw;
         camera.rotation.x=p.pitch;
@@ -926,6 +960,7 @@
       const securityPanel=interactables.find(item=>item.name==="Security system")?.mesh;
       if(securityPanel) securityPanel.visible=true;
       syncSecurityDoorCollision();
+      sawyerEye.visible=false;
       camera.position.set(0,1.7,12);
       camera.rotation.set(0,0,0);
       powerUnit.visible=true;
@@ -935,14 +970,18 @@
     }
 
     const introLines = [
-      {speaker:"PLAYER",text:"The dust is still settling after Chapter 5. The way forward leads deeper into the underground facility..."},
-      {speaker:"DOCTOR SAWYER",text:"Well now, this is a rather interesting turn of events. Plug me into that Star Thing. I want to see what it feels like to be mobile again."},
-      {speaker:"SYSTEM",text:"TRANSFER INITIATED. EXPERIMENT 1354 — CONSCIOUSNESS LINK ACTIVE."},
-      {speaker:"GLOWBY",text:"Whoa—there's someone in here with me! ...Sawyer? Is that you?"},
-      {speaker:"DOCTOR SAWYER",text:"Harley Sawyer. Formerly a man, currently a voice in a computer, and now... apparently a star-shaped gadget. Hm."},
-      {speaker:"GLOWBY",text:"I'm still me, though. We're sharing this little body. And I can see you looking through my eye."},
-      {speaker:"DOCTOR SAWYER",text:"I remember what happened to the children. I cannot undo it. But I can help you protect the ones still alive—and get through this place."},
-      {speaker:"SYSTEM",text:"SECURITY NETWORKS DETECTED. SAWYER MAY BE ABLE TO BYPASS LOCKED SYSTEMS."}
+      {speaker:"PLAYER",text:"The tram wreck is behind us. Giblet helped me back from the edge, but the Prototype has Poppy. We need the Backup."},
+      {speaker:"DOCTOR SAWYER",text:"Well now... this is a rather interesting turn of events. You came all this way looking for the Backup, and found me instead."},
+      {speaker:"GIBLET",text:"You're the Doctor? If you know a way to stop that thing, now would be a wonderful time to explain."},
+      {speaker:"DOCTOR SAWYER",text:"I can help. But this terminal is failing. Connect my signal to that star-shaped device on your GrabPack, and I may be able to get us out of here."},
+      {speaker:"GLOWBY",text:"Uh, excuse me?! I'm standing right here. Who are you, and why do you want to get inside my screen?"},
+      {speaker:"DOCTOR SAWYER",text:"Harley Sawyer. I used to have a body. Now I'm a consciousness trapped in this system. I won't force you, little star."},
+      {speaker:"PLAYER",text:"We don't have much time. Glowby, only if you're okay with it."},
+      {speaker:"GLOWBY",text:"...Okay. But I don't know you, Doctor. If we do this, you explain everything."},
+      {speaker:"SYSTEM",text:"SIGNAL TRANSFER INITIATED. EXPERIMENT 1354 — LINK ESTABLISHED."},
+      {speaker:"GLOWBY",text:"Whoa! I can hear you in here now. I still don't know you, but... I guess we're sharing this little body."},
+      {speaker:"DOCTOR SAWYER",text:"Fair enough. I'll earn your trust. First, let's get that security bulkhead open."},
+      {speaker:"SYSTEM",text:"NEW OBJECTIVE: BYPASS THE SECURITY BULKHEAD. FIND A ROUTE TO THE DATA CENTER BACKUP."}
     ];
     let introIndex=0, introActive=false;
 
@@ -950,12 +989,12 @@
     function moveCinematicCamera(index) {
       if(cinemaTweenId) cancelAnimationFrame(cinemaTweenId);
       const shots = [
-        {p:[0,1.7,12],t:[0,2,-10]},
-        {p:[-3.2,2.1,7],t:[0,2.4,-17]},
-        {p:[2.8,1.8,3],t:[0,2.5,-17]},
-        {p:[0,2.2,7],t:[0,2,-5]},
-        {p:[-2,1.9,10],t:[0,2.4,-17]},
-        {p:[0,1.7,12],t:[0,2,-17]}
+        {p:[0,1.7,12],t:[0,2.4,-12]},
+        {p:[-2.8,2.4,8],t:[0,2.5,-12.5]},
+        {p:[2.4,1.9,5],t:[0,2.5,-12.5]},
+        {p:[0,2.3,8],t:[0,2.6,-12.5]},
+        {p:[-1.8,1.8,10],t:[0,2.4,-12.5]},
+        {p:[1.5,2.1,8],t:[0,2.4,-12.5]}
       ];
       const shot=shots[Math.min(index,shots.length-1)];
       const from=camera.position.clone();
@@ -975,6 +1014,7 @@
 
     function showIntroLine() {
       const line=introLines[introIndex];
+      if(line.speaker==="SYSTEM" && line.text.includes("SIGNAL TRANSFER INITIATED")) sawyerEye.visible=true;
       moveCinematicCamera(introIndex);
       $("speaker").textContent=line.speaker;
       $("dialogueText").textContent=line.text;
@@ -991,7 +1031,7 @@
       state.running=true;
       screen.style.display="none";
       if(matchMedia("(pointer:fine)").matches) renderer.domElement.requestPointerLock?.();
-      showToast("Glowby and Sawyer are with you.");
+      showToast("New objective: bypass the security bulkhead.");
     }
 
     function advanceIntro() {
