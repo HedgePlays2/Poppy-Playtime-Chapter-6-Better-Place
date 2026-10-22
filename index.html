@@ -128,18 +128,19 @@
     renderer.setSize(innerWidth, innerHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = 2.0;
     game.appendChild(renderer.domElement);
 
-    scene.add(new THREE.HemisphereLight(0x9bbbdc, 0x17111a, 1.5));
-    const mainLight = new THREE.PointLight(0x9bcfff, 40, 50);
+    scene.add(new THREE.HemisphereLight(0xc9e7ff, 0x44404a, 3.2));
+    scene.add(new THREE.AmbientLight(0xffffff, 1.15));
+    const mainLight = new THREE.PointLight(0xb8dcff, 180, 75);
     mainLight.position.set(0, 4.8, 0);
     scene.add(mainLight);
 
     const mat = {
-      floor:new THREE.MeshStandardMaterial({color:0x303945,roughness:0.85}),
-      wall:new THREE.MeshStandardMaterial({color:0x65717e,roughness:0.9}),
-      dark:new THREE.MeshStandardMaterial({color:0x141c28,roughness:0.7}),
+      floor:new THREE.MeshStandardMaterial({color:0x596575,emissive:0x171e29,roughness:0.85}),
+      wall:new THREE.MeshStandardMaterial({color:0x8795a5,emissive:0x202833,roughness:0.9}),
+      dark:new THREE.MeshStandardMaterial({color:0x303b4b,emissive:0x101722,roughness:0.7}),
       metal:new THREE.MeshStandardMaterial({color:0x647b8c,metalness:0.65,roughness:0.4}),
       glass:new THREE.MeshStandardMaterial({color:0x2b7c91,emissive:0x082735,metalness:0.3,roughness:0.25}),
       yellow:new THREE.MeshStandardMaterial({color:0xe0b53f,emissive:0x302000}),
@@ -167,7 +168,7 @@
     }
 
     function lamp(x,y,z,color=0x7bcfff,intensity=15) {
-      const l = new THREE.PointLight(color,intensity,12);
+      const l = new THREE.PointLight(color,Math.max(intensity,45),16);
       l.position.set(x,y,z);
       scene.add(l);
       const bulb = new THREE.Mesh(
