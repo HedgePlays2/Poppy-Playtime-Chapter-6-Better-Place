@@ -370,8 +370,64 @@
       addInteractable(powerUnit,"Auxiliary power supply","Press E / USE to collect power supply",collectPower);
 
       box("Exit frame",0,3,-56.8,4,5.8,0.35,mat.dark,false);
-      exitDoor=box("Exit door",0,2.7,-56.55,3.2,5.2,0.25,mat.red,false);
+      exitDoor=box("Exit door",0,2.7,-56.55,3.2,5.2,0.25,mat.red,true);
       addInteractable(exitDoor,"Exit door","Press E / USE to open exit door",useExit);
+
+      // Experiment 1345: Metal Hedge is placed inside his containment room, on the floor.
+      const metalHedge=new THREE.Group();
+      metalHedge.name="Experiment 1345 - Metal Hedge";
+      metalHedge.position.set(17.7,0,-48.5);
+      scene.add(metalHedge);
+      const hedgeGreen=new THREE.MeshStandardMaterial({color:0x20b94b,metalness:0.58,roughness:0.3,emissive:0x082d12});
+      const hedgeDark=new THREE.MeshStandardMaterial({color:0x202b34,metalness:0.82,roughness:0.26});
+      const hedgeSilver=new THREE.MeshStandardMaterial({color:0xc7d3df,metalness:0.88,roughness:0.2});
+      const hedgeRed=new THREE.MeshBasicMaterial({color:0xff304b});
+      const hedgeWhite=new THREE.MeshStandardMaterial({color:0xf3f8ff,metalness:0.12,roughness:0.22});
+      function hedgePart(geometry,material,x,y,z,rx=0,ry=0,rz=0) {
+        const part=new THREE.Mesh(geometry,material);
+        part.position.set(x,y,z); part.rotation.set(rx,ry,rz);
+        metalHedge.add(part); return part;
+      }
+      hedgePart(new THREE.SphereGeometry(0.43,20,16),hedgeGreen,0,1.62,0);
+      const hedgeChest=hedgePart(new THREE.SphereGeometry(0.34,18,14),hedgeSilver,0,1.62,-0.31);
+      hedgeChest.scale.set(1,1.08,0.48);
+      hedgePart(new THREE.SphereGeometry(0.49,22,16),hedgeGreen,0,2.35,-0.08);
+      hedgePart(new THREE.SphereGeometry(0.24,16,12),hedgeGreen,0,2.17,-0.49);
+      hedgePart(new THREE.SphereGeometry(0.075,12,10),hedgeDark,0,2.21,-0.69);
+      hedgePart(new THREE.BoxGeometry(0.25,0.035,0.035),hedgeDark,0,2.04,-0.675);
+      hedgePart(new THREE.SphereGeometry(0.18,14,10),hedgeWhite,-0.19,2.43,-0.48);
+      hedgePart(new THREE.SphereGeometry(0.18,14,10),hedgeWhite,0.19,2.43,-0.48);
+      hedgePart(new THREE.SphereGeometry(0.083,12,10),hedgeRed,-0.19,2.43,-0.635);
+      hedgePart(new THREE.SphereGeometry(0.083,12,10),hedgeRed,0.19,2.43,-0.635);
+      hedgePart(new THREE.ConeGeometry(0.19,0.38,10),hedgeGreen,-0.31,2.75,-0.05,-0.22,0,-0.2);
+      hedgePart(new THREE.ConeGeometry(0.19,0.38,10),hedgeGreen,0.31,2.75,-0.05,-0.22,0,0.2);
+      // Swept-back quills are all attached to the head silhouette, not suspended props.
+      hedgePart(new THREE.ConeGeometry(0.24,0.92,10),hedgeGreen,-0.34,2.55,0.42,-0.78,0,-0.28);
+      hedgePart(new THREE.ConeGeometry(0.25,1.05,10),hedgeGreen,0,2.62,0.48,-0.88,0,0);
+      hedgePart(new THREE.ConeGeometry(0.24,0.92,10),hedgeGreen,0.34,2.55,0.42,-0.78,0,0.28);
+      hedgePart(new THREE.ConeGeometry(0.2,0.72,10),hedgeGreen,-0.47,2.3,0.28,-0.62,0,-0.52);
+      hedgePart(new THREE.ConeGeometry(0.2,0.72,10),hedgeGreen,0.47,2.3,0.28,-0.62,0,0.52);
+      hedgePart(new THREE.ConeGeometry(0.17,0.62,10),hedgeGreen,0,2.08,0.38,-0.62,0,0);
+      hedgePart(new THREE.SphereGeometry(0.2,14,10),hedgeDark,-0.53,1.86,-0.02);
+      hedgePart(new THREE.SphereGeometry(0.2,14,10),hedgeDark,0.53,1.86,-0.02);
+      hedgePart(new THREE.CylinderGeometry(0.12,0.15,0.48,12),hedgeSilver,-0.66,1.52,-0.03,0,0,-0.22);
+      hedgePart(new THREE.CylinderGeometry(0.12,0.15,0.48,12),hedgeSilver,0.66,1.52,-0.03,0,0,0.22);
+      hedgePart(new THREE.SphereGeometry(0.13,12,10),hedgeDark,-0.69,1.27,-0.05);
+      hedgePart(new THREE.SphereGeometry(0.13,12,10),hedgeDark,0.69,1.27,-0.05);
+      hedgePart(new THREE.CylinderGeometry(0.13,0.16,0.46,12),hedgeSilver,-0.31,1.0,0,0,0,-0.06);
+      hedgePart(new THREE.CylinderGeometry(0.13,0.16,0.46,12),hedgeSilver,0.31,1.0,0,0,0,0.06);
+      hedgePart(new THREE.BoxGeometry(0.52,0.22,0.7),hedgeRed,-0.34,0.48,-0.12);
+      hedgePart(new THREE.BoxGeometry(0.52,0.22,0.7),hedgeRed,0.34,0.48,-0.12);
+      hedgePart(new THREE.BoxGeometry(0.54,0.08,0.72),hedgeSilver,-0.34,0.36,-0.13);
+      hedgePart(new THREE.BoxGeometry(0.54,0.08,0.72),hedgeSilver,0.34,0.36,-0.13);
+      // Signature blaster on Metal Hedge's left arm.
+      hedgePart(new THREE.CylinderGeometry(0.23,0.29,0.68,16),hedgeDark,0.91,1.56,-0.12,0,0,Math.PI/2);
+      hedgePart(new THREE.CylinderGeometry(0.2,0.2,0.2,16),hedgeSilver,1.3,1.56,-0.12,0,0,Math.PI/2);
+      hedgePart(new THREE.TorusGeometry(0.17,0.045,8,16),hedgeRed,1.42,1.56,-0.12,0,Math.PI/2,0);
+      hedgePart(new THREE.SphereGeometry(0.12,12,10),hedgeRed,1.43,1.56,-0.12);
+      const hedgeInteract=hedgePart(new THREE.SphereGeometry(0.72,12,10),new THREE.MeshBasicMaterial({transparent:true,opacity:0.001,depthWrite:false}),0,1.65,-0.1);
+      hedgeInteract.name="Metal Hedge";
+      addInteractable(hedgeInteract,"Metal Hedge","Press E / USE to speak with Experiment 1345",()=>showToast("METAL HEDGE: Sawyer? You actually made it. Good. Let's get Poppy back."));
     }
 
     function showToast(message) {
@@ -422,6 +478,15 @@
       }
     }
 
+    function syncExitDoorCollision() {
+      const index=colliders.findIndex(c=>c.x===0 && c.z===-56.55 && Math.abs(c.hx-1.6)<0.001 && Math.abs(c.hz-0.125)<0.001);
+      if(state.doorOpen) {
+        if(index!==-1) colliders.splice(index,1);
+      } else if(index===-1) {
+        colliders.push({x:0,z:-56.55,hx:1.6,hz:0.125,bottom:0.1,top:5.3});
+      }
+    }
+
     function hackSecurityDoor() {
       if(!state.terminalUsed) return showToast("GLOWBY: The terminal should tell us how to access this panel.");
       if(state.securityDoorHacked) return showToast("Security lock already bypassed.");
@@ -447,6 +512,7 @@
       if(state.doorOpen) return showToast("The exit is already open.");
       state.doorOpen = true;
       exitDoor.visible = false;
+      syncExitDoorCollision();
       setObjective("Exit unlocked — chapter prototype complete!");
       showToast("Power restored. Exit unlocked!");
       saveGame();
@@ -842,6 +908,7 @@
         const securityPanel=interactables.find(item=>item.name==="Security system")?.mesh;
         if(securityPanel) securityPanel.visible=!state.securityDoorHacked;
         syncSecurityDoorCollision();
+        syncExitDoorCollision();
         sawyerEye.visible=true;
         camera.position.set(p.x,p.y,p.z);
         camera.rotation.y=p.yaw;
