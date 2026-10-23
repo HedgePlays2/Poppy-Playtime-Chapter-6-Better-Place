@@ -260,7 +260,12 @@
       makeSign("SERVICE VENTS","KEEP MOVING",0,4.8,-63.36,0,4.2,0.72);
       box("Vent security door frame",0,2.3,-96.3,5,4.6,0.35,mat.dark,false);
       const ventDoor=box("Vent security door",0,2.1,-96.1,4.3,4.1,0.3,mat.red,true);
-      ventDoor.visible=false;
+      // Keep the target mesh available to interaction checks, but render it transparent until slammed shut.
+      ventDoor.visible=true;
+      ventDoor.material=mat.red.clone();
+      ventDoor.material.transparent=true;
+      ventDoor.material.opacity=0;
+      ventDoor.material.depthWrite=false;
       const hiddenDoorCollider=colliders.findIndex(c=>c.name==="Vent security door");
       if(hiddenDoorCollider!==-1) colliders.splice(hiddenDoorCollider,1);
       addInteractable(ventDoor,"Vent security door","Press E / USE to slam the door shut",closeVentDoor);
@@ -578,7 +583,11 @@
       if(state.ventDoorClosed) return showToast("Door sealed. Keep moving!");
       state.ventDoorClosed=true;
       const door=scene.getObjectByName("Vent security door");
-      if(door) door.visible=true;
+      if(door) {
+        door.visible=true;
+        door.material.opacity=1;
+        door.material.depthWrite=true;
+      }
       const index=colliders.findIndex(c=>c.name==="Vent security door");
       if(index===-1) colliders.push({x:0,z:-96.1,hx:2.15,hz:0.15,bottom:0,top:4.2,name:"Vent security door"});
       if(ventMonster) { ventMonster.position.z=-96.8; ventMonster.rotation.y=0; }
