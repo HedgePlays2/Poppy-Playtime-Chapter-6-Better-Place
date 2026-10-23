@@ -141,7 +141,7 @@
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x080d15);
-    scene.fog = new THREE.Fog(0x080d15, 13, 62);
+    scene.fog = new THREE.Fog(0x080d15, 20, 78);
 
     const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 100);
     camera.rotation.order = "YXZ";
@@ -152,8 +152,10 @@
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     renderer.setSize(innerWidth, innerHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.NoToneMapping;
-    renderer.toneMappingExposure = 2.0;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.18;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     game.appendChild(renderer.domElement);
 
     scene.add(new THREE.HemisphereLight(0xc9e7ff, 0x44404a, 3.2));
@@ -163,9 +165,9 @@
     scene.add(mainLight);
 
     const mat = {
-      floor:new THREE.MeshBasicMaterial({color:0x596575}),
-      wall:new THREE.MeshBasicMaterial({color:0x8795a5}),
-      dark:new THREE.MeshBasicMaterial({color:0x303b4b}),
+      floor:new THREE.MeshStandardMaterial({color:0x343b49,roughness:0.82,metalness:0.12}),
+      wall:new THREE.MeshStandardMaterial({color:0x596575,roughness:0.72,metalness:0.18}),
+      dark:new THREE.MeshStandardMaterial({color:0x171e2a,roughness:0.68,metalness:0.35}),
       metal:new THREE.MeshStandardMaterial({color:0x647b8c,metalness:0.65,roughness:0.4}),
       glass:new THREE.MeshStandardMaterial({color:0x2b7c91,emissive:0x082735,metalness:0.3,roughness:0.25}),
       yellow:new THREE.MeshStandardMaterial({color:0xe0b53f,emissive:0x302000}),
@@ -573,7 +575,7 @@
     function createHand(color,side) {
       // Finished-looking GrabPack hand: armored wrist, palm, fingers and thumb.
       const group = new THREE.Group();
-      const gloveMat = new THREE.MeshStandardMaterial({color,roughness:0.32,metalness:0.18});
+      const gloveMat = new THREE.MeshStandardMaterial({color,roughness:0.27,metalness:0.12,emissive:color,emissiveIntensity:0.11});
       const darkMat = new THREE.MeshStandardMaterial({color:0x202b3a,roughness:0.42,metalness:0.62});
       const highlightMat = new THREE.MeshStandardMaterial({color:0xdce8f2,roughness:0.28,metalness:0.7});
       const wrist = new THREE.Mesh(new THREE.CylinderGeometry(0.105,0.13,0.2,14),darkMat);
@@ -583,11 +585,15 @@
       const wristBand = new THREE.Mesh(new THREE.TorusGeometry(0.108,0.025,8,18),gloveMat);
       wristBand.position.z=0.04;
       group.add(wristBand);
-      const palm = new THREE.Mesh(new THREE.BoxGeometry(0.31,0.24,0.13),gloveMat);
+      const palm = new THREE.Mesh(new THREE.BoxGeometry(0.34,0.27,0.15),gloveMat);
       palm.position.set(0,0,-0.045);
       group.add(palm);
-      const palmPlate = new THREE.Mesh(new THREE.BoxGeometry(0.16,0.095,0.025),highlightMat);
-      palmPlate.position.set(0,0,-0.119);
+      const palmPlate = new THREE.Mesh(new THREE.CylinderGeometry(0.052,0.052,0.018,16),highlightMat);
+      palmPlate.rotation.x=Math.PI/2;
+      palmPlate.position.set(0,0,-0.132);
+      const palmCore = new THREE.Mesh(new THREE.SphereGeometry(0.025,12,10),darkMat);
+      palmCore.position.set(0,0,-0.148);
+      group.add(palmCore);
       group.add(palmPlate);
       for(let i=0;i<4;i++) {
         const finger = new THREE.Mesh(new THREE.BoxGeometry(0.055,0.13,0.085),gloveMat);
@@ -642,27 +648,36 @@
     camera.add(packHardware);
     const packMat = new THREE.MeshStandardMaterial({color:0x202b3a,metalness:0.65,roughness:0.35});
     const cuffMat = new THREE.MeshStandardMaterial({color:0x536779,metalness:0.45,roughness:0.4});
-    const blueMat = new THREE.MeshStandardMaterial({color:0x168cff,emissive:0x063f85,metalness:0.25,roughness:0.35});
-    const redMat = new THREE.MeshStandardMaterial({color:0xe33a43,emissive:0x65080e,metalness:0.2,roughness:0.35});
+    const blueMat = new THREE.MeshStandardMaterial({color:0x168cff,emissive:0x063f85,emissiveIntensity:0.5,metalness:0.25,roughness:0.3});
+    const redMat = new THREE.MeshStandardMaterial({color:0xe33a43,emissive:0x65080e,emissiveIntensity:0.5,metalness:0.2,roughness:0.3});
 
     function addLauncher(side, colorMaterial) {
       const arm = new THREE.Group();
       arm.position.set(side*0.39,-0.48,-0.82);
       arm.rotation.z=side*0.12;
-      const forearm = new THREE.Mesh(new THREE.BoxGeometry(0.27,0.23,0.58),cuffMat);
+      const forearm = new THREE.Mesh(new THREE.BoxGeometry(0.31,0.27,0.62),cuffMat);
       forearm.position.set(0,-0.035,-0.06);
       arm.add(forearm);
       const cuff = new THREE.Mesh(new THREE.CylinderGeometry(0.17,0.19,0.22,12),packMat);
       cuff.rotation.x=Math.PI/2;
       cuff.position.set(0,0.015,-0.28);
       arm.add(cuff);
-      const launcher = new THREE.Mesh(new THREE.CylinderGeometry(0.105,0.14,0.28,12),colorMaterial);
+      const launcher = new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.17,0.32,16),colorMaterial);
       launcher.rotation.x=Math.PI/2;
       launcher.position.set(0,0.035,-0.43);
       arm.add(launcher);
-      const rim = new THREE.Mesh(new THREE.TorusGeometry(0.105,0.025,8,16),packMat);
+      const rim = new THREE.Mesh(new THREE.TorusGeometry(0.145,0.035,10,20),packMat);
       rim.position.set(0,0.035,-0.575);
       arm.add(rim);
+      const muzzle = new THREE.Mesh(new THREE.CircleGeometry(0.115,20),new THREE.MeshBasicMaterial({color:colorMaterial.color,side:THREE.DoubleSide}));
+      muzzle.position.set(0,0.035,-0.61);
+      arm.add(muzzle);
+      const sideRail = new THREE.Mesh(new THREE.BoxGeometry(0.055,0.055,0.36),colorMaterial);
+      sideRail.position.set(side*0.13,0.085,-0.25);
+      arm.add(sideRail);
+      const strap = new THREE.Mesh(new THREE.BoxGeometry(0.34,0.045,0.09),packMat);
+      strap.position.set(0,0.14,-0.05);
+      arm.add(strap);
       packHardware.add(arm);
       return arm;
     }
@@ -755,7 +770,7 @@
     const packBase = new THREE.Mesh(new THREE.BoxGeometry(0.66,0.20,0.18),packMat);
     packBase.position.set(0,-0.57,-0.72);
     packHardware.add(packBase);
-    const packLight = new THREE.PointLight(0x3fcfff,0.35,1.5);
+    const packLight = new THREE.PointLight(0x3fcfff,1.3,2.2);
     packLight.position.set(-0.43,-0.30,-0.88);
     packHardware.add(packLight);
 
