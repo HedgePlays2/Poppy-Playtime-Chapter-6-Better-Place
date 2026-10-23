@@ -239,6 +239,9 @@
       box("Escape wing ceiling",0,6.5,-82,12,0.5,48,mat.dark,false);
       box("Escape wing left wall",-6,3,-82,0.4,6,48,mat.wall);
       box("Escape wing right wall",6,3,-82,0.4,6,48,mat.wall);
+      // Close the gaps between the original corridor and the narrower service wing.
+      box("Left service-wing infill wall",-10.5,3,-82,9,6,48,mat.wall);
+      box("Right service-wing infill wall",10.5,3,-82,9,6,48,mat.wall);
       box("Vent crawl floor",0,-0.05,-82,4.6,0.2,28,mat.dark,false);
       box("Vent crawl ceiling",0,4.15,-82,4.6,0.2,28,mat.dark,false);
       box("Vent crawl left panel",-2.3,2.05,-82,0.18,4.2,28,mat.metal,false);
@@ -565,7 +568,10 @@
       const head=new THREE.Mesh(new THREE.SphereGeometry(0.62,12,10),flesh); head.position.set(0,1.65,-0.72); ventMonster.add(head);
       for(const x of [-0.24,0.24]) { const eye=new THREE.Mesh(new THREE.SphereGeometry(0.105,8,8),eyes); eye.position.set(x,1.78,-1.22); ventMonster.add(eye); }
       for(const x of [-0.55,0.55]) { const claw=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.95,0.2),dark); claw.position.set(x,0.72,-0.3); ventMonster.add(claw); }
-      ventMonster.position.set(0,0,-72.5); ventMonster.visible=false; scene.add(ventMonster);
+      // Start behind the player at the vent entrance, not in the path ahead.
+      ventMonster.position.set(0,0,-61.8);
+      ventMonster.rotation.y=Math.PI;
+      ventMonster.visible=false; scene.add(ventMonster);
     }
     function closeVentDoor() {
       if(!state.ventChaseStarted) return showToast("The vent door control has no power yet.");
@@ -575,7 +581,7 @@
       if(door) door.visible=true;
       const index=colliders.findIndex(c=>c.name==="Vent security door");
       if(index===-1) colliders.push({x:0,z:-96.1,hx:2.15,hz:0.15,bottom:0,top:4.2,name:"Vent security door"});
-      if(ventMonster) ventMonster.position.z=-96.8;
+      if(ventMonster) { ventMonster.position.z=-96.8; ventMonster.rotation.y=0; }
       setObjective("The creature is trapped. Find the maintenance room exit.");
       showToast("SLAM! The security door catches the creature just in time!");
       saveGame();
