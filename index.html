@@ -597,16 +597,16 @@
       group.add(palmPlate);
       for(let i=0;i<4;i++) {
         const finger = new THREE.Mesh(new THREE.BoxGeometry(0.055,0.13,0.085),gloveMat);
-        finger.position.set(-0.105+i*0.07,-0.165,-0.055);
-        finger.rotation.x=-0.12;
+        finger.position.set(-0.105+i*0.07,0.165,-0.055);
+        finger.rotation.x=0.12;
         group.add(finger);
         const fingertip = new THREE.Mesh(new THREE.SphereGeometry(0.029,8,8),darkMat);
-        fingertip.position.set(-0.105+i*0.07,-0.228,-0.064);
+        fingertip.position.set(-0.105+i*0.07,0.228,-0.064);
         group.add(fingertip);
       }
       const thumb = new THREE.Mesh(new THREE.BoxGeometry(0.075,0.14,0.09),gloveMat);
-      thumb.position.set(-0.19,-0.025,-0.035);
-      thumb.rotation.z=-0.55;
+      thumb.position.set(-0.19,0.025,-0.035);
+      thumb.rotation.z=0.55;
       group.add(thumb);
       scene.add(group);
       group.visible=false;
