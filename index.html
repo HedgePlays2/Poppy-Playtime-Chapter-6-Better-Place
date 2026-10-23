@@ -179,7 +179,8 @@
     const clock = new THREE.Clock();
     const state = {
       running:false, objectiveStep:0, terminalUsed:false,
-      powerCollected:false, doorOpen:false, securityDoorHacked:false, hackingDoor:false
+      powerCollected:false, doorOpen:false, securityDoorHacked:false, hackingDoor:false,
+      ventChaseStarted:false, ventDoorClosed:false
     };
     const keys = {};
     let currentTarget = null, toastTimer = null;
@@ -233,6 +234,17 @@
       // Main corridor floor and ceiling.
       box("Floor",0,-0.25,-11,30,0.5,96,mat.floor,false);
       box("Ceiling",0,6.5,-11,30,0.5,96,mat.dark,false);
+      // Escape wing beyond the first exit.
+      box("Escape wing floor",0,-0.25,-82,12,0.5,48,mat.floor,false);
+      box("Escape wing ceiling",0,6.5,-82,12,0.5,48,mat.dark,false);
+      box("Escape wing left wall",-6,3,-82,0.4,6,48,mat.wall);
+      box("Escape wing right wall",6,3,-82,0.4,6,48,mat.wall);
+      box("Vent crawl floor",0,-0.05,-82,4.6,0.2,28,mat.dark,false);
+      box("Vent crawl ceiling",0,4.15,-82,4.6,0.2,28,mat.dark,false);
+      box("Vent crawl left panel",-2.3,2.05,-82,0.18,4.2,28,mat.metal,false);
+      box("Vent crawl right panel",2.3,2.05,-82,0.18,4.2,28,mat.metal,false);
+      for(let z=-70;z>=-92;z-=5) { box("Vent ceiling rib",0,3.92,z,4.45,0.12,0.18,mat.metal,false); lamp(-1.9,z,0xff344c,5); }
+      box("Maintenance room back wall",0,3,-106,12,6,0.4,mat.wall,false);
 
       // Walls have openings centered exactly on each side-room entrance.
       const wallSegments = [[19.6,30.8],[-14.5,28.6],[-40,13.6],[-55.1,7.8]];
@@ -241,6 +253,12 @@
         box("Right corridor wall",15,3,z,0.5,6,len,mat.wall);
       }
       box("Far corridor wall",0,3,-59,30,6,0.5,mat.wall);
+      box("Vent entrance frame",0,2.35,-63.2,5.2,4.7,0.3,mat.dark,false);
+      makeSign("SERVICE VENTS","KEEP MOVING",0,4.8,-63.36,0,4.2,0.72);
+      box("Vent security door frame",0,2.3,-96.3,5,4.6,0.35,mat.dark,false);
+      const ventDoor=box("Vent security door",0,2.1,-96.1,4.3,4.1,0.3,mat.red,true);
+      ventDoor.visible=false;
+      addInteractable(ventDoor,"Vent security door","Press E / USE to slam the door shut",closeVentDoor);
       box("Entrance bulkhead frame",0,3,36,30,6,0.5,mat.dark,false);
 
       function makeSign(text, subtext, x, y, z, rotationY=0, width=3.8, height=1.1) {
@@ -533,14 +551,62 @@
       }, 1400);
     }
 
+    let ventMonster=null;
+    function buildVentMonster() {
+      if(ventMonster) return;
+      ventMonster=new THREE.Group();
+      ventMonster.name="Vent Stalker";
+      const dark=new THREE.MeshStandardMaterial({color:0x15131b,metalness:0.25,roughness:0.78});
+      const flesh=new THREE.MeshStandardMaterial({color:0x49202b,roughness:0.92});
+      const eyes=new THREE.MeshBasicMaterial({color:0xff263f});
+      const body=new THREE.Mesh(new THREE.BoxGeometry(1.25,1.25,1.8),dark); body.position.y=1.1; ventMonster.add(body);
+      const head=new THREE.Mesh(new THREE.SphereGeometry(0.62,12,10),flesh); head.position.set(0,1.65,-0.72); ventMonster.add(head);
+      for(const x of [-0.24,0.24]) { const eye=new THREE.Mesh(new THREE.SphereGeometry(0.105,8,8),eyes); eye.position.set(x,1.78,-1.22); ventMonster.add(eye); }
+      for(const x of [-0.55,0.55]) { const claw=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.95,0.2),dark); claw.position.set(x,0.72,-0.3); ventMonster.add(claw); }
+      ventMonster.position.set(0,0,-101.5); ventMonster.visible=false; scene.add(ventMonster);
+    }
+    function closeVentDoor() {
+      if(!state.ventChaseStarted) return showToast("The vent door control has no power yet.");
+      if(state.ventDoorClosed) return showToast("Door sealed. Keep moving!");
+      state.ventDoorClosed=true;
+      const door=scene.getObjectByName("Vent security door");
+      if(door) door.visible=true;
+      const index=colliders.findIndex(c=>c.name==="Vent security door");
+      if(index===-1) colliders.push({x:0,z:-96.1,hx:2.15,hz:0.15,bottom:0,top:4.2,name:"Vent security door"});
+      if(ventMonster) ventMonster.position.z=-96.8;
+      setObjective("The creature is trapped. Find the maintenance room exit.");
+      showToast("SLAM! The security door catches the creature just in time!");
+      saveGame();
+    }
+    function updateVentChase(delta) {
+      if(!state.doorOpen || state.ventDoorClosed || !ventMonster) return;
+      if(camera.position.z < -66) {
+        if(!state.ventChaseStarted) {
+          state.ventChaseStarted=true; ventMonster.visible=true;
+          setObjective("RUN! Reach the vent security door and shut it!");
+          showToast("GLOWBY: Something's crawling after us! DON'T STOP!");
+        }
+        ventMonster.position.z=Math.min(ventMonster.position.z,camera.position.z+5.2)+Math.min(0.12,delta*4.5);
+        ventMonster.position.x=THREE.MathUtils.lerp(ventMonster.position.x,camera.position.x,delta*1.4);
+        ventMonster.rotation.z=Math.sin(performance.now()*0.012)*0.045;
+        if(camera.position.z < -93.2 && camera.position.z > -97.3) setObjective("Press E / USE to slam the vent security door!");
+        if(camera.position.z < -99.5) { camera.position.z=-99.5; showToast("Seal the vent door first!"); }
+      }
+    }
+
     function useExit() {
       if(!state.powerCollected) return showToast("The exit needs auxiliary power.");
       if(state.doorOpen) return showToast("The exit is already open.");
       state.doorOpen = true;
       exitDoor.visible = false;
       syncExitDoorCollision();
-      setObjective("Exit unlocked — chapter prototype complete!");
-      showToast("Power restored. Exit unlocked!");
+      const wall=scene.getObjectByName("Far corridor wall");
+      if(wall) wall.visible=false;
+      const wi=colliders.findIndex(c=>c.name==="Far corridor wall");
+      if(wi!==-1) colliders.splice(wi,1);
+      buildVentMonster();
+      setObjective("Get through the service vents — something is moving in there.");
+      showToast("Power restored. The exit groans open... something shrieks from the vents!");
       saveGame();
     }
 
@@ -588,6 +654,8 @@
       const palm = new THREE.Mesh(new THREE.BoxGeometry(0.34,0.27,0.15),gloveMat);
       palm.position.set(0,0,-0.045);
       group.add(palm);
+      // Mirror the blue glove so its thumb faces inward like a proper left hand.
+      if(side < 0) group.scale.x = -1;
       const palmPlate = new THREE.Mesh(new THREE.CylinderGeometry(0.052,0.052,0.018,16),highlightMat);
       palmPlate.rotation.x=Math.PI/2;
       palmPlate.position.set(0,0,-0.132);
@@ -916,7 +984,7 @@
       const sideRoomZone=[2,-31,-49].some(roomZ=>Math.abs(camera.position.z-roomZ)<4.3);
       const xLimit=sideRoomZone?23.35:14.1;
       camera.position.x=THREE.MathUtils.clamp(camera.position.x,-xLimit,xLimit);
-      camera.position.z=THREE.MathUtils.clamp(camera.position.z,-57,35);
+      camera.position.z=THREE.MathUtils.clamp(camera.position.z,-103,35);
     }
 
     function saveGame() {
@@ -1222,6 +1290,7 @@
       const delta=Math.min(clock.getDelta(),0.05);
       if(state.running) {
         movePlayer(delta);
+        updateVentChase(delta);
         updateTarget();
       }
       const bob=Math.sin(performance.now()*0.0024)*0.012;
