@@ -258,6 +258,8 @@
       box("Vent security door frame",0,2.3,-96.3,5,4.6,0.35,mat.dark,false);
       const ventDoor=box("Vent security door",0,2.1,-96.1,4.3,4.1,0.3,mat.red,true);
       ventDoor.visible=false;
+      const hiddenDoorCollider=colliders.findIndex(c=>c.name==="Vent security door");
+      if(hiddenDoorCollider!==-1) colliders.splice(hiddenDoorCollider,1);
       addInteractable(ventDoor,"Vent security door","Press E / USE to slam the door shut",closeVentDoor);
       box("Entrance bulkhead frame",0,3,36,30,6,0.5,mat.dark,false);
 
@@ -563,7 +565,7 @@
       const head=new THREE.Mesh(new THREE.SphereGeometry(0.62,12,10),flesh); head.position.set(0,1.65,-0.72); ventMonster.add(head);
       for(const x of [-0.24,0.24]) { const eye=new THREE.Mesh(new THREE.SphereGeometry(0.105,8,8),eyes); eye.position.set(x,1.78,-1.22); ventMonster.add(eye); }
       for(const x of [-0.55,0.55]) { const claw=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.95,0.2),dark); claw.position.set(x,0.72,-0.3); ventMonster.add(claw); }
-      ventMonster.position.set(0,0,-101.5); ventMonster.visible=false; scene.add(ventMonster);
+      ventMonster.position.set(0,0,-72.5); ventMonster.visible=false; scene.add(ventMonster);
     }
     function closeVentDoor() {
       if(!state.ventChaseStarted) return showToast("The vent door control has no power yet.");
