@@ -53,7 +53,7 @@ function toys(c,n){const cs=[0xee3333,0x3399ff,0xffcc33,0x33cc66,0xdd55aa];for(l
 const NAMES=['GrabPack Calibration Room','Staff Break Room','Toy Repair Bay','Neural Systems','Restricted Archive','Metal Hedge Containment Bay'];
 const cz=i=>-i*16;
 box(0,-.1,-40,12.4,.2,100,M.floor,false);box(0,4.1,-40,12.4,.2,100,M.ceil,false);
-const gap=z=>{box(-3.75,2,z,4.5,4,.4,M.wall);box(3.75,2,z,4.5,4,.4,M.wall);box(0,3.5,z,3,1,.4,M.wall)};
+const gap=z=>{box(-3.75,2,z,4.5,4,.4,M.wall);box(3.75,2,z,4.5,4,.4,M.wall);box(0,3.5,z,3,1,.4,M.wall,false)};
 const doors=[],needs=['power',null,null,'key','vents'],hints={power:'The door panel has no power. Find the lever.',key:'Keycard required.',vents:'Sealed. Something is still in the vents.'};
 function openDoor(i,instant){const d=doors[i];if(d.open)return;d.open=true;d.col.on=false;d.btn.material.emissive.set(0x00ff40);if(instant)d.mesh.position.y=5.1}
 for(let i=0;i<6;i++){const c=cz(i);
