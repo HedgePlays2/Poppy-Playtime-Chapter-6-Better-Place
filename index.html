@@ -12,11 +12,11 @@
 #pause{display:none;background:#000b;cursor:pointer}#end{display:none;background:#000;z-index:9}
 h1{font-size:54px;letter-spacing:8px;color:#f33;text-shadow:0 0 22px #a00}h2{font-weight:400;color:#8cf}.s{color:#999;font-size:14px;max-width:560px}
 button{padding:12px 30px;font:18px Georgia;background:#1b1b22;color:#fff;border:1px solid #f33;cursor:pointer}button:hover{background:#a11}
-#scare{inset:0;display:none;z-index:8;background:radial-gradient(circle at 35% 42%,#fff 0 3%,transparent 3.5%),radial-gradient(circle at 65% 42%,#fff 0 3%,transparent 3.5%),radial-gradient(ellipse at 50% 72%,#000 0 14%,#d00 15% 17%,transparent 18%),#400}
+#intro{inset:0;background:#000;display:none;align-items:center;justify-content:center;text-align:center;padding:10%;font-size:26px;line-height:1.5;color:#ddd;font-style:italic;z-index:7;transition:opacity 1.5s}#obj{top:14px;left:18px;color:#cba;font-size:14px;line-height:1.5;opacity:.85;max-width:40%}#vig{inset:0;pointer-events:none;box-shadow:inset 0 0 170px #50000099}#logs{top:14px;right:18px;color:#cba;font-size:14px;opacity:.85}#scare{inset:0;display:none;z-index:8;background:radial-gradient(circle at 35% 42%,#fff 0 3%,transparent 3.5%),radial-gradient(circle at 65% 42%,#fff 0 3%,transparent 3.5%),radial-gradient(ellipse at 50% 72%,#000 0 14%,#d00 15% 17%,transparent 18%),#400}
 </style></head><body>
-<div class="o" id="cross"></div><div class="o" id="label"></div><div class="o" id="sub"></div><div class="o" id="banner"></div><div class="o" id="doc"></div><div class="o" id="scare"></div>
+<div class="o" id="cross"></div><div class="o" id="label"></div><div class="o" id="sub"></div><div class="o" id="banner"></div><div class="o" id="doc"></div><div class="o" id="scare"></div><div class="o" id="logs">Logs 0/17</div><div class="o" id="obj"></div><div class="o" id="vig"></div><div class="o" id="intro"></div>
 <div class="o" id="pause"><h2>PAUSED — click to resume</h2></div>
-<div class="o" id="end"><h1>TO BE CONTINUED…</h1><h2>Poppy Playtime: Chapter 6 — A Better Place</h2><p class="s">Fan-made by Hedge. Not affiliated with MOB Games.</p></div>
+<div class="o" id="end"><h1>TO BE CONTINUED…</h1><h2>Poppy Playtime: Chapter 6 — A Better Place</h2><p class="s" id="endlogs"></p><p class="s">Fan-made by Hedge. Not affiliated with MOB Games.</p></div>
 <div class="o" id="menu"><h1>POPPY PLAYTIME</h1><h2>Chapter 6 — A Better Place</h2><p class="s" style="color:#ccc;font-size:16px">Directly after Chapter 5, you find yourself with a Backup of Sawyer and Giblet, and the Prototype is on the loose…</p>
 <p class="s">Fan-made · not affiliated with MOB Games</p>
 <button id="new">New Game</button><button id="cont" style="display:none">Continue</button><button id="cloud">Sign in with Puter (cloud save)</button>
@@ -43,13 +43,13 @@ const snd={grab:()=>{noise(.12,.2,2000);tone(220,.12,'sawtooth',.08,-120)},door:
 const cols=[],solids=[],F={},lights=[];let blackout=false;
 const mat=(c,o={})=>new R.MeshStandardMaterial({color:c,roughness:.75,...o});
 function tex(base,n,rx,ry){const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d');g.fillStyle=base;g.fillRect(0,0,128,128);for(let i=0;i<n;i++){g.fillStyle=`rgba(0,0,0,${Math.random()*.25})`;g.fillRect(Math.random()*128,Math.random()*128,Math.random()*30,Math.random()*30)}g.strokeStyle='#0008';g.strokeRect(0,0,128,128);const t=new R.CanvasTexture(c);t.wrapS=t.wrapT=R.RepeatWrapping;t.repeat.set(rx,ry);t.colorSpace=R.SRGBColorSpace;return t}
-const M={wall:mat(0xffffff,{map:tex('#555a50',70,3,1)}),floor:mat(0xffffff,{map:tex('#3c3c40',50,6,80)}),ceil:mat(0xffffff,{map:tex('#2a2a2e',40,6,80)}),door:mat(0x6b2a2a,{metalness:.5}),metal:mat(0x666b70,{metalness:.7,roughness:.4})};
+const M={wall:mat(0xffffff,{map:tex('#555a50',70,5,1)}),floor:mat(0xffffff,{map:tex('#3c3c40',50,10,116)}),ceil:mat(0xffffff,{map:tex('#2a2a2e',40,10,116)}),door:mat(0x6b2a2a,{metalness:.5}),metal:mat(0x666b70,{metalness:.7,roughness:.4})};
 function box(x,y,z,w,h,d,m,col=true){const o=new R.Mesh(new R.BoxGeometry(w,h,d),typeof m=='number'?mat(m):m);o.position.set(x,y,z);scene.add(o);solids.push(o);if(col)o.userData.col=colr(x,z,w,d);return o}
 function colr(x,z,w,d){const c={a:x-w/2,b:x+w/2,c:z-d/2,d:z+d/2,on:true};cols.push(c);return c}
 function kill(m){scene.remove(m);const i=solids.indexOf(m);if(i>=0)solids.splice(i,1)}
 function sign(t,x,y,z,ry,w=3,col='#e33'){const c=document.createElement('canvas');c.width=512;c.height=128;const g=c.getContext('2d');g.fillStyle='#111';g.fillRect(0,0,512,128);g.strokeStyle=col;g.lineWidth=4;g.strokeRect(4,4,504,120);g.fillStyle=col;g.font='bold 38px Georgia';g.textAlign='center';g.textBaseline='middle';g.fillText(t,256,66);const m=new R.Mesh(new R.PlaneGeometry(w,w/4),new R.MeshBasicMaterial({map:new R.CanvasTexture(c),color:0xaaaaaa}));m.position.set(x,y,z);m.rotation.y=ry;scene.add(m)}
 const glow=(c,i=1)=>mat(0x111111,{emissive:c,emissiveIntensity:i});
-function toys(c,n){const cs=[0xee3333,0x3399ff,0xffcc33,0x33cc66,0xdd55aa];for(let i=0;i<n;i++){const g=new R.Group(),m=mat(cs[i%5]);g.add(new R.Mesh(new R.SphereGeometry(.14,10,8),m));const b=new R.Mesh(new R.BoxGeometry(.22,.26,.14),m);b.position.y=-.2;g.add(b);g.position.set((Math.random()-.5)*10,.15,c+(Math.random()-.5)*10);g.rotation.set(Math.random()*3,Math.random()*6,Math.random()*3);scene.add(g)}}
+function toys(c,n){const cs=[0xee3333,0x3399ff,0xffcc33,0x33cc66,0xdd55aa];for(let i=0;i<n;i++){const g=new R.Group(),m=mat(cs[i%5]);g.add(new R.Mesh(new R.SphereGeometry(.14,10,8),m));const b=new R.Mesh(new R.BoxGeometry(.22,.26,.14),m);b.position.y=-.2;g.add(b);g.position.set((Math.random()-.5)*(2*HW-3),.15,c+(Math.random()-.5)*(2*HD-3));g.rotation.set(Math.random()*3,Math.random()*6,Math.random()*3);scene.add(g)}}
 /* ---------- security cameras ---------- */
 const cams=[];
 function wallCam(x,y,z,c){const g=new R.Group(),dk=mat(0x2a2d30,{metalness:.6,roughness:.4}),ad=(geo,m,px,py,pz,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(px,py,pz);p.add(o);return o};
@@ -61,73 +61,87 @@ function wallCam(x,y,z,c){const g=new R.Group(),dk=mat(0x2a2d30,{metalness:.6,ro
 const nc=document.createElement('canvas');nc.width=nc.height=48;const nx=nc.getContext('2d'),nd=nx.createImageData(48,48),ntx=new R.CanvasTexture(nc);
 function noiseTick(){for(let i=0;i<2304;i++){const v=Math.random()*170;nd.data[i*4]=v*.3;nd.data[i*4+1]=v;nd.data[i*4+2]=v*.4;nd.data[i*4+3]=255}nx.putImageData(nd,0,0);ntx.needsUpdate=true}
 /* ---------- level ---------- */
+const HW=10,HD=10,SP=26,cz=i=>-i*SP;
 const NAMES=['GrabPack Calibration Room','Staff Break Room','Playcare Nursery','Toy Repair Bay','Generator Room','Neural Systems','Security Office','Restricted Archive','Metal Hedge Containment Bay'];
-const cz=i=>-i*16;
-box(0,-.1,-64,12.4,.2,160,M.floor,false);box(0,4.1,-64,12.4,.2,160,M.ceil,false);
-const gap=z=>{box(-3.75,2,z,4.5,4,.4,M.wall);box(3.75,2,z,4.5,4,.4,M.wall);box(0,3.5,z,3,1,.4,M.wall,false)};
+box(0,-.1,-104,2*HW+.4,.2,232,M.floor,false);box(0,4.1,-104,2*HW+.4,.2,232,M.ceil,false);
+const gap=z=>{box(-5.75,2,z,8.5,4,.4,M.wall);box(5.75,2,z,8.5,4,.4,M.wall);box(0,3.5,z,3,1,.4,M.wall,false)};
 const doors=[],needs=['power',null,null,null,'gen',null,'key','vents'],hints={gen:'No power to this door. Start the generator.',power:'The door panel has no power. Find the lever.',key:'Keycard required.',vents:'Sealed. Something is still in the vents.'};
 function openDoor(i,instant){const d=doors[i];if(d.open)return;d.open=true;d.col.on=false;d.btn.material.emissive.set(0x00ff40);if(instant)d.mesh.position.y=5.1}
+const seen=new Set(),LOGS=17;
+function got(id){if(!seen.has(id)){seen.add(id);$('logs').textContent='Logs '+seen.size+'/'+LOGS}}
+function lore(id,x,y,z,title,body,tape){const m=box(x,y,z,tape?.28:.32,.03,tape?.18:.42,tape?mat(0x111111,{emissive:0x3399ff,emissiveIntensity:.8}):0xeee5c0,false);m.userData={hand:'use',label:tape?'Play tape':'Read note',fn(){showDoc(title+'\n\n'+body,!!tape);got(id)}};return m}
+const tb=(x,z,w=2.2,d=1)=>box(x,.45,z,w,.9,d,0x6b4a2a),crate=(x,z,s=1)=>box(x,s/2,z,s,s,s,0x5a4a32),shelf=(x,z,w,d)=>box(x,1.2,z,w,2.4,d,0x3a3a40),RW=HW-.22,LW=-HW+.22;
 for(let i=0;i<9;i++){const c=cz(i);
- box(-6,2,c,.4,4,12.4,M.wall);box(6,2,c,.4,4,12.4,M.wall);
- i?gap(c+6):box(0,2,c+6,12.4,4,.4,M.wall);
- if(i<8){gap(c-6);box(-1.5,2,c-8,.3,4,4,M.wall);box(1.5,2,c-8,.3,4,4,M.wall)}else box(0,2,c-6,12.4,4,.4,M.wall);
- sign(NAMES[i].toUpperCase(),0,3.5,c-5.78,0,3,'#cde');
- [-4.6,4.6].forEach(x=>{const p=new R.Mesh(new R.CylinderGeometry(.1,.1,12,8),M.metal);p.rotation.x=Math.PI/2;p.position.set(x,3.7,c);scene.add(p)});
- const L=new R.PointLight(0xffd9a0,28,20,1.6);L.position.set(0,3.5,c);scene.add(L);lights.push({l:L,base:28,t:0});
- const fx=new R.Mesh(new R.BoxGeometry(2,.1,.4),glow(0xffe0a0));fx.position.set(0,3.95,c);scene.add(fx);
- toys(c,14);wallCam(5.35,3.5,c+5,c);wallCam(-5.35,3.5,c-5,c);
- if(i<8){const d={mesh:box(0,1.5,c-6,3,3,.3,M.door),open:false};d.col=d.mesh.userData.col;
-  d.btn=box(2.4,1.4,c-5.7,.45,.6,.15,mat(0x220000,{emissive:0xff2000,emissiveIntensity:.8}),false);
+ box(-HW,2,c,.4,4,2*HD+.4,M.wall);box(HW,2,c,.4,4,2*HD+.4,M.wall);
+ i?gap(c+HD):box(0,2,c+HD,2*HW+.4,4,.4,M.wall);
+ if(i<8){gap(c-HD);box(-1.5,2,c-HD-3,.3,4,6,M.wall);box(1.5,2,c-HD-3,.3,4,6,M.wall)}else box(0,2,c-HD,2*HW+.4,4,.4,M.wall);
+ sign(NAMES[i].toUpperCase(),0,3.5,c-HD+.22,0,3,'#cde');
+ [-8,8].forEach(x=>{const p=new R.Mesh(new R.CylinderGeometry(.1,.1,2*HD,8),M.metal);p.rotation.x=Math.PI/2;p.position.set(x,3.7,c);scene.add(p)});
+ const L=new R.PointLight(0xffd9a0,60,34,1.5);L.position.set(0,3.6,c);scene.add(L);lights.push({l:L,base:60,t:0});
+ [-4,4].forEach(z=>{const fx=new R.Mesh(new R.BoxGeometry(2,.1,.4),glow(0xffe0a0));fx.position.set(0,3.95,c+z);scene.add(fx)});
+ toys(c,24);wallCam(HW-.65,3.5,c+HD-1,c);wallCam(-(HW-.65),3.5,c-HD+1,c);
+ if(i<8){const d={mesh:box(0,1.5,c-HD,3,3,.3,M.door),open:false};d.col=d.mesh.userData.col;
+  d.btn=box(2.4,1.4,c-HD+.3,.45,.6,.15,mat(0x220000,{emissive:0xff2000,emissiveIntensity:.8}),false);
   d.btn.userData={hand:'red',label:'Open door',fn(){const n=needs[i];if(n&&!F[n]){say(hints[n]);tone(110,.3,'square',.15);return}if(!d.open){openDoor(i);snd.door()}}};doors.push(d)}}
 // Room 0 — calibration
-{const c=cz(0);sign('LEFT CLICK: BLUE HAND  ·  RIGHT CLICK: RED HAND',5.78,2.3,c,-Math.PI/2,4,'#8cf');
- box(-5.7,1.5,c+1,.2,.5,.3,0x222222,false);
- const lv=box(-5.5,1.5,c+1,.12,.7,.12,0xcc2222,false);lv.userData={hand:'blue',label:'Pull lever',fn(){if(F.power)return;F.power=true;lv.rotation.x=.9;snd.grab();tone(60,1,'sawtooth',.2);say('Power restored. Now use the red hand on the door panel.',4)}};
- box(-3,.5,c-3,1.2,1,1.2,0x5a4a32);box(3,.5,c+3,1,1,1,0x5a4a32);box(3.4,1.5,c+3.2,.8,1,.8,0x4e3e2a)}
+{const c=cz(0);sign('LEFT CLICK: BLUE HAND  ·  RIGHT CLICK: RED HAND',RW,2.3,c,-Math.PI/2,4,'#8cf');sign('EVERY TOY IS A FRIEND',LW,2.8,c-5,Math.PI/2,3,'#fd6');
+ box(-9.7,1.5,c+2,.2,.5,.3,0x222222,false);
+ const lv=box(-9.5,1.5,c+2,.12,.7,.12,0xcc2222,false);lv.userData={hand:'blue',label:'Pull lever',fn(){if(F.power)return;F.power=true;lv.rotation.x=.9;snd.grab();tone(60,1,'sawtooth',.2);say('Power restored. Now use the red hand on the door panel.',4)}};
+ crate(-6,c-4,1.2);crate(6,c+4,1.2);crate(7.4,c+4.4,.8);crate(-3,c-7,1);tb(-6,c+7);tb(5,c-5,2.4,1);
+ lore('m1',-6,.93,c+7,'ORIENTATION MEMO 01',"Welcome to Playtime Co. Your GrabPack is calibrated to your hands: blue left, red right. Please do not use the GrabPack on Playcare residents. Remember, every toy is a friend.");
+ lore('m2',6,1.23,c+4,'MAINTENANCE TAPE',"This is the only room on the floor the Prototype can't hear. I checked twice. If you're listening to this, you came here to hide too. Don't stay long. -- Doc",true)}
 // Room 1 — staff break room
-{const c=cz(1);for(let k=0;k<5;k++)box(-5.3,1.2,c-4+k*2,.8,2.4,.9,0x3b4a55);
- box(2.5,.45,c+2,2.2,.9,1,0x6b4a2a);box(-1,.45,c-2,2.2,.9,1,0x6b4a2a);box(5,1,c-3,1.2,2,.9,0x992222);
- const n=box(2.5,.93,c+2,.3,.03,.4,0xeeeeee,false);n.userData={hand:'use',label:'Read note',fn:()=>showDoc('STAFF NOTE\n\nIf you read this, don\'t trust the speakers. The Prototype learned to mimic Mr. Sawyer\'s voice. Doc kept saying Playcare could still be saved. He asked 1345 to watch the kids. -- Anon')};
- sign('HE IS LISTENING',-5.78,2.6,c+3,Math.PI/2,2.4)}
-// Room 3 — toy repair bay
-{const c=cz(3);box(-4.8,.5,c+2,1.4,1,3,0x555a60);box(2,.3,c,1.2,.6,8,0x222226);box(4.8,.5,c-3,1.4,1,2,0x555a60);
- const k=box(-4.8,1.04,c+2,.3,.03,.2,mat(0x3aa0ff,{emissive:0x1060ff}),false);k.userData={hand:'blue',label:'Grab keycard',fn(){F.key=true;kill(k);snd.grab();say('Keycard acquired: NEURAL / ARCHIVE ACCESS.',4)}};
- sign('NO MORE PLAYTIME',5.78,2.8,c+2,-Math.PI/2,2.6)}
+{const c=cz(1);for(let k=0;k<9;k++)box(-9.3,1.2,c-8+k*2,.8,2.4,.9,0x3b4a55);
+ tb(4,c+4);tb(-3,c-3);tb(7,c+7,2.2,1);box(9.2,1,c-6,1.2,2,.9,0x992222);
+ sign('DAYS SINCE LAST INCIDENT: 0',RW,2.6,c+3,-Math.PI/2,3.6,'#ddd');sign('HE IS LISTENING',LW,2.7,c+3,Math.PI/2,2.4);
+ lore('m3',4,.93,c+4,'NIGHT SHIFT ROSTER',"Hour of Joy week. Most of the names are crossed out. Someone wrote beside the last column: 'Who is still walking the halls?'");
+ lore('m4',-3,.93,c-3,'STICKY NOTE',"The speakers keep saying our names. Shelly says it's just a glitch. Shelly isn't on the roster anymore.");
+ lore('m5',7,.93,c+7,'TORN MEMO',"The Prototype learned to mimic Mr. Sawyer's voice. If a voice calls you by name over the intercom, do NOT answer it. Run.")}
 // Room 2 — nursery
-{const c=cz(2);for(let k=0;k<3;k++)box(-4.8,.45,c+3-k*2.6,1.4,.9,2,0xb8a07a);box(3,.35,c,2.2,.7,2.2,0xcc4444);
- [0x3399ff,0xffcc33,0x33cc66].forEach((col,k)=>box(2.4+k*.5,.85,c-.3+k*.3,.3,.3,.3,col,false));
- sign('THE KIDS WERE HERE',5.78,2.6,c-3,-Math.PI/2,2.8,'#d94');
- const n=box(3,.72,c+.6,.35,.03,.45,0xf1e6c8,false);n.userData={hand:'use',label:'Read drawing',fn:()=>showDoc('CRAYON DRAWING\n\nA green hedgehog with big red shoes, singing at nap time. He said he would never let the Prototype hurt us.\n\n-- signed by a very small hand')}}
+{const c=cz(2);for(let k=0;k<5;k++)box(-8.5,.45,c+8-k*3.4,1.6,.9,2.2,0xb8a07a);box(3,.35,c,3,.7,3,0xcc4444);
+ [0x3399ff,0xffcc33,0x33cc66].forEach((col,k)=>box(2.2+k*.6,.85,c-.5+k*.4,.3,.3,.3,col,false));
+ sign('WELCOME TO PLAYCARE',RW,2.6,c+4,-Math.PI/2,3.4,'#fd6');
+ lore('m6',3,.72,c+1,'CRAYON DRAWING',"A green hedgehog with big red shoes, singing at nap time. He said he would never let the Prototype hurt us. -- signed by a very small hand");
+ lore('m7',-8.5,.93,c+8,'CARETAKER LOG',"1345 sings the nap song at two o'clock. The kids call him Hedge. He never raises his voice. The Prototype's orders say he should. He refuses, every time.",true)}
+// Room 3 — toy repair bay
+{const c=cz(3);box(-8,.5,c+3,2,1,6,0x555a60);box(8,.5,c-3,2,1,6,0x555a60);box(0,.3,c,1.4,.6,16,0x222226);crate(-4,c-6,1.2);crate(4,c+6,1);
+ const k=box(-8,1.04,c+3,.3,.03,.2,mat(0x3aa0ff,{emissive:0x1060ff}),false);k.userData={hand:'blue',label:'Grab keycard',fn(){F.key=true;kill(k);snd.grab();say('Keycard acquired: ARCHIVE ACCESS.',4)}};
+ sign('NO MORE PLAYTIME',RW,3,c+6,-Math.PI/2,2.6);
+ lore('m8',8,1.03,c-3,'REPAIR TICKET 1345',"Chassis assembled from salvaged frames. Mr. Sawyer personally overrode the obedience chip. Reason given: 'The children need someone who can say no.'");
+ lore('m9',8,1.03,c-5,'POSTED NOTICE',"Do NOT repair any of the Prototype's old frames. They are not toys anymore. -- Management")}
 // Room 4 — generator
-{const c=cz(4);box(3.6,1.2,c,2,2.4,3.4,0x454b52);const pn=box(2.55,1.5,c+.4,.05,.6,1.2,glow(0xff8a20,.9),false);
- box(-5,1.2,c+2,1.4,2.4,1.4,0x3b4a55);box(-5,1.2,c-2.5,1.4,2.4,1.4,0x3b4a55);sign('GENERATOR 3 — AUTHORIZED ONLY',-5.78,3.1,c,Math.PI/2,3,'#fa3');
- box(2.5,1,c-1.2,.1,.3,.2,0x222222,false);const lv=box(2.42,1.05,c-1.2,.08,.5,.1,0xcc2222,false);
- lv.userData={hand:'blue',label:'Start generator',fn(){if(F.gen)return;F.gen=true;lv.rotation.z=1;pn.material.emissive.set(0x22ff55);snd.grab();tone(50,1.6,'sawtooth',.3);say('Generator 3 is running. The Neural Systems door has power.',4)}}}
+{const c=cz(4);box(6.5,1.2,c,3,2.4,5,0x454b52);const pn=box(4.95,1.5,c+.8,.05,.6,1.6,glow(0xff8a20,.9),false);
+ box(-8,1.2,c+5,2,2.4,2,0x3b4a55);box(-8,1.2,c-4,2,2.4,2,0x3b4a55);sign('GENERATOR 3 — AUTHORIZED ONLY',LW,3.1,c,Math.PI/2,3.4,'#fa3');tb(-4,c-6,1.6,1);
+ box(4.9,1,c-1.8,.1,.3,.2,0x222222,false);const lv=box(4.82,1.05,c-1.8,.08,.5,.1,0xcc2222,false);
+ lv.userData={hand:'blue',label:'Start generator',fn(){if(F.gen)return;F.gen=true;lv.rotation.z=1;pn.material.emissive.set(0x22ff55);snd.grab();tone(50,1.6,'sawtooth',.3);say('Generator 3 is running. The Neural Systems door has power.',4)}};
+ lore('m10',-4,.93,c-6,'MAINTENANCE LOG',"Generator 3 powers the Neural wing AND the Containment locks. If it fails, the doors fail OPEN. If the Prototype ever gets the keys, we have a very big problem.")}
 // Room 6 — security office
-{const c=cz(6);for(let r=0;r<2;r++)for(let k=0;k<4;k++){box(-5.74,1.4+r*.95,c+3-k*2,.06,.78,1.18,0x111111,false);box(-5.7,1.4+r*.95,c+3-k*2,.04,.7,1.1,mat(0x111111,{emissive:0xffffff,emissiveMap:ntx,emissiveIntensity:.55}),false)}
- box(3.2,.5,c,1.2,1,3.4,0x333a40);sign('ALL CAMERAS ONLINE',5.78,2.7,c+3.5,-Math.PI/2,3,'#4f8');
- const cn=box(2.58,1.03,c,.04,.06,.9,glow(0x22ff88,.7),false);cn.userData={hand:'use',label:'Check camera log',fn:()=>showDoc('SECURITY LOG\n\nEvery camera in the factory still works, and they keep turning toward whoever moves. Camera 14 shows something crawling in the Archive vents. If you take File 7, it will hear you.')}}
+{const c=cz(6);for(let r=0;r<2;r++)for(let k=0;k<6;k++){box(-9.74,1.4+r*.95,c+5-k*2,.06,.78,1.18,0x111111,false);box(-9.7,1.4+r*.95,c+5-k*2,.04,.7,1.1,mat(0x111111,{emissive:0xffffff,emissiveMap:ntx,emissiveIntensity:.55}),false)}
+ box(7.2,.5,c,1.2,1,5,0x333a40);tb(0,c+6);sign('ALL CAMERAS ONLINE',RW,2.7,c+5,-Math.PI/2,3,'#4f8');
+ const cn=box(6.58,1.03,c,.04,.06,.9,glow(0x22ff88,.7),false);cn.userData={hand:'use',label:'Check camera log',fn:()=>{showDoc("SECURITY LOG\n\nEvery camera in the factory still works, and they keep turning toward whoever moves. Camera 14 shows something crawling in the Archive vents. If you take File 7, it will hear you.");got('cam')}};
+ lore('m13',0,.93,c+6,'INCIDENT REPORT 0612',"Hour of Joy night: 1345 sealed the Playcare corridor and held it alone for nine hours. Then the Prototype took him to Containment. Cameras 14 and 15 were wiped by an unknown hand.")}
 // Room 5 — neural systems
-const c3=cz(5);
-{const c=c3;[[-3.2,3],[-3.2,-3],[3.2,3]].forEach(([x,z])=>{box(x,2,c+z,.6,4,.6,0x333338);box(x+(x<0?.32:-.32),2,c+z,.04,3.4,.1,glow(0x33aaff),false)});
- box(3.5,.7,c-1,1,1.4,.8,0x2a2a30);
- const s=box(3.08,1.1,c-1,.04,.5,.7,glow(0x22ff88,.8),false);s.userData={hand:'use',label:'Access terminal',fn:()=>showDoc('LOG 1345-A\n\nExperiment 1345 "Metal Hedge" was reassigned to Playcare duty after the Hour of Joy. Sawyer insisted he be spared reprocessing. 1345 resisted every Prototype override.\n\nARCHIVE keycard door is south. File 7 explains everything. -- H. Sawyer',true)}}
-
-// Room 4 — archive / vents
-const c4=cz(7),vz=[-4,0,4],V={on:false,mz:0,closed:[0,0,0],pass:[0,0,0],done:false,gt:0};
-const vl=new R.PointLight(0xff2010,0,10);vl.position.set(-5.2,1.3,c4);scene.add(vl);
-const covers=vz.map((z,k)=>{box(-5.78,1.2,c4+z,.05,1.2,1.2,0x000000,false);const cv=box(-5.68,2.5,c4+z,.08,1.2,1.2,M.metal,false);cv.userData={hand:'',label:'Close vent hatch',fn(){V.closed[k]=1;cv.userData.hand='';snd.clang()}};return cv});
-{const c=c4;[3.5,0,-3.5].forEach(z=>box(4.6,1.2,c+z,1.2,2.4,2.2,0x3a3a40));box(0,.45,c-1,2.2,.9,1,0x6b4a2a);
- sign('NO ONE LEAVES',5.78,2.8,c+3.5,-Math.PI/2,2.4);
- var file=box(0,.93,c-1,.5,.04,.35,mat(0xe8dfb0),false);file.userData={hand:'any',label:'Take file',fn(){kill(file);snd.grab();showDoc('FILE 7 — EXPERIMENT 1345\n\nMetal Hedge never lost his memories. The Prototype wants the Containment Bay sealed forever.',true);if(!V.done)setTimeout(startVents,3500)}}}
-// Room 5 — containment
+{const c=cz(5);[[-6,6],[-6,-6],[6,6],[6,-6]].forEach(([x,z])=>{box(x,2,c+z,.6,4,.6,0x333338);box(x+(x<0?.32:-.32),2,c+z,.04,3.4,.1,glow(0x33aaff),false)});
+ box(8.6,.7,c-1,1,1.4,.8,0x2a2a30);tb(-6,c);
+ const s=box(8.18,1.1,c-1,.04,.5,.7,glow(0x22ff88,.8),false);s.userData={hand:'use',label:'Access terminal',fn:()=>{showDoc("LOG 1345-A\n\nExperiment 1345 'Metal Hedge' was reassigned to Playcare after the Hour of Joy. Sawyer insisted he be spared reprocessing. 1345 resisted every Prototype override.\n\nThe Archive keycard door is south. File 7 explains everything. -- H. Sawyer",true);got('term')}};
+ lore('m12',-6,.93,c,'SAWYER TAPE',"If you can hear this, I am only a copy. The doctor in the star is not the man who did these things, but I remember every one. Protect 1345. The Prototype took Poppy because it needs her; find her before it finishes whatever it started. He is the only thing the Prototype has ever feared.",true)}
+// Room 7 — archive / vents
+const c4=cz(7),vz=[-6,0,6],V={on:false,mz:0,closed:[0,0,0],pass:[0,0,0],done:false,gt:0};
+const vl=new R.PointLight(0xff2010,0,12);vl.position.set(-9.2,1.3,c4);scene.add(vl);
+const covers=vz.map((z,k)=>{box(-9.78,1.2,c4+z,.05,1.2,1.2,0x000000,false);const cv=box(-9.68,2.5,c4+z,.08,1.2,1.2,M.metal,false);cv.userData={hand:'',label:'Close vent hatch',fn(){V.closed[k]=1;cv.userData.hand='';snd.clang()}};return cv});
+{const c=c4;[6,2,-2,-6].forEach(z=>shelf(7.5,c+z,1.4,2.6));box(0,.45,c-1,2.2,.9,1,0x6b4a2a);tb(4,c+7,1.6,1);
+ sign('NO ONE LEAVES',RW,2.9,c+8,-Math.PI/2,2.4);
+ lore('m15',4,.93,c+7,'BIGGER BODIES FILE',"Sub-file: Experiment frames were cannibalized for the 1345 project. Authorized by H. Sawyer. Note in the margin: 'He asked for a heart. I gave him a blaster. Forgive me.'");
+ var file=box(0,.93,c-1,.5,.04,.35,mat(0xe8dfb0),false);file.userData={hand:'any',label:'Take file',fn(){kill(file);snd.grab();got('file');showDoc('FILE 7 — EXPERIMENT 1345\n\nMetal Hedge never lost his memories. The Prototype wants the Containment Bay sealed forever.',true);if(!V.done)setTimeout(startVents,3500)}}}
+// Room 8 — containment
 const c5=cz(8),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
 {const c=c5;const cb=new R.Mesh(new R.CylinderGeometry(1.2,1.3,.3,20),M.metal);cb.position.set(0,.15,c-1);scene.add(cb);
  glass=new R.Mesh(new R.CylinderGeometry(1.05,1.05,3.4,20,1,true),new R.MeshStandardMaterial({color:0x66ffcc,transparent:true,opacity:.2,side:R.DoubleSide}));glass.position.set(0,1.9,c-1);scene.add(glass);
  const lc=new R.PointLight(0x44ffaa,10,8);lc.position.set(0,3,c-1);scene.add(lc);
- box(3,.6,c+1.5,1,1.2,.8,0x333338);
- const b=box(2.5,1.25,c+1.5,.4,.12,.4,glow(0xff2020,1.2),false);b.userData={hand:'red',label:'Release Experiment 1345',fn(){if(released)return;released=1;b.userData.hand='';glass.visible=false;capCol.on=false;snd.clang();noise(1,.5,3000);freeHedge()}};
- sign('EXPERIMENT 1345',0,2.6,c+5.78,Math.PI,3,'#4f8');box(-5,.5,c+2,1.4,1,2,0x555a60)}
+ box(6,.6,c+1.5,1,1.2,.8,0x333338);tb(-6,c+4);
+ const b=box(6,1.27,c+1.5,.4,.12,.4,glow(0xff2020,1.2),false);b.userData={hand:'red',label:'Release Experiment 1345',fn(){if(released)return;released=1;b.userData.hand='';glass.visible=false;capCol.on=false;snd.clang();noise(1,.5,3000);freeHedge()}};
+ sign('EXPERIMENT 1345',0,2.6,c+HD-.22,Math.PI,3,'#4f8');sign('I SEE YOU',LW,2.8,c,Math.PI/2,2.6,'#e22');
+ lore('m17',-6,.93,c+4,'CONTAINMENT ORDER',"Signed 'H. Sawyer', but the handwriting is wrong. Seal duration: INDEFINITE. Release authorization: NONE. Whoever signed this wanted him forgotten.")}
 /* ---------- Metal Hedge ---------- */
 function makeMH(){const g=new R.Group(),mk=(c,m=.5,r=.4,e=0)=>new R.MeshStandardMaterial({color:c,metalness:m,roughness:r,emissive:e}),
  G=mk(0x1fe534),S=mk(0xcfd3d8,.9,.3),Y=mk(0xf2e000,.3,.5),dY=mk(0x66600a),K=mk(0x050505,.2,.6),Rd=mk(0xdd1111,.2,.45),W=mk(0xffffff,0,.5),Gy=mk(0x777777,.6,.4),Pe=mk(0xeaffa0,0,.5),EG=mk(0xb8ffb8,0,.4,0x55ff66),
@@ -155,7 +169,7 @@ function makeMH(){const g=new R.Group(),mk=(c,m=.5,r=.4,e=0)=>new R.MeshStandard
  g.scale.setScalar(.85);g.userData={arms,legs,hd};return g}
 MH=makeMH();MH.position.set(0,.3,c5-1);scene.add(MH);
 let mhFree=false,endT=0;
-function freeHedge(){mhFree=true;endT=24;seq([[.5,'Metal Hedge: Systems online… Sawyer? You actually did it.'],[5,'Metal Hedge: I\'m Experiment 1345. Friends call me Hedge. The Prototype sealed me away to bury Playcare\'s secrets.',5],[11,'Giblet: Can he really help us?'],[15,'Metal Hedge: My blaster\'s charged. Stay close, kid — we\'re going somewhere better.',5]])}
+function freeHedge(){mhFree=true;endT=24;seq([[.5,'Metal Hedge: Systems online… Sawyer? You actually did it.'],[5,'Metal Hedge: I\'m Experiment 1345. Friends call me Hedge. The Prototype sealed me away to bury Playcare\'s secrets.',5],[11,'Giblet: Can he really help us?'],[15,'Metal Hedge: My blaster\'s charged. We\'re getting Poppy back, kid. Together, to a better place.',5]])}
 /* ---------- GrabPack ---------- */
 function makeHand(kind,sx){const bl=kind=='blue',g=new R.Group(),O=new R.Group(),sk=mat(bl?0x4f73c4:0x8a2a35,{roughness:.55}),dk=mat(0x2a2024,{metalness:.7,roughness:.4}),gd=mat(0xc9a64a,{metalness:.8,roughness:.35}),tb=mat(0x2f6f9a,{metalness:.5,roughness:.45}),tl=mat(0x111111,{emissive:0x66ffe0,emissiveIntensity:1.6}),
  add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o},seg=(p,r,l,z)=>{const o=add(new R.CapsuleGeometry(r,l,4,8),sk,0,0,z+l/2+r,p);o.rotation.x=Math.PI/2;return z+l+r*1.6};
@@ -199,30 +213,30 @@ function updHand(H,dt){if(H.p>0){if(H.dir==1){H.p=Math.min(1,H.p+dt/.18);if(H.p>
 /* ---------- UI / state ---------- */
 let sayT;function say(t,s=4){if(/^Sawyer/.test(t))glowT=s;const e=$('sub');e.textContent=t;e.style.opacity=1;clearTimeout(sayT);sayT=setTimeout(()=>e.style.opacity=0,s*1000)}
 const seq=a=>a.forEach(([d,t,s])=>setTimeout(()=>say(t,s||4),d*1000));
-let docT;function showDoc(t,speak){const e=$('doc');e.textContent=t;e.style.display='block';clearTimeout(docT);docT=setTimeout(()=>e.style.display='none',9000);
+let docT;function showDoc(t,speak){const e=$('doc');e.textContent=t;e.style.display='block';clearTimeout(docT);docT=setTimeout(()=>e.style.display='none',13000);
  try{if(speak&&window.puter&&puter.auth.isSignedIn())puter.ai.txt2speech(t.replace(/\n+/g,' ')).then(a=>a.play()).catch(()=>{})}catch{}}
 const save=n=>{try{localStorage.ch6=n}catch{}try{window.puter&&puter.auth.isSignedIn()&&puter.kv.set('ch6_ckpt',String(n))}catch{}};
-function startVents(){if(V.on||V.done)return;V.on=true;V.mz=c4-14;V.closed=[0,0,0];V.pass=[0,0,0];V.gt=0;covers.forEach(c=>c.userData.hand='any');blackout=true;vl.intensity=6;say('Something is crawling in the vents… close the hatches!',5)}
+function startVents(){if(V.on||V.done)return;V.on=true;V.mz=c4-18;V.closed=[0,0,0];V.pass=[0,0,0];V.gt=0;covers.forEach(c=>c.userData.hand='any');blackout=true;vl.intensity=6;say('Something is crawling in the vents… run to the left wall and close the hatches!',5)}
 function scare(){V.on=false;vl.intensity=0;const e=$('scare');e.style.display='block';snd.scare();
  setTimeout(()=>{e.style.display='none';P.set(0,1.65,c4+4);yaw=pitch=0;covers.forEach(c=>c.userData.hand='');V.closed=[0,0,0];blackout=false;say('It will find you again… be quick.',4);setTimeout(startVents,5000)},2200)}
-function restore(k){for(let i=0;i<k;i++)openDoor(i,true);if(k>=1)F.power=true;if(k>=5)F.gen=true;if(k>=7)F.key=true;if(k>=8){F.vents=V.done=true;covers.forEach(c=>c.position.y=1.2);kill(file)}P.set(0,1.65,cz(k)+3);yaw=pitch=0}
+function restore(k){for(let i=0;i<k;i++)openDoor(i,true);if(k>=1)F.power=true;if(k>=5)F.gen=true;if(k>=7)F.key=true;if(k>=8){F.vents=V.done=true;covers.forEach(c=>c.position.y=1.2);kill(file)}P.set(0,1.65,cz(k)+HD-3);yaw=pitch=0}
 /* ---------- player ---------- */
-const keys={},P=cam.position;let locked=false,started=false,ended=false,yaw=0,pitch=0,ri=-1,moving=false,stepT=0,shake=0,aim=null,aimD=9,aimPt=V3(),creak=8;
+const keys={},P=cam.position;let intro=false,locked=false,started=false,ended=false,yaw=0,pitch=0,ri=-1,moving=false,stepT=0,shake=0,aim=null,aimD=9,aimPt=V3(),creak=8;
 const ray=new R.Raycaster();ray.far=7.5;
-addEventListener('keydown',e=>{keys[e.code]=1;if(!locked)return;if(e.code=='KeyE'&&aim&&aim.hand=='use'&&aimD<4)aim.fn();if(e.code=='KeyF')fl.visible=!fl.visible});
+addEventListener('keydown',e=>{keys[e.code]=1;if(e.code=='Enter'&&intro)endIntro();if(!locked)return;if(e.code=='KeyE'&&aim&&aim.hand=='use'&&aimD<4)aim.fn();if(e.code=='KeyF')fl.visible=!fl.visible});
 addEventListener('keyup',e=>keys[e.code]=0);
 addEventListener('mousemove',e=>{if(!locked)return;yaw-=e.movementX*.0022;pitch=Math.max(-1.4,Math.min(1.4,pitch-e.movementY*.0022))});
 addEventListener('contextmenu',e=>e.preventDefault());
 addEventListener('mousedown',e=>{if(!locked||(e.button!=0&&e.button!=2))return;const hd=e.button==0?'blue':'red',H=hands[hd];if(H.p>0)return;
  if(aim&&aim.hand&&aim.hand!='use'&&(aim.hand==hd||aim.hand=='any')){H.fn=aim.fn;H.tgt.copy(aimPt)}else{if(aim&&(aim.hand=='red'||aim.hand=='blue'))say('That needs the '+aim.hand+' hand ('+(aim.hand=='red'?'right':'left')+'-click).',2);H.fn=null;H.tgt.copy(cam.localToWorld(V3(0,0,-2.5)))}
  H.p=.001;H.dir=1;snd.grab()});
-function move(dt){const sp=(keys.ShiftLeft?4.2:2.6)*dt;let f=(keys.KeyW?1:0)-(keys.KeyS?1:0),s=(keys.KeyD?1:0)-(keys.KeyA?1:0);const l=Math.hypot(f,s)||1;f/=l;s/=l;
+function move(dt){const sp=(keys.ShiftLeft?3.9:2.4)*dt;let f=(keys.KeyW?1:0)-(keys.KeyS?1:0),s=(keys.KeyD?1:0)-(keys.KeyA?1:0);const l=Math.hypot(f,s)||1;f/=l;s/=l;
  const dx=(-Math.sin(yaw)*f+Math.cos(yaw)*s)*sp,dz=(-Math.cos(yaw)*f-Math.sin(yaw)*s)*sp;P.x+=dx;P.z+=dz;moving=!!(dx||dz);
  for(let k=0;k<3;k++)for(const c of cols){if(!c.on)continue;const qx=Math.max(c.a,Math.min(P.x,c.b)),qz=Math.max(c.c,Math.min(P.z,c.d)),ax=P.x-qx,az=P.z-qz,d2=ax*ax+az*az;if(d2<.16){if(d2>1e-8){const d=Math.sqrt(d2),q=(.4-d)/d;P.x+=ax*q;P.z+=az*q}else P.x+=(P.x<(c.a+c.b)/2?-.4:.4)}}
- P.z=Math.min(P.z,cz(0)+5.6)}
+ P.z=Math.min(P.z,cz(0)+HD-.4)}
 const clock=new R.Clock(),fwdV=V3();
 function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime;
- if(locked&&!ended){move(dt);stepT-=dt;if(moving&&stepT<=0){noise(.08,.12,500);stepT=keys.ShiftLeft?.3:.46}creak-=dt;if(creak<=0){tone(100+Math.random()*100,.9,'triangle',.07,-40);creak=8+Math.random()*12}}
+ if(locked&&!ended&&!intro){move(dt);stepT-=dt;if(moving&&stepT<=0){noise(.08,.12,500);stepT=keys.ShiftLeft?.3:.46}creak-=dt;if(creak<=0){tone(100+Math.random()*100,.9,'triangle',.07,-40);creak=8+Math.random()*12}}
  const bob=moving?Math.sin(t*9)*.03:0;shake=Math.max(0,shake-dt);P.y=1.65+bob;
  cam.rotation.set(pitch,yaw+(shake?(Math.random()-.5)*.04:0),0);cam.updateMatrixWorld();
  // aim
@@ -231,14 +245,14 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.
  const lb=$('label');if(aim&&(aim.hand!='use'||aimD<4)){lb.textContent=(aim.hand=='use'?'[E] ':aim.hand=='any'?'Click: ':aim.hand=='red'?'Right-click (red): ':'Left-click (blue): ')+aim.label}else lb.textContent='';
  updHand(hands.blue,dt);updHand(hands.red,dt);
  // cameras
- cams.forEach(o=>{const dx=P.x-o.g.position.x,dz=P.z-o.g.position.z,near=dx*dx+dz*dz<110;if(near){const a=Math.atan2(dx,dz);let d=Math.atan2(Math.sin(a-o.base),Math.cos(a-o.base));d=Math.max(-1.3,Math.min(1.3,d));o.g.rotation.y+=(o.base+d-o.g.rotation.y)*Math.min(1,dt*2)}o.led.material.emissiveIntensity=near?(Math.sin(t*6)>0?2:.2):.8});
+ cams.forEach(o=>{const dx=P.x-o.g.position.x,dz=P.z-o.g.position.z,near=dx*dx+dz*dz<260;if(near){const a=Math.atan2(dx,dz);let d=Math.atan2(Math.sin(a-o.base),Math.cos(a-o.base));d=Math.max(-1.3,Math.min(1.3,d));o.g.rotation.y+=(o.base+d-o.g.rotation.y)*Math.min(1,dt*2)}o.led.material.emissiveIntensity=near?(Math.sin(t*6)>0?2:.2):.8});
  if(ri==6&&(Math.floor(t*12)%2==0))noiseTick();
  // doors, lights
  doors.forEach(d=>{if(d.open&&d.mesh.position.y<5.1){d.mesh.position.y+=dt*2.2;d.btn.material.emissiveIntensity=1}});
  lights.forEach(o=>{if(o.t<=0&&Math.random()<.002)o.t=.3;o.t-=dt;o.l.intensity=blackout?o.base*.08:o.base*(o.t>0?(Math.random()<.5?.1:1):1)});
  covers.forEach((c,k)=>{c.position.y+=((V.closed[k]?1.2:2.5)-c.position.y)*Math.min(1,dt*8)});
  // vent monster
- if(V.on){V.mz+=dt*1.05;vl.position.set(-5.2,1.3,V.mz);vl.intensity=5+Math.sin(t*20)*2;V.gt-=dt;if(V.gt<=0){snd.growl();V.gt=2.2}
+ if(V.on){V.mz+=dt*1.05;vl.position.set(-9.2,1.3,V.mz);vl.intensity=5+Math.sin(t*20)*2;V.gt-=dt;if(V.gt<=0){snd.growl();V.gt=2.2}
   vz.forEach((z,k)=>{if(V.on&&!V.pass[k]&&V.mz>=c4+z){V.pass[k]=1;if(V.closed[k]){shake=.4;snd.clang();say('BANG — it slammed into the hatch!',2)}else scare()}});
   if(V.on&&V.pass.every(Boolean)){V.on=false;V.done=true;F.vents=true;blackout=false;vl.intensity=0;say('…It\'s gone. The Containment Bay door is unsealed.',5)}}
  // glowby + hedge
@@ -246,25 +260,29 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.
  if(mhFree){const u=MH.userData,tx=P.x+Math.cos(yaw)*1.5+Math.sin(yaw)*.3,tz=P.z-Math.sin(yaw)*1.5+Math.cos(yaw)*.3,dx=tx-MH.position.x,dz=tz-MH.position.z,d=Math.hypot(dx,dz);MH.position.y=0;
   let w=0;if(d>.5){const s=Math.min(d,2.6*dt);MH.position.x+=dx/d*s;MH.position.z+=dz/d*s;w=1}
   MH.rotation.y=Math.atan2(P.x-MH.position.x,P.z-MH.position.z);const sw=w?Math.sin(t*8)*.7:0;u.legs[0].rotation.x=sw;u.legs[1].rotation.x=-sw;u.arms[0].rotation.x=-sw*.6;u.arms[1].rotation.x=sw*.3;
-  if(endT>0){endT-=dt;if(endT<=0&&!ended){ended=true;document.exitPointerLock();$('end').style.display='flex'}}}
+  if(endT>0){endT-=dt;if(endT<=0&&!ended){ended=true;document.exitPointerLock();$('endlogs').textContent='Lore logs found: '+seen.size+'/'+LOGS;$('end').style.display='flex'}}}
  else{MH.userData.hd.rotation.y=Math.sin(t*.7)*.2;MH.position.y=.3+Math.sin(t*1.5)*.02}
  // room tracking
- const r=Math.max(0,Math.min(8,Math.round(-P.z/16)));if(r!=ri&&started){ri=r;const b=$('banner');b.textContent=NAMES[r];b.style.opacity=1;setTimeout(()=>b.style.opacity=0,3200);save(r);
-  if(r==0)seq([[1,'Giblet: Chapter Five\'s behind us, and the Prototype is loose. Stay close.',4],[5.5,'Sawyer\'s Backup: Use the lever on the left wall to power the door.',5]]);
+ const r=Math.max(0,Math.min(8,Math.round(-P.z/SP)));if(r!=ri&&started){ri=r;const b=$('banner');b.textContent=NAMES[r];b.style.opacity=1;setTimeout(()=>b.style.opacity=0,3200);save(r);$('obj').innerHTML='<b>Save Poppy · Destroy the Prototype</b><br>'+OBJ[r];
+  if(r==0){const o=intro?(500+INTRO.length*3800)/1000+1.5:1;seq([[o,'Giblet: You\'re hurt, but you\'re alive. The Prototype has Poppy. We keep moving.',5],[o+5.5,'Sawyer\'s Backup: Use the lever on the left wall to power the door.',5]])}
   if(r==1)say('Giblet: Something\'s been through here. Stay sharp.',4);
   if(r==2)say('Giblet: Cribs… this is where they kept the Playcare kids.',4);
   if(r==3)say('Giblet: Look for any kind of keycard. The Archive door won\'t open without one.',5);
   if(r==4)say("Sawyer's Backup: Generator 3 feeds the Neural wing. Start it.",4);
   if(r==6)say('Giblet: The cameras… they\'re all turning toward us.',4);
-  if(r==5)seq([[.5,"Sawyer's Backup: These systems were mine once. I can feel the Prototype listening in the wires.",5],[6,'Giblet: Then keep your voice down.',3],[10,"Sawyer's Backup: Read my log on the terminal. File 7 in the Archive explains Experiment 1345.",6]])}
+  if(r==5)seq([[.5,"Sawyer's Backup: Well now, this is a rather interesting turn of events. These were my halls once.",5],[6,"Sawyer's Backup: I can feel the Prototype listening in the wires.",4],[11,'Giblet: Then keep your voice down.',3],[15,"Sawyer's Backup: Read my log on the terminal. File 7 in the Archive explains Experiment 1345.",6]])}
  ren.render(scene,cam)}
 /* ---------- menu ---------- */
-function begin(k){ainit();restore(k);started=true;ri=-1;ren.domElement.requestPointerLock()}
+const INTRO=["Chapter Five ended in the dark.","The Prototype wounded you, sank you in Poppy Gel, and took Poppy with him.","Giblet's cane pulled you back. In the Data Center you found the Doctor: \"Well now, this is a rather interesting turn of events.\"","Now his Backup glows on your GrabPack, and the Prototype is on the loose.","Save Poppy. Destroy the Prototype.  (Press Enter to skip)"],introTm=[];
+function endIntro(){if(!intro)return;intro=false;introTm.forEach(clearTimeout);const e=$('intro');e.style.opacity=0;setTimeout(()=>e.style.display='none',1600)}
+function startIntro(){intro=true;const e=$('intro');e.style.display='flex';e.style.opacity=1;e.textContent='';INTRO.forEach((t,i)=>introTm.push(setTimeout(()=>{e.textContent=t},500+i*3800)));introTm.push(setTimeout(endIntro,500+INTRO.length*3800))}
+const OBJ=['Power the door panel (lever on the left wall)','Search the Staff Break Room','Find out what happened to the Playcare kids','Find a keycard in the Toy Repair Bay','Start Generator 3','Reach the Security Office','Open the Restricted Archive with the keycard','Find File 7, then survive the vents','Free Experiment 1345'];
+function begin(k){ainit();restore(k);started=true;ri=-1;if(k==0)startIntro();ren.domElement.requestPointerLock()}
 $('new').onclick=()=>begin(0);$('cont').onclick=()=>begin(+$('cont').dataset.k);
 function showCont(k){if(k>0){$('cont').style.display='';$('cont').dataset.k=k;$('cont').textContent='Continue — '+NAMES[k]}}
 try{showCont(+localStorage.ch6||0)}catch{}
 $('cloud').onclick=async()=>{try{await puter.auth.signIn();const v=await puter.kv.get('ch6_ckpt');if(+v>0)showCont(+v);$('cloud').textContent='Cloud save active ✓'}catch{$('cloud').textContent='Puter unavailable — local save only'}};
 document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockElement==ren.domElement;if(locked){$('menu').style.display='none';$('pause').style.display='none'}else if(started&&!ended)$('pause').style.display='flex'});
 $('pause').onclick=()=>ren.domElement.requestPointerLock();
-P.set(0,1.65,cz(0)+3);loop();
+P.set(0,1.65,cz(0)+HD-3);loop();
 </script></body></html>
