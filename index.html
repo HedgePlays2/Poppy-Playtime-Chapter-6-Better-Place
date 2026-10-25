@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Poppy Playtime: Chapter 6 — A Better Place (Fan-Made)</title>
+<style>
+*{margin:0;box-sizing:border-box}body{background:#000;overflow:hidden;font-family:Georgia,serif;color:#eee}canvas{display:block}
+.o{position:fixed}#cross{left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;background:#fffa}
+#label{left:50%;top:55%;transform:translateX(-50%);font-size:15px;color:#8cf;text-shadow:0 0 6px #000}
+#sub{bottom:9%;left:50%;transform:translateX(-50%);max-width:72%;text-align:center;font-size:21px;text-shadow:0 2px 6px #000;opacity:0;transition:opacity .4s}
+#banner{top:16%;width:100%;text-align:center;font-size:34px;letter-spacing:6px;color:#e33;text-shadow:0 0 18px #800;opacity:0;transition:opacity 1.2s}
+#doc{left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,86%);background:#0b0b0ee8;border:1px solid #6a2;padding:22px;font:16px/1.5 monospace;color:#7f9;display:none;z-index:3}
+#menu,#pause,#end{inset:0;background:radial-gradient(#2a1020,#000);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;z-index:5}
+#pause{display:none;background:#000b;cursor:pointer}#end{display:none;background:#000;z-index:9}
+h1{font-size:54px;letter-spacing:8px;color:#f33;text-shadow:0 0 22px #a00}h2{font-weight:400;color:#8cf}.s{color:#999;font-size:14px;max-width:560px}
+button{padding:12px 30px;font:18px Georgia;background:#1b1b22;color:#fff;border:1px solid #f33;cursor:pointer}button:hover{background:#a11}
+#scare{inset:0;display:none;z-index:8;background:radial-gradient(circle at 35% 42%,#fff 0 3%,transparent 3.5%),radial-gradient(circle at 65% 42%,#fff 0 3%,transparent 3.5%),radial-gradient(ellipse at 50% 72%,#000 0 14%,#d00 15% 17%,transparent 18%),#400}
+</style></head><body>
+<div class="o" id="cross"></div><div class="o" id="label"></div><div class="o" id="sub"></div><div class="o" id="banner"></div><div class="o" id="doc"></div><div class="o" id="scare"></div>
+<div class="o" id="pause"><h2>PAUSED — click to resume</h2></div>
+<div class="o" id="end"><h1>TO BE CONTINUED…</h1><h2>Poppy Playtime: Chapter 6 — A Better Place</h2><p class="s">Fan-made by Hedge. Not affiliated with MOB Games.</p></div>
+<div class="o" id="menu"><h1>POPPY PLAYTIME</h1><h2>Chapter 6 — A Better Place</h2><p class="s">Fan-made · not affiliated with MOB Games</p>
+<button id="new">New Game</button><button id="cont" style="display:none">Continue</button><button id="cloud">Sign in with Puter (cloud save)</button>
+<p class="s">WASD move · Shift run · Mouse look · <b style="color:#59f">Left-click = blue hand</b> · <b style="color:#f54">Right-click = red hand</b> · E use/read · F flashlight</p></div>
+<script src="https://js.puter.com/v2/"></script>
+<script type="module">
+import * as R from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+const $=id=>document.getElementById(id),V3=(x=0,y=0,z=0)=>new R.Vector3(x,y,z);
+/* ---------- renderer ---------- */
+const scene=new R.Scene();scene.background=new R.Color(0x050407);scene.fog=new R.FogExp2(0x050407,.07);
+const cam=new R.PerspectiveCamera(70,innerWidth/innerHeight,.05,80);cam.rotation.order='YXZ';scene.add(cam);
+const ren=new R.WebGLRenderer({antialias:true});ren.setSize(innerWidth,innerHeight);ren.setPixelRatio(Math.min(devicePixelRatio,2));document.body.prepend(ren.domElement);
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight)});
+scene.add(new R.AmbientLight(0x3a3a50,.7));
+const fl=new R.SpotLight(0xfff0d0,45,28,.5,.6,1.3);fl.position.set(.2,-.1,0);fl.target.position.set(0,0,-5);cam.add(fl,fl.target);
+/* ---------- audio ---------- */
+let AC,mg;
+function ainit(){if(AC)return;AC=new(window.AudioContext||webkitAudioContext)();mg=AC.createGain();mg.gain.value=.5;mg.connect(AC.destination);
+[55,82.4,58].forEach((f,i)=>{const o=AC.createOscillator(),g=AC.createGain(),b=AC.createBiquadFilter();o.type=i==2?'sawtooth':'sine';o.frequency.value=f;b.type='lowpass';b.frequency.value=200;g.gain.value=.05;o.connect(b).connect(g).connect(mg);o.start()})}
+function tone(f,d,t='square',v=.2,sl=0){if(!AC)return;const n=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type=t;o.frequency.setValueAtTime(f,n);if(sl)o.frequency.exponentialRampToValueAtTime(Math.max(20,f+sl),n+d);g.gain.setValueAtTime(v,n);g.gain.exponentialRampToValueAtTime(.001,n+d);o.connect(g).connect(mg);o.start();o.stop(n+d)}
+function noise(d,v=.3,f=800){if(!AC)return;const n=AC.sampleRate*d|0,b=AC.createBuffer(1,n,AC.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=Math.random()*2-1;const s=AC.createBufferSource(),g=AC.createGain(),q=AC.createBiquadFilter();s.buffer=b;q.type='lowpass';q.frequency.value=f;g.gain.setValueAtTime(v,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+d);s.connect(q).connect(g).connect(mg);s.start()}
+const snd={grab:()=>{noise(.12,.2,2000);tone(220,.12,'sawtooth',.08,-120)},door:()=>{noise(1.2,.3,300);tone(80,1.2,'sawtooth',.1)},growl:()=>{tone(70,1,'sawtooth',.22,-30);noise(.8,.25,400)},clang:()=>{tone(180,.4,'square',.2,-60);noise(.3,.4,3000)},scare:()=>{noise(1.2,.9,5000);tone(900,1,'sawtooth',.5,-700)}};
+/* ---------- helpers ---------- */
+const cols=[],solids=[],F={},lights=[];let blackout=false;
+const mat=(c,o={})=>new R.MeshStandardMaterial({color:c,roughness:.75,...o});
+function tex(base,n,rx,ry){const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d');g.fillStyle=base;g.fillRect(0,0,128,128);for(let i=0;i<n;i++){g.fillStyle=`rgba(0,0,0,${Math.random()*.25})`;g.fillRect(Math.random()*128,Math.random()*128,Math.random()*30,Math.random()*30)}g.strokeStyle='#0008';g.strokeRect(0,0,128,128);const t=new R.CanvasTexture(c);t.wrapS=t.wrapT=R.RepeatWrapping;t.repeat.set(rx,ry);t.colorSpace=R.SRGBColorSpace;return t}
+const M={wall:mat(0xffffff,{map:tex('#555a50',70,3,1)}),floor:mat(0xffffff,{map:tex('#3c3c40',50,6,50)}),ceil:mat(0xffffff,{map:tex('#2a2a2e',40,6,50)}),door:mat(0x6b2a2a,{metalness:.5}),metal:mat(0x666b70,{metalness:.7,roughness:.4})};
+function box(x,y,z,w,h,d,m,col=true){const o=new R.Mesh(new R.BoxGeometry(w,h,d),typeof m=='number'?mat(m):m);o.position.set(x,y,z);scene.add(o);solids.push(o);if(col)o.userData.col=colr(x,z,w,d);return o}
+function colr(x,z,w,d){const c={a:x-w/2,b:x+w/2,c:z-d/2,d:z+d/2,on:true};cols.push(c);return c}
+function kill(m){scene.remove(m);const i=solids.indexOf(m);if(i>=0)solids.splice(i,1)}
+function sign(t,x,y,z,ry,w=3,col='#e33'){const c=document.createElement('canvas');c.width=512;c.height=128;const g=c.getContext('2d');g.fillStyle='#111';g.fillRect(0,0,512,128);g.strokeStyle=col;g.lineWidth=4;g.strokeRect(4,4,504,120);g.fillStyle=col;g.font='bold 38px Georgia';g.textAlign='center';g.textBaseline='middle';g.fillText(t,256,66);const m=new R.Mesh(new R.PlaneGeometry(w,w/4),new R.MeshBasicMaterial({map:new R.CanvasTexture(c),color:0xaaaaaa}));m.position.set(x,y,z);m.rotation.y=ry;scene.add(m)}
+const glow=(c,i=1)=>mat(0x111111,{emissive:c,emissiveIntensity:i});
+function toys(c,n){const cs=[0xee3333,0x3399ff,0xffcc33,0x33cc66,0xdd55aa];for(let i=0;i<n;i++){const g=new R.Group(),m=mat(cs[i%5]);g.add(new R.Mesh(new R.SphereGeometry(.14,10,8),m));const b=new R.Mesh(new R.BoxGeometry(.22,.26,.14),m);b.position.y=-.2;g.add(b);g.position.set((Math.random()-.5)*10,.15,c+(Math.random()-.5)*10);g.rotation.set(Math.random()*3,Math.random()*6,Math.random()*3);scene.add(g)}}
+/* ---------- level ---------- */
+const NAMES=['GrabPack Calibration Room','Staff Break Room','Toy Repair Bay','Neural Systems','Restricted Archive','Metal Hedge Containment Bay'];
+const cz=i=>-i*16;
+box(0,-.1,-40,12.4,.2,100,M.floor,false);box(0,4.1,-40,12.4,.2,100,M.ceil,false);
+const gap=z=>{box(-3.75,2,z,4.5,4,.4,M.wall);box(3.75,2,z,4.5,4,.4,M.wall);box(0,3.5,z,3,1,.4,M.wall)};
+const doors=[],needs=['power',null,null,'key','vents'],hints={power:'The door panel has no power. Find the lever.',key:'Keycard required.',vents:'Sealed. Something is still in the vents.'};
+function openDoor(i,instant){const d=doors[i];if(d.open)return;d.open=true;d.col.on=false;d.btn.material.emissive.set(0x00ff40);if(instant)d.mesh.position.y=5.1}
+for(let i=0;i<6;i++){const c=cz(i);
+ box(-6,2,c,.4,4,12.4,M.wall);box(6,2,c,.4,4,12.4,M.wall);
+ i?gap(c+6):box(0,2,c+6,12.4,4,.4,M.wall);
+ if(i<5){gap(c-6);box(-1.5,2,c-8,.3,4,4,M.wall);box(1.5,2,c-8,.3,4,4,M.wall)}else box(0,2,c-6,12.4,4,.4,M.wall);
+ sign(NAMES[i].toUpperCase(),0,3.5,c-5.78,0,3,'#cde');
+ [-4.6,4.6].forEach(x=>{const p=new R.Mesh(new R.CylinderGeometry(.1,.1,12,8),M.metal);p.rotation.x=Math.PI/2;p.position.set(x,3.7,c);scene.add(p)});
+ const L=new R.PointLight(0xffd9a0,28,20,1.6);L.position.set(0,3.5,c);scene.add(L);lights.push({l:L,base:28,t:0});
+ const fx=new R.Mesh(new R.BoxGeometry(2,.1,.4),glow(0xffe0a0));fx.position.set(0,3.95,c);scene.add(fx);
+ toys(c,14);
+ if(i<5){const d={mesh:box(0,1.5,c-6,3,3,.3,M.door),open:false};d.col=d.mesh.userData.col;
+  d.btn=box(2.4,1.4,c-5.7,.45,.6,.15,mat(0x220000,{emissive:0xff2000,emissiveIntensity:.8}),false);
+  d.btn.userData={hand:'red',label:'Open door',fn(){const n=needs[i];if(n&&!F[n]){say(hints[n]);tone(110,.3,'square',.15);return}if(!d.open){openDoor(i);snd.door()}}};doors.push(d)}}
+// Room 0 — calibration
+{const c=cz(0);sign('LEFT CLICK: BLUE HAND  ·  RIGHT CLICK: RED HAND',5.78,2.3,c,-Math.PI/2,4,'#8cf');
+ box(-5.7,1.5,c+1,.2,.5,.3,0x222222,false);
+ const lv=box(-5.5,1.5,c+1,.12,.7,.12,0xcc2222,false);lv.userData={hand:'blue',label:'Pull lever',fn(){if(F.power)return;F.power=true;lv.rotation.x=.9;snd.grab();tone(60,1,'sawtooth',.2);say('Power restored. Now use the red hand on the door panel.',4)}};
+ box(-3,.5,c-3,1.2,1,1.2,0x5a4a32);box(3,.5,c+3,1,1,1,0x5a4a32);box(3.4,1.5,c+3.2,.8,1,.8,0x4e3e2a)}
+// Room 1 — staff break room
+{const c=cz(1);for(let k=0;k<5;k++)box(-5.3,1.2,c-4+k*2,.8,2.4,.9,0x3b4a55);
+ box(2.5,.45,c+2,2.2,.9,1,0x6b4a2a);box(-1,.45,c-2,2.2,.9,1,0x6b4a2a);box(5,1,c-3,1.2,2,.9,0x992222);
+ const n=box(2.5,.93,c+2,.3,.03,.4,0xeeeeee,false);n.userData={hand:'use',label:'Read note',fn:()=>showDoc('STAFF NOTE\n\nIf you read this, don\'t trust the speakers. The Prototype learned to mimic Mr. Sawyer\'s voice. Doc kept saying Playcare could still be saved. He asked 1345 to watch the kids. -- Anon')};
+ sign('HE IS LISTENING',-5.78,2.6,c+3,Math.PI/2,2.4)}
+// Room 2 — toy repair bay
+{const c=cz(2);box(-4.8,.5,c+2,1.4,1,3,0x555a60);box(2,.3,c,1.2,.6,8,0x222226);box(4.8,.5,c-3,1.4,1,2,0x555a60);
+ const k=box(-4.8,1.04,c+2,.3,.03,.2,mat(0x3aa0ff,{emissive:0x1060ff}),false);k.userData={hand:'blue',label:'Grab keycard',fn(){F.key=true;kill(k);snd.grab();say('Keycard acquired: NEURAL / ARCHIVE ACCESS.',4)}};
+ sign('NO MORE PLAYTIME',5.78,2.8,c+2,-Math.PI/2,2.6)}
+// Room 3 — neural systems
+const c3=cz(3);
+{const c=c3;[[-3.2,3],[-3.2,-3],[3.2,3]].forEach(([x,z])=>{box(x,2,c+z,.6,4,.6,0x333338);box(x+(x<0?.32:-.32),2,c+z,.04,3.4,.1,glow(0x33aaff),false)});
+ box(3.5,.7,c-1,1,1.4,.8,0x2a2a30);
+ const s=box(3.08,1.1,c-1,.04,.5,.7,glow(0x22ff88,.8),false);s.userData={hand:'use',label:'Access terminal',fn:()=>showDoc('LOG 1345-A\n\nExperiment 1345 "Metal Hedge" was reassigned to Playcare duty after the Hour of Joy. Sawyer insisted he be spared reprocessing. 1345 resisted every Prototype override.\n\nARCHIVE keycard door is south. File 7 explains everything. -- H. Sawyer',true)}}
+const gb=new R.Group();{gb.add(new R.Mesh(new R.SphereGeometry(.3,16,12),glow(0xffe08a,1.2)));[-.1,.1].forEach(x=>{const e=new R.Mesh(new R.SphereGeometry(.05,8,6),mat(0x000000));e.position.set(x,.05,.27);gb.add(e)});const gl=new R.PointLight(0xffd070,6,9);gb.add(gl);gb.position.set(2,1.6,c3+3);gb.rotation.y=Math.PI;scene.add(gb)}
+// Room 4 — archive / vents
+const c4=cz(4),vz=[-4,0,4],V={on:false,mz:0,closed:[0,0,0],pass:[0,0,0],done:false,gt:0};
+const vl=new R.PointLight(0xff2010,0,10);vl.position.set(-5.2,1.3,c4);scene.add(vl);
+const covers=vz.map((z,k)=>{box(-5.78,1.2,c4+z,.05,1.2,1.2,0x000000,false);const cv=box(-5.68,2.5,c4+z,.08,1.2,1.2,M.metal,false);cv.userData={hand:'',label:'Close vent hatch',fn(){V.closed[k]=1;cv.userData.hand='';snd.clang()}};return cv});
+{const c=c4;[3.5,0,-3.5].forEach(z=>box(4.6,1.2,c+z,1.2,2.4,2.2,0x3a3a40));box(0,.45,c-1,2.2,.9,1,0x6b4a2a);
+ sign('NO ONE LEAVES',5.78,2.8,c+3.5,-Math.PI/2,2.4);
+ var file=box(0,.93,c-1,.5,.04,.35,mat(0xe8dfb0),false);file.userData={hand:'any',label:'Take file',fn(){kill(file);snd.grab();showDoc('FILE 7 — EXPERIMENT 1345\n\nMetal Hedge never lost his memories. The Prototype wants the Containment Bay sealed forever.',true);if(!V.done)setTimeout(startVents,3500)}}}
+// Room 5 — containment
+const c5=cz(5),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
+{const c=c5;const cb=new R.Mesh(new R.CylinderGeometry(1.2,1.3,.3,20),M.metal);cb.position.set(0,.15,c-1);scene.add(cb);
+ glass=new R.Mesh(new R.CylinderGeometry(1.05,1.05,3.4,20,1,true),new R.MeshStandardMaterial({color:0x66ffcc,transparent:true,opacity:.2,side:R.DoubleSide}));glass.position.set(0,1.9,c-1);scene.add(glass);
+ const lc=new R.PointLight(0x44ffaa,10,8);lc.position.set(0,3,c-1);scene.add(lc);
+ box(3,.6,c+1.5,1,1.2,.8,0x333338);
+ const b=box(2.5,1.25,c+1.5,.4,.12,.4,glow(0xff2020,1.2),false);b.userData={hand:'red',label:'Release Experiment 1345',fn(){if(released)return;released=1;b.userData.hand='';glass.visible=false;capCol.on=false;snd.clang();noise(1,.5,3000);freeHedge()}};
+ sign('EXPERIMENT 1345',0,2.6,c+5.78,Math.PI,3,'#4f8');box(-5,.5,c+2,1.4,1,2,0x555a60)}
+/* ---------- Metal Hedge ---------- */
+function makeMH(){const g=new R.Group(),mk=(c,m=.8,r=.35,e=0)=>new R.MeshStandardMaterial({color:c,metalness:m,roughness:r,emissive:e});
+ const G=mk(0x2fbf3a),S=mk(0xc3c9d0,.9,.25),Rd=mk(0xcc1111,.1,.5),E=mk(0xff2020,0,.4,0xff0000),K=mk(0x111111,0,.8),W=mk(0xeeeeee,0,.6);
+ const add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o},Sp=r=>new R.SphereGeometry(r,14,10),Cy=(a,b,h)=>new R.CylinderGeometry(a,b,h,10);
+ add(Sp(.36),G,0,1.05,0).scale.set(1,1.2,.85);add(Sp(.24),S,0,1.08,.2).scale.set(1,1.2,.45);add(Sp(.12),S,0,.7,0);
+ const hd=new R.Group();hd.position.y=1.78;g.add(hd);add(Sp(.4),G,0,0,0,hd);add(Sp(.17),S,0,-.12,.33,hd).scale.set(1.1,.75,1);add(Sp(.05),K,0,-.04,.5,hd);
+ [-1,1].forEach(s=>{add(Sp(.1),E,s*.15,.1,.33,hd).scale.z=.6;add(Cy(0,.12,.4),G,s*.27,.4,-.02,hd).rotation.z=-s*.25});
+ for(let r=0;r<3;r++)for(let x=-1;x<=1;x++){const t=.9-r*.35;add(Cy(0,.14,.8),G,x*.22,.22-r*.2+Math.sin(t)*.4,-.3-Math.cos(t)*.4,hd).rotation.x=t-Math.PI/2}
+ const arms=[],legs=[];
+ [-1,1].forEach(s=>{const a=new R.Group();a.position.set(s*.46,1.4,0);g.add(a);add(Cy(.08,.08,.4),G,0,-.2,0,a);add(Sp(.09),S,0,-.42,0,a);add(Cy(.07,.07,.35),S,0,-.62,0,a);add(Sp(.1),W,0,-.85,0,a);
+  if(s>0)add(Cy(.07,.07,.45),S,0,-.85,.25,a).rotation.x=Math.PI/2;arms.push(a);
+  const l=new R.Group();l.position.set(s*.2,.78,0);g.add(l);add(Cy(.1,.1,.4),G,0,-.2,0,l);add(Sp(.1),S,0,-.42,0,l);add(Cy(.08,.08,.3),G,0,-.55,0,l);add(new R.BoxGeometry(.24,.14,.42),Rd,0,-.7,.08,l);add(new R.BoxGeometry(.26,.04,.1),W,0,-.64,.02,l);legs.push(l)});
+ g.userData={arms,legs,hd};return g}
+MH=makeMH();MH.position.set(0,.3,c5-1);scene.add(MH);
+let mhFree=false,endT=0;
+function freeHedge(){mhFree=true;endT=24;seq([[.5,'Metal Hedge: Systems online… Sawyer? You actually did it.'],[5,'Metal Hedge: I\'m Experiment 1345. Friends call me Hedge. The Prototype sealed me away to bury Playcare\'s secrets.',5],[11,'Giblet: Can he really help us?'],[15,'Metal Hedge: My blaster\'s charged. Stay close, kid — we\'re going somewhere better.',5]])}
+/* ---------- GrabPack ---------- */
+function makeHand(col,sx){const g=new R.Group(),m=mat(col,{roughness:.4,metalness:.3}),k=mat(0xcfd3d8,{metalness:.8,roughness:.3}),a=(w,h,d,x,y,z,mm=m)=>{const o=new R.Mesh(new R.BoxGeometry(w,h,d),mm);o.position.set(x,y,z);g.add(o);return o};
+ a(.12,.045,.13,0,0,0);a(.09,.02,.09,0,.03,0,k);const cf=new R.Mesh(new R.CylinderGeometry(.065,.07,.1,12),k);cf.rotation.x=Math.PI/2;cf.position.z=-.12;g.add(cf);
+ for(let i=0;i<4;i++){a(.026,.026,.09,-.045+i*.03,0,.11);a(.024,.024,.07,-.045+i*.03,-.012,.18)}
+ a(.03,.03,.1,-sx*.085,0,.04).rotation.y=-sx*.7;g.scale.setScalar(1.25);cam.add(g);
+ const cb=new R.Mesh(new R.BufferGeometry(),mat(0x151515));cam.add(cb);return{g,cb,sx,p:0,dir:1,hold:0,fn:null,tgt:V3()}}
+const hands={blue:makeHand(0x1e5cff,-1),red:makeHand(0xe0201a,1)};
+const ease=p=>Math.sin(p*Math.PI/2);
+function updHand(H,dt){if(H.p>0){if(H.dir==1){H.p=Math.min(1,H.p+dt/.18);if(H.p>=1){H.dir=0;H.hold=.12;if(H.fn)H.fn()}}else if(H.dir==0){H.hold-=dt;if(H.hold<=0)H.dir=-1}else{H.p-=dt/.22;if(H.p<=0){H.p=0;H.dir=1}}}
+ const e=ease(Math.max(0,Math.min(1,H.p))),rest=V3(H.sx*.34,-.32,-.6),T=cam.worldToLocal(H.tgt.clone());
+ H.g.position.copy(rest).lerp(T,e);H.g.lookAt(e>.01?H.tgt:cam.localToWorld(V3(H.sx*.05,-.05,-5)));
+ const w=V3(0,0,-.17).applyQuaternion(H.g.quaternion).add(H.g.position),a=V3(H.sx*.2,-.55,.1),mid=a.clone().lerp(w,.5);mid.y-=.14*(1-e*.5);
+ H.cb.geometry.dispose();H.cb.geometry=new R.TubeGeometry(new R.CatmullRomCurve3([a,mid,w]),10,.012,5)}
+/* ---------- UI / state ---------- */
+let sayT;function say(t,s=4){const e=$('sub');e.textContent=t;e.style.opacity=1;clearTimeout(sayT);sayT=setTimeout(()=>e.style.opacity=0,s*1000)}
+const seq=a=>a.forEach(([d,t,s])=>setTimeout(()=>say(t,s||4),d*1000));
+let docT;function showDoc(t,speak){const e=$('doc');e.textContent=t;e.style.display='block';clearTimeout(docT);docT=setTimeout(()=>e.style.display='none',9000);
+ try{if(speak&&window.puter&&puter.auth.isSignedIn())puter.ai.txt2speech(t.replace(/\n+/g,' ')).then(a=>a.play()).catch(()=>{})}catch{}}
+const save=n=>{try{localStorage.ch6=n}catch{}try{window.puter&&puter.auth.isSignedIn()&&puter.kv.set('ch6_ckpt',String(n))}catch{}};
+function startVents(){if(V.on||V.done)return;V.on=true;V.mz=c4-14;V.closed=[0,0,0];V.pass=[0,0,0];V.gt=0;covers.forEach(c=>c.userData.hand='any');blackout=true;vl.intensity=6;say('Something is crawling in the vents… close the hatches!',5)}
+function scare(){V.on=false;vl.intensity=0;const e=$('scare');e.style.display='block';snd.scare();
+ setTimeout(()=>{e.style.display='none';P.set(0,1.65,c4+4);yaw=pitch=0;covers.forEach(c=>c.userData.hand='');V.closed=[0,0,0];blackout=false;say('It will find you again… be quick.',4);setTimeout(startVents,5000)},2200)}
+function restore(k){for(let i=0;i<k;i++)openDoor(i,true);if(k>=1)F.power=true;if(k>=3&&F.key!==true){F.key=true}if(k>=5){F.vents=V.done=true;covers.forEach(c=>c.position.y=1.2);kill(file)}P.set(0,1.65,cz(k)+3);yaw=pitch=0}
+/* ---------- player ---------- */
+const keys={},P=cam.position;let locked=false,started=false,ended=false,yaw=0,pitch=0,ri=-1,moving=false,stepT=0,shake=0,aim=null,aimD=9,aimPt=V3(),creak=8;
+const ray=new R.Raycaster();ray.far=7.5;
+addEventListener('keydown',e=>{keys[e.code]=1;if(!locked)return;if(e.code=='KeyE'&&aim&&aim.hand=='use'&&aimD<4)aim.fn();if(e.code=='KeyF')fl.visible=!fl.visible});
+addEventListener('keyup',e=>keys[e.code]=0);
+addEventListener('mousemove',e=>{if(!locked)return;yaw-=e.movementX*.0022;pitch=Math.max(-1.4,Math.min(1.4,pitch-e.movementY*.0022))});
+addEventListener('contextmenu',e=>e.preventDefault());
+addEventListener('mousedown',e=>{if(!locked||(e.button!=0&&e.button!=2))return;const hd=e.button==0?'blue':'red',H=hands[hd];if(H.p>0)return;
+ if(aim&&aim.hand&&aim.hand!='use'&&(aim.hand==hd||aim.hand=='any')){H.fn=aim.fn;H.tgt.copy(aimPt)}else{if(aim&&(aim.hand=='red'||aim.hand=='blue'))say('That needs the '+aim.hand+' hand ('+(aim.hand=='red'?'right':'left')+'-click).',2);H.fn=null;H.tgt.copy(cam.localToWorld(V3(0,0,-2.5)))}
+ H.p=.001;H.dir=1;snd.grab()});
+function move(dt){const sp=(keys.ShiftLeft?4.2:2.6)*dt;let f=(keys.KeyW?1:0)-(keys.KeyS?1:0),s=(keys.KeyD?1:0)-(keys.KeyA?1:0);const l=Math.hypot(f,s)||1;f/=l;s/=l;
+ const dx=(-Math.sin(yaw)*f+Math.cos(yaw)*s)*sp,dz=(-Math.cos(yaw)*f-Math.sin(yaw)*s)*sp;P.x+=dx;P.z+=dz;moving=!!(dx||dz);
+ for(let k=0;k<3;k++)for(const c of cols){if(!c.on)continue;const qx=Math.max(c.a,Math.min(P.x,c.b)),qz=Math.max(c.c,Math.min(P.z,c.d)),ax=P.x-qx,az=P.z-qz,d2=ax*ax+az*az;if(d2<.16){if(d2>1e-8){const d=Math.sqrt(d2),q=(.4-d)/d;P.x+=ax*q;P.z+=az*q}else P.x+=(P.x<(c.a+c.b)/2?-.4:.4)}}
+ P.z=Math.min(P.z,cz(0)+5.6)}
+const clock=new R.Clock(),fwdV=V3();
+function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime;
+ if(locked&&!ended){move(dt);stepT-=dt;if(moving&&stepT<=0){noise(.08,.12,500);stepT=keys.ShiftLeft?.3:.46}creak-=dt;if(creak<=0){tone(100+Math.random()*100,.9,'triangle',.07,-40);creak=8+Math.random()*12}}
+ const bob=moving?Math.sin(t*9)*.03:0;shake=Math.max(0,shake-dt);P.y=1.65+bob;
+ cam.rotation.set(pitch,yaw+(shake?(Math.random()-.5)*.04:0),0);cam.updateMatrixWorld();
+ // aim
+ ray.setFromCamera({x:0,y:0},cam);const h=ray.intersectObjects(solids,false)[0];aim=null;
+ if(h&&h.object.userData.hand&&locked){aim=h.object.userData;aimD=h.distance;aimPt.copy(h.point)}
+ const lb=$('label');if(aim&&(aim.hand!='use'||aimD<4)){lb.textContent=(aim.hand=='use'?'[E] ':aim.hand=='any'?'Click: ':aim.hand=='red'?'Right-click (red): ':'Left-click (blue): ')+aim.label}else lb.textContent='';
+ updHand(hands.blue,dt);updHand(hands.red,dt);
+ // doors, lights
+ doors.forEach(d=>{if(d.open&&d.mesh.position.y<5.1){d.mesh.position.y+=dt*2.2;d.btn.material.emissiveIntensity=1}});
+ lights.forEach(o=>{if(o.t<=0&&Math.random()<.002)o.t=.3;o.t-=dt;o.l.intensity=blackout?o.base*.08:o.base*(o.t>0?(Math.random()<.5?.1:1):1)});
+ covers.forEach((c,k)=>{c.position.y+=((V.closed[k]?1.2:2.5)-c.position.y)*Math.min(1,dt*8)});
+ // vent monster
+ if(V.on){V.mz+=dt*1.05;vl.position.set(-5.2,1.3,V.mz);vl.intensity=5+Math.sin(t*20)*2;V.gt-=dt;if(V.gt<=0){snd.growl();V.gt=2.2}
+  vz.forEach((z,k)=>{if(V.on&&!V.pass[k]&&V.mz>=c4+z){V.pass[k]=1;if(V.closed[k]){shake=.4;snd.clang();say('BANG — it slammed into the hatch!',2)}else scare()}});
+  if(V.on&&V.pass.every(Boolean)){V.on=false;V.done=true;F.vents=true;blackout=false;vl.intensity=0;say('…It\'s gone. The Containment Bay door is unsealed.',5)}}
+ // glowby + hedge
+ gb.position.y=1.6+Math.sin(t*2)*.12;
+ if(mhFree){const u=MH.userData,tx=P.x+Math.cos(yaw)*1.5+Math.sin(yaw)*.3,tz=P.z-Math.sin(yaw)*1.5+Math.cos(yaw)*.3,dx=tx-MH.position.x,dz=tz-MH.position.z,d=Math.hypot(dx,dz);MH.position.y=0;
+  let w=0;if(d>.5){const s=Math.min(d,2.6*dt);MH.position.x+=dx/d*s;MH.position.z+=dz/d*s;w=1}
+  MH.rotation.y=Math.atan2(P.x-MH.position.x,P.z-MH.position.z);const sw=w?Math.sin(t*8)*.7:0;u.legs[0].rotation.x=sw;u.legs[1].rotation.x=-sw;u.arms[0].rotation.x=-sw*.6;u.arms[1].rotation.x=sw*.3;
+  if(endT>0){endT-=dt;if(endT<=0&&!ended){ended=true;document.exitPointerLock();$('end').style.display='flex'}}}
+ else{MH.userData.hd.rotation.y=Math.sin(t*.7)*.2;MH.position.y=.3+Math.sin(t*1.5)*.02}
+ // room tracking
+ const r=Math.max(0,Math.min(5,Math.round(-P.z/16)));if(r!=ri&&started){ri=r;const b=$('banner');b.textContent=NAMES[r];b.style.opacity=1;setTimeout(()=>b.style.opacity=0,3200);save(r);
+  if(r==0)seq([[1,'Giblet: Chapter Five\'s behind us. Stay close. That lever on the left wall should power the door.',5]]);
+  if(r==1)say('Giblet: Something\'s been through here. Stay sharp.',4);
+  if(r==2)say('Giblet: Look for any kind of keycard. The Archive door won\'t open without one.',5);
+  if(r==3)seq([[.5,'Sawyer (Glowby): Is… is somebody there? I can feel again. It hurts more than I remembered.',5],[6,'Giblet: Doc?! You\'re… glowing.',3],[10,'Sawyer: The Prototype hears every wire in this factory. Read my log, then go to the Archive. 1345 is waiting.',6]])}
+ ren.render(scene,cam)}
+/* ---------- menu ---------- */
+function begin(k){ainit();restore(k);started=true;ri=-1;ren.domElement.requestPointerLock()}
+$('new').onclick=()=>begin(0);$('cont').onclick=()=>begin(+$('cont').dataset.k);
+function showCont(k){if(k>0){$('cont').style.display='';$('cont').dataset.k=k;$('cont').textContent='Continue — '+NAMES[k]}}
+try{showCont(+localStorage.ch6||0)}catch{}
+$('cloud').onclick=async()=>{try{await puter.auth.signIn();const v=await puter.kv.get('ch6_ckpt');if(+v>0)showCont(+v);$('cloud').textContent='Cloud save active ✓'}catch{$('cloud').textContent='Puter unavailable — local save only'}};
+document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockElement==ren.domElement;if(locked){$('menu').style.display='none';$('pause').style.display='none'}else if(started&&!ended)$('pause').style.display='flex'});
+$('pause').onclick=()=>ren.domElement.requestPointerLock();
+P.set(0,1.65,cz(0)+3);loop();
+</script></body></html>
