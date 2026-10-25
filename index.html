@@ -105,18 +105,30 @@ const c5=cz(5),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
  const b=box(2.5,1.25,c+1.5,.4,.12,.4,glow(0xff2020,1.2),false);b.userData={hand:'red',label:'Release Experiment 1345',fn(){if(released)return;released=1;b.userData.hand='';glass.visible=false;capCol.on=false;snd.clang();noise(1,.5,3000);freeHedge()}};
  sign('EXPERIMENT 1345',0,2.6,c+5.78,Math.PI,3,'#4f8');box(-5,.5,c+2,1.4,1,2,0x555a60)}
 /* ---------- Metal Hedge ---------- */
-function makeMH(){const g=new R.Group(),mk=(c,m=.8,r=.35,e=0)=>new R.MeshStandardMaterial({color:c,metalness:m,roughness:r,emissive:e});
- const G=mk(0x2fbf3a),S=mk(0xc3c9d0,.9,.25),Rd=mk(0xcc1111,.1,.5),E=mk(0xff2020,0,.4,0xff0000),K=mk(0x111111,0,.8),W=mk(0xeeeeee,0,.6);
- const add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o},Sp=r=>new R.SphereGeometry(r,14,10),Cy=(a,b,h)=>new R.CylinderGeometry(a,b,h,10);
- add(Sp(.36),G,0,1.05,0).scale.set(1,1.2,.85);add(Sp(.24),S,0,1.08,.2).scale.set(1,1.2,.45);add(Sp(.12),S,0,.7,0);
- const hd=new R.Group();hd.position.y=1.78;g.add(hd);add(Sp(.4),G,0,0,0,hd);add(Sp(.17),S,0,-.12,.33,hd).scale.set(1.1,.75,1);add(Sp(.05),K,0,-.04,.5,hd);
- [-1,1].forEach(s=>{add(Sp(.1),E,s*.15,.1,.33,hd).scale.z=.6;add(Cy(0,.12,.4),G,s*.27,.4,-.02,hd).rotation.z=-s*.25});
- for(let r=0;r<3;r++)for(let x=-1;x<=1;x++){const t=.9-r*.35;add(Cy(0,.14,.8),G,x*.22,.22-r*.2+Math.sin(t)*.4,-.3-Math.cos(t)*.4,hd).rotation.x=t-Math.PI/2}
+function makeMH(){const g=new R.Group(),mk=(c,m=.5,r=.4,e=0)=>new R.MeshStandardMaterial({color:c,metalness:m,roughness:r,emissive:e}),
+ G=mk(0x1fe534),S=mk(0xcfd3d8,.9,.3),Y=mk(0xf2e000,.3,.5),dY=mk(0x66600a),K=mk(0x050505,.2,.6),Rd=mk(0xdd1111,.2,.45),W=mk(0xffffff,0,.5),Gy=mk(0x777777,.6,.4),Pe=mk(0xeaffa0,0,.5),EG=mk(0xb8ffb8,0,.4,0x55ff66),
+ add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o},Sp=r=>new R.SphereGeometry(r,16,12),Cy=(a,b,h)=>new R.CylinderGeometry(a,b,h,12),sc=(o,x,y,z)=>(o.scale.set(x,y,z),o);
+ sc(add(Sp(.34),G,0,1.15,0),1,1.1,.8);add(Cy(.09,.12,.4),S,0,.84,0);
+ add(Cy(.15,.15,.04),Y,0,1.18,.26).rotation.x=Math.PI/2;add(Cy(.055,.055,.05),dY,0,1.18,.28).rotation.x=Math.PI/2;
+ for(let k=0;k<6;k++){const an=k*Math.PI/3+.3;add(new R.BoxGeometry(.1,.015,.01),dY,Math.cos(an)*.1,1.18+Math.sin(an)*.1,.285).rotation.z=an}
+ const hd=new R.Group();hd.position.y=1.85;g.add(hd);add(Sp(.4),G,0,0,0,hd);
+ sc(add(Sp(.34),K,0,-.03,.17,hd),1.05,.75,.7);
+ [-1,1].forEach(s=>{const e=new R.Mesh(new R.TorusGeometry(.075,.018,8,18),EG);e.position.set(s*.14,.02,.39);hd.add(e);sc(add(Sp(.05),EG,s*.14,.02,.385,hd),1,1,.3);
+  add(Cy(0,.15,.42),G,s*.28,.38,-.02,hd).rotation.z=-s*.25;add(Cy(0,.1,.3),Y,s*.27,.36,.06,hd).rotation.z=-s*.25});
+ sc(add(Sp(.2),S,0,-.13,.34,hd),1.5,.5,.8);add(Sp(.04),Gy,-.1,-.08,.5,hd);
+ [[0,.2,-.25,.35,.3,1.1],[0,-.05,-.3,-.05,.22,.9],[-.22,.1,-.2,.5,.2,.8],[.22,.1,-.2,.5,.2,.8]].forEach(([x,y,z,t,r,l])=>add(Cy(0,r,l),G,x,y+Math.sin(t)*l/2,z-Math.cos(t)*l/2,hd).rotation.x=t-Math.PI/2);
+ add(new R.BoxGeometry(.05,.02,.7),Pe,0,.4,-.02,hd).rotation.x=-.12;
  const arms=[],legs=[];
- [-1,1].forEach(s=>{const a=new R.Group();a.position.set(s*.46,1.4,0);g.add(a);add(Cy(.08,.08,.4),G,0,-.2,0,a);add(Sp(.09),S,0,-.42,0,a);add(Cy(.07,.07,.35),S,0,-.62,0,a);add(Sp(.1),W,0,-.85,0,a);
-  if(s>0)add(Cy(.07,.07,.45),S,0,-.85,.25,a).rotation.x=Math.PI/2;arms.push(a);
-  const l=new R.Group();l.position.set(s*.2,.78,0);g.add(l);add(Cy(.1,.1,.4),G,0,-.2,0,l);add(Sp(.1),S,0,-.42,0,l);add(Cy(.08,.08,.3),G,0,-.55,0,l);add(new R.BoxGeometry(.24,.14,.42),Rd,0,-.7,.08,l);add(new R.BoxGeometry(.26,.04,.1),W,0,-.64,.02,l);legs.push(l)});
- g.userData={arms,legs,hd};return g}
+ [-1,1].forEach(s=>{sc(add(Sp(.12),S,s*.4,1.45,0),1,.7,1);
+  const a=new R.Group();a.position.set(s*.46,1.38,0);g.add(a);add(Cy(.045,.045,.34),S,0,-.17,0,a);
+  sc(add(Sp(.09),G,0,-.5,0,a),.8,2.2,.7);sc(add(Sp(.03),W,0,-.5,.06,a),1,1.4,.3);
+  if(s<0){add(Cy(.07,.07,.14),Y,0,-.88,0,a);for(let f=-1.5;f<=1.5;f++)add(Cy(.02,0,.2),S,f*.035,-1.05,0,a)}
+  else{sc(add(Sp(.16),Gy,0,-.85,.04,a),1,1.35,1.05);add(new R.BoxGeometry(.05,.3,.01),Rd,0,-.85,.2,a);add(Cy(.09,.09,.02),K,0,-1.05,.04,a)}
+  arms.push(a);
+  const l=new R.Group();l.position.set(s*.17,.9,0);g.add(l);add(Cy(.045,.045,.55),S,0,-.3,0,l);
+  sc(add(Sp(.1),G,0,-.3,.02,l),.75,2,.7);sc(add(Sp(.03),W,0,-.3,.075,l),1,1.4,.3);add(Sp(.07),S,0,-.68,0,l);
+  sc(add(Sp(.2),Rd,0,-.78,.1,l),1,.6,1.5);sc(add(Sp(.2),W,0,-.86,.1,l),1.02,.12,1.52);legs.push(l)});
+ g.scale.setScalar(.85);g.userData={arms,legs,hd};return g}
 MH=makeMH();MH.position.set(0,.3,c5-1);scene.add(MH);
 let mhFree=false,endT=0;
 function freeHedge(){mhFree=true;endT=24;seq([[.5,'Metal Hedge: Systems online… Sawyer? You actually did it.'],[5,'Metal Hedge: I\'m Experiment 1345. Friends call me Hedge. The Prototype sealed me away to bury Playcare\'s secrets.',5],[11,'Giblet: Can he really help us?'],[15,'Metal Hedge: My blaster\'s charged. Stay close, kid — we\'re going somewhere better.',5]])}
