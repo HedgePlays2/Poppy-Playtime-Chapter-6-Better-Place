@@ -133,17 +133,17 @@ MH=makeMH();MH.position.set(0,.3,c5-1);scene.add(MH);
 let mhFree=false,endT=0;
 function freeHedge(){mhFree=true;endT=24;seq([[.5,'Metal Hedge: Systems online… Sawyer? You actually did it.'],[5,'Metal Hedge: I\'m Experiment 1345. Friends call me Hedge. The Prototype sealed me away to bury Playcare\'s secrets.',5],[11,'Giblet: Can he really help us?'],[15,'Metal Hedge: My blaster\'s charged. Stay close, kid — we\'re going somewhere better.',5]])}
 /* ---------- GrabPack ---------- */
-function makeHand(kind,sx){const bl=kind=='blue',g=new R.Group(),sk=mat(bl?0x4f73c4:0x8a2a35,{roughness:.55}),dk=mat(0x2a2024,{metalness:.7,roughness:.4}),gd=mat(0xc9a64a,{metalness:.8,roughness:.35}),tb=mat(0x2f6f9a,{metalness:.5,roughness:.45}),tl=mat(0x111111,{emissive:0x66ffe0,emissiveIntensity:1.6}),
+function makeHand(kind,sx){const bl=kind=='blue',g=new R.Group(),O=new R.Group(),sk=mat(bl?0x4f73c4:0x8a2a35,{roughness:.55}),dk=mat(0x2a2024,{metalness:.7,roughness:.4}),gd=mat(0xc9a64a,{metalness:.8,roughness:.35}),tb=mat(0x2f6f9a,{metalness:.5,roughness:.45}),tl=mat(0x111111,{emissive:0x66ffe0,emissiveIntensity:1.6}),
  add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o},seg=(p,r,l,z)=>{const o=add(new R.CapsuleGeometry(r,l,4,8),sk,0,0,z+l/2+r,p);o.rotation.x=Math.PI/2;return z+l+r*1.6};
  add(new R.BoxGeometry(.13,.04,.13),sk,0,0,0);
- const FL=[.95,1.1,1,.8],W=bl?.026:.02;
+ const FL=sx<0?[.95,1.1,1,.8]:[.8,1,1.1,.95],W=bl?.026:.02;
  for(let i=0;i<4;i++){const f=new R.Group();f.position.set(-.045+i*.03,0,.06);f.rotation.y=(i-1.5)*.1*-1;g.add(f);let z=0;[.04,.032,.026].forEach((l,k)=>{z=seg(f,W*(1-k*.1),l*FL[i],z);if(!bl&&k<2)add(new R.SphereGeometry(W*.8,6,6),dk,0,0,z-W*.8,f)})}
- const th=new R.Group();th.position.set(-sx*.07,0,.0);th.rotation.y=-sx*.9;g.add(th);seg(th,W*1.15,.04,0);seg(th,W,.03,.07);
+ const th=new R.Group();th.position.set(sx*.07,0,.0);th.rotation.y=sx*.9;g.add(th);seg(th,W*1.15,.04,0);seg(th,W,.03,.07);
  const cf=new R.Mesh(new R.CylinderGeometry(.06,.065,.12,14),bl?tb:dk);cf.rotation.x=Math.PI/2;cf.position.z=-.1;g.add(cf);
  [-.05,-.15].forEach(z=>add(new R.TorusGeometry(.066,.01,6,14),gd,0,0,z));
  if(bl)add(new R.BoxGeometry(.02,.07,.035),mat(0xa33333),0,-.08,-.1);else{add(new R.BoxGeometry(.07,.012,.07),tl,0,.026,.0);add(new R.BoxGeometry(.03,.012,.1),tl,0,.066,-.1);add(new R.SphereGeometry(.015,8,6),tl,0,.03,-.07)}
- g.scale.setScalar(1.25);cam.add(g);
- const cb=new R.Mesh(new R.BufferGeometry(),mat(0xb59a55,{roughness:.85}));cam.add(cb);return{g,cb,sx,p:0,dir:1,hold:0,fn:null,tgt:V3()}}
+ O.add(g);g.rotation.x=-Math.PI/2;O.scale.setScalar(1.25);cam.add(O);
+ const cb=new R.Mesh(new R.BufferGeometry(),mat(0xb59a55,{roughness:.85}));cam.add(cb);return{g:O,cb,sx,p:0,dir:1,hold:0,fn:null,tgt:V3()}}
 const hands={blue:makeHand('blue',-1),red:makeHand('red',1)};
 /* Glowby: the star device on the GrabPack */
 const star=new R.Group();
@@ -162,13 +162,15 @@ const star=new R.Group();
  ad(new R.CylinderGeometry(.07,.07,.06,10),mat(0x2a7fff),.8,.3,.22).rotation.x=Math.PI/2;
  ad(new R.CylinderGeometry(.07,.07,.06,10),mat(0xe0302a),.74,.1,.22).rotation.x=Math.PI/2;
  ad(new R.CircleGeometry(.14,16),mat(0x6a5420),-.62,-.62,.24)}
-star.position.set(0,-.27,-.45);star.scale.setScalar(.07);cam.add(star);
-const sl=new R.PointLight(0xffd070,.5,6);sl.position.set(0,-.2,-.35);cam.add(sl);let glowT=0;
+star.position.set(-.2,-.27,-.5);star.scale.setScalar(.085);star.rotation.set(0,.3,.4);cam.add(star);
+const pk=new R.Group();{const bd=new R.Mesh(new R.CylinderGeometry(.16,.16,.35,18),mat(0x1c2326,{metalness:.5,roughness:.5}));bd.rotation.x=Math.PI/2;pk.add(bd);const rg=(c,z)=>{const t=new R.Mesh(new R.TorusGeometry(.16,.014,6,22),mat(c,{metalness:.7,roughness:.35}));t.position.z=z;pk.add(t)};rg(0xa33232,.12);rg(0xc9a64a,.16)}
+pk.position.set(-.24,-.42,-.72);cam.add(pk);
+const sl=new R.PointLight(0xffd070,.5,6);sl.position.set(-.1,-.18,-.35);cam.add(sl);let glowT=0;
 const ease=p=>Math.sin(p*Math.PI/2);
 function updHand(H,dt){if(H.p>0){if(H.dir==1){H.p=Math.min(1,H.p+dt/.18);if(H.p>=1){H.dir=0;H.hold=.12;if(H.fn)H.fn()}}else if(H.dir==0){H.hold-=dt;if(H.hold<=0)H.dir=-1}else{H.p-=dt/.22;if(H.p<=0){H.p=0;H.dir=1}}}
  const e=ease(Math.max(0,Math.min(1,H.p))),rest=V3(H.sx*.34,-.32,-.6),T=cam.worldToLocal(H.tgt.clone());
  H.g.position.copy(rest).lerp(T,e);H.g.lookAt(e>.01?H.tgt:cam.localToWorld(V3(H.sx*.05,-.05,-5)));
- const w=V3(0,0,-.17).applyQuaternion(H.g.quaternion).add(H.g.position),a=V3(H.sx*.2,-.55,.1),mid=a.clone().lerp(w,.5);mid.y-=.14*(1-e*.5);
+ const w=V3(0,-.2,0).applyQuaternion(H.g.quaternion).add(H.g.position),a=V3(H.sx*.2,-.55,.1),mid=a.clone().lerp(w,.5);mid.y-=.14*(1-e*.5);
  H.cb.geometry.dispose();H.cb.geometry=new R.TubeGeometry(new R.CatmullRomCurve3([a,mid,w]),10,.028,6)}
 /* ---------- UI / state ---------- */
 let sayT;function say(t,s=4){if(/^Sawyer/.test(t))glowT=s;const e=$('sub');e.textContent=t;e.style.opacity=1;clearTimeout(sayT);sayT=setTimeout(()=>e.style.opacity=0,s*1000)}
@@ -213,7 +215,7 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.
   vz.forEach((z,k)=>{if(V.on&&!V.pass[k]&&V.mz>=c4+z){V.pass[k]=1;if(V.closed[k]){shake=.4;snd.clang();say('BANG — it slammed into the hatch!',2)}else scare()}});
   if(V.on&&V.pass.every(Boolean)){V.on=false;V.done=true;F.vents=true;blackout=false;vl.intensity=0;say('…It\'s gone. The Containment Bay door is unsealed.',5)}}
  // glowby + hedge
- glowT=Math.max(0,glowT-dt);star.rotation.z=Math.sin(t*.8)*.12;star.scale.setScalar(.07*(1+(glowT>0?.2+.15*Math.sin(t*14):0)));sl.intensity=.5+(glowT>0?3:0);gm.emissiveIntensity=.9+(glowT>0?1.2:0);
+ glowT=Math.max(0,glowT-dt);star.rotation.z=.4+Math.sin(t*.8)*.05;star.scale.setScalar(.085*(1+(glowT>0?.2+.15*Math.sin(t*14):0)));sl.intensity=.5+(glowT>0?3:0);gm.emissiveIntensity=.9+(glowT>0?1.2:0);
  if(mhFree){const u=MH.userData,tx=P.x+Math.cos(yaw)*1.5+Math.sin(yaw)*.3,tz=P.z-Math.sin(yaw)*1.5+Math.cos(yaw)*.3,dx=tx-MH.position.x,dz=tz-MH.position.z,d=Math.hypot(dx,dz);MH.position.y=0;
   let w=0;if(d>.5){const s=Math.min(d,2.6*dt);MH.position.x+=dx/d*s;MH.position.z+=dz/d*s;w=1}
   MH.rotation.y=Math.atan2(P.x-MH.position.x,P.z-MH.position.z);const sw=w?Math.sin(t*8)*.7:0;u.legs[0].rotation.x=sw;u.legs[1].rotation.x=-sw;u.arms[0].rotation.x=-sw*.6;u.arms[1].rotation.x=sw*.3;
