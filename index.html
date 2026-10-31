@@ -365,6 +365,7 @@ function move(dt){const sp=(keys.ShiftLeft?3.9:2.4)*dt;let f=(keys.KeyW?1:0)-(ke
  const dx=(-Math.sin(yaw)*f+Math.cos(yaw)*s)*sp,dz=(-Math.cos(yaw)*f-Math.sin(yaw)*s)*sp;P.x+=dx;P.z+=dz;moving=!!(dx||dz);
  for(let k=0;k<3;k++)for(const c of cols){if(!c.on)continue;const qx=Math.max(c.a,Math.min(P.x,c.b)),qz=Math.max(c.c,Math.min(P.z,c.d)),ax=P.x-qx,az=P.z-qz,d2=ax*ax+az*az;if(d2<.16){if(d2>1e-8){const d=Math.sqrt(d2),q=(.4-d)/d;P.x+=ax*q;P.z+=az*q}else P.x+=(P.x<(c.a+c.b)/2?-.4:.4)}}
  P.z=Math.min(P.z,cz(0)+HD-.4)}
+scene.traverse(o=>{if(o.isMesh){o.receiveShadow=true;if(o.geometry.type!=='PlaneGeometry')o.castShadow=true}});
 const clock=new R.Clock(),fwdV=V3();
 function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime;
  if(locked&&!ended&&!intro){move(dt);stepT-=dt;if(moving&&stepT<=0){noise(.08,.12,500);stepT=keys.ShiftLeft?.3:.46}creak-=dt;if(creak<=0){tone(100+Math.random()*100,.9,'triangle',.07,-40);creak=8+Math.random()*12}}
