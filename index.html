@@ -124,22 +124,27 @@ function makeShelly(){
  sph(skin,0,0,0,.115,.105,.145,head);sph(skinHi,0,.012,-.04,.087,.058,.09,head);sph(skin,0,-.027,-.084,.071,.047,.07,head);
  const eyeWh=[],eyeBlue=[],eyeLids=[];
  for(const side of [-1,1]){
-  sph(skinShade,side*.047,.071,.035,.033,.016,.028,head);
-  eyeWh.push(sph(white,side*.047,.084,.038,.023,.009,.017,head));
-  eyeBlue.push(sph(mat(0x668b9d),side*.047,.091,.039,.012,.006,.012,head));
-  sph(dark,side*.047,.095,.04,.005,.004,.006,head);
-  sph(skinHi,side*.047,.074,.045,.024,.004,.012,head);
-  const lid=sph(skin,side*.047,.091,.045,.026,.008,.017,head);lid.visible=false;eyeLids.push(lid);
-  const brow=sph(hairDark,side*.047,.105,.065,.033,.008,.011,head);brow.rotation.z=side*.07;
-  for(let j=0;j<3;j++)seg(head,V3(side*.027+j*.009,.092,.052),V3(side*.025+j*.009,.097,.061),.0018,hairDark);
-  sph(skin,side*.112,.005,-.005,.024,.043,.046,head);
+  // Soft eyelids and naturally sized eyes; no heavy dark socket shapes.
+  eyeWh.push(sph(white,side*.046,.079,.045,.019,.007,.012,head));
+  eyeBlue.push(sph(mat(0x668b9d),side*.046,.084,.052,.009,.004,.006,head));
+  sph(dark,side*.046,.087,.056,.0035,.003,.003,head);
+  sph(skinHi,side*.046,.068,.047,.019,.003,.008,head);
+  const lid=sph(skin,side*.046,.083,.053,.021,.005,.011,head);lid.visible=false;eyeLids.push(lid);
+  // Fine, lightly coloured brows follow a natural arch instead of oversized blocks.
+  const browCurve=new R.CatmullRomCurve3([V3(side*.022,.099,.048),V3(side*.038,.103,.052),V3(side*.055,.101,.05),V3(side*.068,.096,.044)]);
+  add(new R.TubeGeometry(browCurve,12,.0018,5,false),mat(0x98734d,{roughness:1}),0,0,0,head);
+  sph(skin,side*.111,.004,-.005,.018,.034,.036,head);
  }
- const bridge=add(new R.CapsuleGeometry(.011,.043,8,12),skinHi,0,.079,.008,head);bridge.rotation.x=.22;sph(skinHi,0,.071,-.014,.018,.015,.024,head);sph(skinShade,0,.062,-.032,.011,.006,.01,head);
- const mouth=new R.CatmullRomCurve3([V3(-.024,.054,-.064),V3(-.012,.051,-.07),V3(0,.05,-.071),V3(.012,.051,-.07),V3(.024,.054,-.064)]);add(new R.TubeGeometry(mouth,16,.0035,8),lip,0,0,0,head);
+ // A restrained nose bridge and rounded tip, blended into the face.
+ const bridge=add(new R.CapsuleGeometry(.007,.032,8,12),skin,0,.071,.026,head);bridge.rotation.x=.2;
+ sph(skinHi,0,.059,.014,.012,.009,.012,head);
+ sph(skinShade,0,.052,.008,.007,.003,.006,head);
+ const mouth=new R.CatmullRomCurve3([V3(-.018,.045,-.066),V3(-.009,.043,-.069),V3(0,.042,-.07),V3(.009,.043,-.069),V3(.018,.045,-.066)]);add(new R.TubeGeometry(mouth,16,.0022,7),lip,0,0,0,head);
+ const lowerLip=new R.CatmullRomCurve3([V3(-.011,.039,-.067),V3(0,.037,-.069),V3(.011,.039,-.067)]);add(new R.TubeGeometry(lowerLip,8,.0018,6),skinShade,0,0,0,head);
  // Layered bob haircut, nape, side locks and individual fringe pieces.
  sph(hairDark,0,-.035,-.005,.124,.078,.157,head);sph(hair,0,-.014,.028,.12,.067,.127,head);
  for(const side of [-1,1]){const lock=sph(hair,side*.096,-.005,-.035,.035,.083,.115,head);lock.rotation.z=side*.12;sph(hairHi,side*.104,.012,-.047,.012,.053,.079,head);const fringe=sph(hairHi,side*.075,.025,.075,.039,.032,.067,head);fringe.rotation.z=-side*.24}
- for(let i=0;i<5;i++){const x=(i-2)*.034,o=sph(i%2?hair:hairHi,x,.068,.092,.026,.024,.045,head);o.rotation.z=(i-2)*-.12}
+ for(let i=0;i<5;i++){const x=(i-2)*.031,o=sph(i%2?hair:hairHi,x,.062,.087,.024,.019,.039,head);o.rotation.z=(i-2)*-.1}
  const band=add(new R.TorusGeometry(.111,.009,8,40,Math.PI),navy,0,.036,.055,head);band.rotation.x=Math.PI/2;
  // Both arms end in visible palms, thumbs and separated fingers.
  const arm=new R.Group();arm.position.set(-.16,.12,.29);g.add(arm);
