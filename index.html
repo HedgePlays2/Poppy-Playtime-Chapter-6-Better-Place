@@ -14,6 +14,9 @@ h1{font-size:54px;letter-spacing:8px;color:#f33;text-shadow:0 0 22px #a00}h2{fon
 button{padding:12px 30px;font:18px Georgia;background:#1b1b22;color:#fff;border:1px solid #f33;cursor:pointer}button:hover{background:#a11}
 #intro{inset:0;background:#000;display:none;align-items:center;justify-content:center;text-align:center;padding:10%;font-size:26px;line-height:1.5;color:#ddd;font-style:italic;z-index:7;transition:opacity 1.5s}#obj{top:14px;left:18px;color:#cba;font-size:14px;line-height:1.5;opacity:.85;max-width:40%}#vig{inset:0;pointer-events:none;box-shadow:inset 0 0 170px #50000099}#logs{top:14px;right:18px;color:#cba;font-size:14px;opacity:.85}#scare{inset:0;display:none;z-index:8;background:radial-gradient(circle at 35% 42%,#fff 0 3%,transparent 3.5%),radial-gradient(circle at 65% 42%,#fff 0 3%,transparent 3.5%),radial-gradient(ellipse at 50% 72%,#000 0 14%,#d00 15% 17%,transparent 18%),#400}
 #burial-scene{inset:0;z-index:10;display:none;align-items:center;justify-content:center;text-align:center;padding:12%;background:#030506;opacity:0;transition:opacity 1.6s;font:italic 24px/1.6 Georgia;color:#e8e4dc;text-shadow:0 2px 12px #000;pointer-events:none}
+
+/* Horror presentation pass: restrained exposure, film grain and deep peripheral falloff. */
+#vig{inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 48%,transparent 38%,#0005 73%,#000d 100%);box-shadow:inset 0 0 100px #000b;z-index:2}#vig:after{content:'';position:absolute;inset:0;opacity:.11;pointer-events:none;background-image:repeating-radial-gradient(circle at 20% 30%,#fff2 0 1px,transparent 1px 3px)}#cross{background:#d8d1c2;width:3px;height:3px;box-shadow:0 0 5px #fff8}#label{color:#d4c8a9;text-shadow:0 2px 5px #000,0 0 12px #000;font-size:14px}#sub{color:#e1d9ca;font-size:19px;text-shadow:0 2px 8px #000,0 0 18px #000}
 </style></head><body>
 <div class="o" id="cross"></div><div class="o" id="label"></div><div class="o" id="sub"></div><div class="o" id="banner"></div><div class="o" id="doc"></div><div class="o" id="scare"></div><div class="o" id="burial-scene"></div><div class="o" id="logs">Logs 0/31</div><div class="o" id="obj"></div><div class="o" id="vig"></div><div class="o" id="intro"></div>
 <div class="o" id="pause"><h2>PAUSED — click to resume</h2></div>
@@ -27,13 +30,13 @@ button{padding:12px 30px;font:18px Georgia;background:#1b1b22;color:#fff;border:
 import * as R from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 const $=id=>document.getElementById(id),V3=(x=0,y=0,z=0)=>new R.Vector3(x,y,z);
 /* ---------- renderer ---------- */
-const scene=new R.Scene();scene.background=new R.Color(0x08090b);scene.fog=new R.FogExp2(0x101216,.038);
+const scene=new R.Scene();scene.background=new R.Color(0x050608);scene.fog=new R.FogExp2(0x090b0e,.052);
 const cam=new R.PerspectiveCamera(70,innerWidth/innerHeight,.05,80);cam.rotation.order='YXZ';scene.add(cam);
 const ren=new R.WebGLRenderer({antialias:true,powerPreference:'high-performance'});ren.setSize(innerWidth,innerHeight);ren.setPixelRatio(Math.min(devicePixelRatio,1.75));ren.outputColorSpace=R.SRGBColorSpace;ren.toneMapping=R.ACESFilmicToneMapping;ren.toneMappingExposure=1.12;ren.shadowMap.enabled=true;ren.shadowMap.type=R.PCFSoftShadowMap;document.body.prepend(ren.domElement);
 addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight)});
-scene.add(new R.HemisphereLight(0x9aa8bf,0x24201b,.42));
-scene.add(new R.AmbientLight(0x343b48,.28));
-const fl=new R.SpotLight(0xffe8c7,72,32,.43,.72,1.25);fl.position.set(.2,-.1,0);fl.target.position.set(0,0,-6);fl.castShadow=true;fl.shadow.mapSize.set(1024,1024);fl.shadow.camera.near=.1;fl.shadow.camera.far=32;fl.shadow.bias=-.00025;cam.add(fl,fl.target);
+scene.add(new R.HemisphereLight(0x7b8799,0x171411,.24));
+scene.add(new R.AmbientLight(0x222832,.13));
+const fl=new R.SpotLight(0xffe4c0,48,25,.37,.68,1.35);fl.position.set(.2,-.1,0);fl.target.position.set(0,0,-6);fl.castShadow=true;fl.shadow.mapSize.set(1024,1024);fl.shadow.camera.near=.1;fl.shadow.camera.far=32;fl.shadow.bias=-.00025;cam.add(fl,fl.target);
 /* ---------- audio ---------- */
 let AC,mg;
 function ainit(){if(AC)return;AC=new(window.AudioContext||webkitAudioContext)();mg=AC.createGain();mg.gain.value=.5;mg.connect(AC.destination);
@@ -80,74 +83,60 @@ for(let i=0;i<16;i++){const c=cz(i);
  if(i<15){gap(c-HD);box(-1.5,2,c-HD-3,.3,4,6,M.wall);box(1.5,2,c-HD-3,.3,4,6,M.wall)}else box(0,2,c-HD,2*HW+.4,4,.4,M.wall);
  sign(NAMES[i].toUpperCase(),0,3.5,c-HD+.22,0,3,'#cde');
  [-8,8].forEach(x=>{const p=new R.Mesh(new R.CylinderGeometry(.1,.1,2*HD,8),M.metal);p.rotation.x=Math.PI/2;p.position.set(x,3.7,c);scene.add(p)});
- lights.push({base:60,t:0});
+ lights.push({base:24,t:0});
  [-4,4].forEach(z=>{const fx=new R.Mesh(new R.BoxGeometry(2,.1,.4),glow(0xffe0a0));fx.position.set(0,3.95,c+z);scene.add(fx)});
  toys(c,24);wallCam(HW-.65,3.5,c+HD-1,c);wallCam(-(HW-.65),3.5,c-HD+1,c);
  if(i<15){const d={mesh:box(0,1.5,c-HD,3,3,.3,M.door),open:false};d.col=d.mesh.userData.col;
   d.btn=box(2.4,1.4,c-HD+.3,.45,.6,.15,mat(0x220000,{emissive:0xff2000,emissiveIntensity:.8}),false);
   d.btn.userData={hand:'red',label:'Open door',fn(){const n=needs[i];if(n&&!F[n]){say(hints[n]);tone(110,.3,'square',.15);return}if(!d.open){openDoor(i);snd.door()}}};doors.push(d)}}
 function makeShelly(){
- const g=new R.Group(),skin=mat(0xe7c3a8,{roughness:.72}),skinShade=mat(0xd6a58e),skinLight=mat(0xf0d1b9),navy=mat(0x193d78),blue=mat(0x8fc9ed),pale=mat(0xd9eff8),white=mat(0xf1eee6),hair=mat(0xd7a52f),hairLight=mat(0xf0c85a),hairDark=mat(0x9e6d20),dark=mat(0x34251f),lip=mat(0x9e5e61),gold=mat(0xc5a04a,{metalness:.35,roughness:.48});
- const add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o},sph=(m,x,y,z,sx,sy,sz,p=g)=>{const o=add(new R.SphereGeometry(1,32,24),m,x,y,z,p);o.scale.set(sx,sy,sz);return o};
- const seg=(p,a,b,r,m)=>{const d=b.clone().sub(a),o=new R.Mesh(new R.CapsuleGeometry(r,Math.max(.001,d.length()-2*r),10,18),m);o.position.copy(a).add(b).multiplyScalar(.5);o.quaternion.setFromUnitVectors(V3(0,1,0),d.normalize());p.add(o);return o};
- // Shelly lies flat on her back: her face points upward, with her head supported by her neck.
- sph(navy,0,.105,.22,.175,.105,.235);sph(navy,0,.105,.045,.145,.085,.14);sph(blue,0,.095,-.18,.18,.082,.21);
- const skirt=add(new R.CylinderGeometry(.16,.29,.39,32),blue,0,.105,-.39);skirt.rotation.x=Math.PI/2;skirt.scale.set(1,.72,1);
- sph(pale,0,.19,.365,.095,.025,.055);for(const s of [-1,1]){sph(pale,s*.13,.14,.29,.055,.045,.07);sph(white,s*.145,.14,.245,.045,.04,.045)}
- const belt=add(new R.TorusGeometry(.135,.012,8,32),navy,0,.12,.015);belt.scale.set(1,.6,1);add(new R.BoxGeometry(.035,.018,.018),gold,0,.145,.015);
- // Staff ID badge.
- const badge=document.createElement('canvas');badge.width=256;badge.height=160;const bc=badge.getContext('2d');bc.fillStyle='#f3f0e8';bc.fillRect(0,0,256,160);bc.fillStyle='#193d78';bc.fillRect(0,0,256,34);bc.fillStyle='#fff';bc.font='bold 22px Georgia';bc.fillText('PLAYTIME CO.',12,25);bc.fillStyle='#333';bc.font='bold 29px Georgia';bc.fillText('SHELLY',90,83);bc.font='19px Georgia';bc.fillText('PLAYCARE STAFF',90,116);bc.fillStyle='#c6d9e5';bc.fillRect(16,48,58,92);
- const bt=new R.CanvasTexture(badge);bt.colorSpace=R.SRGBColorSpace;const bd=add(new R.PlaneGeometry(.15,.095),new R.MeshStandardMaterial({map:bt,roughness:.7}),-.09,.205,.19);bd.rotation.x=-Math.PI/2;
- // Neck runs naturally from the shoulders to the base of the skull.
- const neck=new R.Mesh(new R.CylinderGeometry(.047,.055,.15,20),skin);neck.position.set(0,.12,.49);neck.rotation.x=Math.PI/2;g.add(neck);
- // Face is deliberately kept clear on the upward-facing side of the head.
- const eyeWh=[],eyeBlue=[],eyeLids=[];const head=new R.Group();head.position.set(0,.135,.655);g.add(head);
- sph(skin,0,0,0,.112,.105,.135,head);
- sph(skinLight,0,.045,-.015,.084,.065,.085,head);
- for(const s of [-1,1]){
-  sph(skinLight,s*.065,.066,-.035,.032,.024,.04,head);
-  const ew=sph(white,s*.046,.095,.025,.022,.009,.014,head);eyeWh.push(ew);
-  const ir=sph(mat(0x5d9cc9),s*.046,.103,.024,.011,.005,.011,head);eyeBlue.push(ir);
-  sph(dark,s*.046,.106,.023,.004,.003,.006,head);
-  const brow=sph(hairDark,s*.047,.108,.061,.032,.007,.009,head);brow.rotation.z=-s*.08;
-  const lid=sph(skin,s*.046,.098,.026,.025,.006,.012,head);lid.visible=false;eyeLids.push(lid);
+ const g=new R.Group(),skin=mat(0xd9b49e,{roughness:.9}),skinHi=mat(0xe8c9b5,{roughness:.92}),skinShade=mat(0xb88775,{roughness:1}),navy=mat(0x1d3d70,{roughness:.94}),blue=mat(0x4779ad,{roughness:.95}),pale=mat(0xc7d8df),white=mat(0xece5da),hair=mat(0xb17c39,{roughness:.95}),hairHi=mat(0xd5aa65,{roughness:.9}),hairDark=mat(0x704a25,{roughness:1}),dark=mat(0x342923),lip=mat(0x925f5b),gold=mat(0xa18b61,{metalness:.45,roughness:.5});
+ const add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);o.castShadow=true;o.receiveShadow=true;return o},sph=(m,x,y,z,sx,sy,sz,p=g)=>{const o=add(new R.SphereGeometry(1,40,28),m,x,y,z,p);o.scale.set(sx,sy,sz);return o},seg=(p,a,b,r,m)=>{const d=b.clone().sub(a),o=new R.Mesh(new R.CapsuleGeometry(r,Math.max(.001,d.length()-2*r),12,20),m);o.position.copy(a).add(b).multiplyScalar(.5);o.quaternion.setFromUnitVectors(V3(0,1,0),d.normalize());p.add(o);return o};
+ // Tailored Playcare uniform with a shaped torso, waist, skirt and collar.
+ sph(navy,0,.105,.22,.18,.1,.24);sph(navy,0,.13,.32,.17,.09,.17);sph(blue,0,.105,-.13,.18,.08,.2);
+ const skirt=add(new R.CylinderGeometry(.15,.255,.4,48,3),blue,0,.105,-.39);skirt.rotation.x=Math.PI/2;skirt.scale.set(1,.76,1);
+ for(let i=0;i<9;i++){const q=i*Math.PI*2/9,o=add(new R.BoxGeometry(.012,.012,.27),navy,Math.cos(q)*.18,.15,-.4+Math.sin(q)*.06);o.rotation.y=-q}
+ for(const side of [-1,1]){const c=add(new R.ConeGeometry(.045,.1,4),pale,side*.07,.2,.36);c.rotation.z=side*.5;c.rotation.x=Math.PI/2}
+ const belt=add(new R.TorusGeometry(.15,.012,8,40),navy,0,.12,.02);belt.scale.set(1,.6,1);add(new R.BoxGeometry(.04,.02,.018),gold,0,.145,.02);
+ // A real canvas badge, not a flat white rectangle.
+ const bc=document.createElement('canvas');bc.width=256;bc.height=160;const bctx=bc.getContext('2d');bctx.fillStyle='#e8e5dc';bctx.fillRect(0,0,256,160);bctx.fillStyle='#203f6c';bctx.fillRect(0,0,256,34);bctx.fillStyle='#fff';bctx.font='bold 20px sans-serif';bctx.fillText('PLAYTIME CO.',12,24);bctx.fillStyle='#26313a';bctx.font='bold 27px sans-serif';bctx.fillText('SHELLY',88,83);bctx.font='15px sans-serif';bctx.fillText('PLAYCARE STAFF',88,113);const bt=new R.CanvasTexture(bc);bt.colorSpace=R.SRGBColorSpace;const badge=add(new R.PlaneGeometry(.15,.095),new R.MeshStandardMaterial({map:bt,roughness:.9}),-.09,.205,.19);badge.rotation.x=-Math.PI/2;
+ // Neck, jaw and facial structure.
+ const neck=add(new R.CylinderGeometry(.047,.058,.15,24),skin,0,.12,.49);neck.rotation.x=Math.PI/2;
+ const head=new R.Group();head.position.set(0,.155,.665);g.add(head);
+ sph(skin,0,0,0,.115,.105,.145,head);sph(skinHi,0,.012,-.04,.087,.058,.09,head);sph(skin,0,-.027,-.084,.071,.047,.07,head);
+ const eyeWh=[],eyeBlue=[],eyeLids=[];
+ for(const side of [-1,1]){
+  sph(skinShade,side*.047,.071,.035,.033,.016,.028,head);
+  eyeWh.push(sph(white,side*.047,.084,.038,.023,.009,.017,head));
+  eyeBlue.push(sph(mat(0x668b9d),side*.047,.091,.039,.012,.006,.012,head));
+  sph(dark,side*.047,.095,.04,.005,.004,.006,head);
+  sph(skinHi,side*.047,.074,.045,.024,.004,.012,head);
+  const lid=sph(skin,side*.047,.091,.045,.026,.008,.017,head);lid.visible=false;eyeLids.push(lid);
+  const brow=sph(hairDark,side*.047,.105,.065,.033,.008,.011,head);brow.rotation.z=side*.07;
+  for(let j=0;j<3;j++)seg(head,V3(side*.027+j*.009,.092,.052),V3(side*.025+j*.009,.097,.061),.0018,hairDark);
+  sph(skin,side*.112,.005,-.005,.024,.043,.046,head);
  }
- sph(skinShade,0,.102,-.012,.012,.012,.025,head);
- sph(lip,0,.101,-.065,.026,.008,.012,head);
- // Blonde bob sits behind the face, not over it. A soft fringe frames the forehead.
- sph(hairDark,0,-.045,.005,.12,.072,.15,head);
- sph(hair,0,-.012,.055,.115,.06,.105,head);
- for(const s of [-1,1]){
-  const lock=sph(hair,s*.097,-.005,-.025,.031,.075,.11,head);lock.rotation.z=s*.12;
-  sph(hairLight,s*.098,.005,-.045,.012,.055,.075,head);
- }
- sph(hairLight,0,.035,.112,.075,.025,.035,head);
- const band=add(new R.TorusGeometry(.108,.012,8,32,Math.PI),navy,0,.025,.04,head);band.rotation.x=Math.PI/2;
- // Both arms rest alongside her body and end in complete, visible hands.
- const arm=new R.Group();arm.position.set(-.16,.105,.32);g.add(arm);
- seg(arm,V3(0,0,0),V3(-.07,-.005,-.13),.043,navy);
- seg(arm,V3(-.07,-.005,-.13),V3(-.145,.012,-.25),.032,skin);
- const makeHand=(p,x,y,z,dir)=>{
-  const h=new R.Group();h.position.set(x,y,z);h.rotation.y=dir*.08;p.add(h);
-  sph(skin,0,0,0,.043,.025,.052,h);
-  // Four separated fingers with rounded tips, plus a distinct thumb.
-  for(let i=0;i<4;i++){const fx=(i-1.5)*.019,len=[.045,.057,.052,.04][i];seg(h,V3(fx,0,-.025),V3(fx+dir*.006,-.002,-.025-len),.009,skin);sph(skinLight,fx+dir*.006,-.002,-.025-len,.009,.009,.012,h)}
-  seg(h,V3(dir*.034,0,.006),V3(dir*.064,-.002,-.035),.011,skin);sph(skinLight,dir*.064,-.002,-.035,.011,.009,.012,h);
-  sph(skinShade,0,.022,-.002,.018,.004,.018,h);
-  return h
- };
- makeHand(arm,-.16,.012,-.29,-1);
- const other=new R.Group();other.position.set(.16,.105,.32);g.add(other);
- seg(other,V3(0,0,0),V3(.07,-.005,-.13),.043,navy);
- seg(other,V3(.07,-.005,-.13),V3(.145,.012,-.25),.032,skin);
- makeHand(other,.16,.012,-.29,1);
- // Legs and bare feet, with toes individually modeled.
- const foot=(x,z,side)=>{const f=new R.Group();f.position.set(x,.045,z);f.rotation.y=side*.07;g.add(f);sph(skin,0,0,-.035,.052,.038,.075,f);sph(skin,0,-.002,-.12,.045,.032,.105,f);sph(skinLight,0,-.003,-.205,.061,.033,.075,f);for(let i=0;i<5;i++){const u=i-2,len=[.035,.046,.041,.034,.028][i];sph(skinLight,u*.023,-.002,-.255-Math.max(0,2-Math.abs(u))*.004,.014,.014,len*.55,f)}};
- const l1=V3(.095,.075,-.2),l2=V3(.12,.065,-.63),l3=V3(.105,.05,-1.02),r1=V3(-.095,.075,-.2),r2=V3(-.13,.065,-.62),r3=V3(-.12,.05,-1);
- seg(g,l1,l2,.067,skin);sph(skinShade,l2.x,l2.y,l2.z,.06,.05,.065);seg(g,l2,l3,.043,skin);seg(g,r1,r2,.067,skin);sph(skinShade,r2.x,r2.y,r2.z,.06,.05,.065);seg(g,r2,r3,.043,skin);foot(l3.x,l3.z,1);foot(r3.x,r3.z,-1);
- // Her broken glasses rest beside her head.
- const glasses=new R.Group();glasses.position.set(.34,.012,.77);glasses.rotation.y=.2;g.add(glasses);for(const s of [-1,1]){const lens=add(new R.TorusGeometry(.035,.0035,6,20),dark,s*.045,0,0,glasses);lens.rotation.x=Math.PI/2}add(new R.BoxGeometry(.02,.004,.006),dark,0,0,0,glasses);
- const stain=new R.Mesh(new R.CircleGeometry(.5,32),mat(0x3a0808,{roughness:.3}));stain.rotation.x=-Math.PI/2;stain.position.set(0,.004,0);stain.scale.set(1,1.5,1);g.add(stain);
+ const bridge=add(new R.CapsuleGeometry(.011,.043,8,12),skinHi,0,.079,.008,head);bridge.rotation.x=.22;sph(skinHi,0,.071,-.014,.018,.015,.024,head);sph(skinShade,0,.062,-.032,.011,.006,.01,head);
+ const mouth=new R.CatmullRomCurve3([V3(-.024,.054,-.064),V3(-.012,.051,-.07),V3(0,.05,-.071),V3(.012,.051,-.07),V3(.024,.054,-.064)]);add(new R.TubeGeometry(mouth,16,.0035,8),lip,0,0,0,head);
+ // Layered bob haircut, nape, side locks and individual fringe pieces.
+ sph(hairDark,0,-.035,-.005,.124,.078,.157,head);sph(hair,0,-.014,.028,.12,.067,.127,head);
+ for(const side of [-1,1]){const lock=sph(hair,side*.096,-.005,-.035,.035,.083,.115,head);lock.rotation.z=side*.12;sph(hairHi,side*.104,.012,-.047,.012,.053,.079,head);const fringe=sph(hairHi,side*.075,.025,.075,.039,.032,.067,head);fringe.rotation.z=-side*.24}
+ for(let i=0;i<5;i++){const x=(i-2)*.034,o=sph(i%2?hair:hairHi,x,.068,.092,.026,.024,.045,head);o.rotation.z=(i-2)*-.12}
+ const band=add(new R.TorusGeometry(.111,.009,8,40,Math.PI),navy,0,.036,.055,head);band.rotation.x=Math.PI/2;
+ // Both arms end in visible palms, thumbs and separated fingers.
+ const arm=new R.Group();arm.position.set(-.16,.12,.29);g.add(arm);
+ const makeHand=(p,x,y,z,side)=>{const h=new R.Group();h.position.set(x,y,z);p.add(h);sph(skin,0,0,0,.044,.026,.055,h);for(let i=0;i<4;i++){const fx=(i-1.5)*.019,len=[.044,.054,.05,.039][i],tip=V3(fx+side*.004,-.003,-.028-len);seg(h,V3(fx,0,-.028),tip,.0085,skin);sph(skinHi,tip.x,tip.y,tip.z,.008,.008,.011,h)}seg(h,V3(side*.034,0,.006),V3(side*.062,-.002,-.033),.011,skin);sph(skinHi,side*.062,-.002,-.033,.01,.008,.011,h)};
+ seg(arm,V3(0,0,0),V3(-.065,-.006,-.13),.047,navy);sph(blue,-.045,-.002,-.08,.047,.045,.065,arm);seg(arm,V3(-.065,-.006,-.13),V3(-.145,.012,-.245),.031,skin);sph(skin,-.145,.012,-.245,.034,.028,.036,arm);makeHand(arm,-.16,.012,-.29,-1);
+ const other=new R.Group();other.position.set(.16,.12,.29);g.add(other);seg(other,V3(0,0,0),V3(.065,-.006,-.13),.047,navy);sph(blue,.045,-.002,-.08,.047,.045,.065,other);seg(other,V3(.065,-.006,-.13),V3(.145,.012,-.245),.031,skin);sph(skin,.145,.012,-.245,.034,.028,.036,other);makeHand(other,.16,.012,-.29,1);
+ // Knees, calves, ankles and individual toes.
+ const foot=(x,z,side)=>{const f=new R.Group();f.position.set(x,.05,z);f.rotation.y=side*.045;g.add(f);sph(skin,0,0,-.025,.052,.04,.065,f);sph(skinHi,0,-.002,-.105,.046,.033,.09,f);sph(skin,0,-.002,-.176,.058,.033,.07,f);for(let i=0;i<5;i++){const u=i-2,tx=u*.022,len=[.032,.043,.04,.034,.027][i];const toe=sph(skinHi,tx,-.003,-.224,len*.42,.014,len*.55,f);toe.rotation.y=u*.08;sph(skinShade,tx,-.017,-.218,.007,.002,.007,f)}};
+ const l1=V3(.095,.075,-.19),l2=V3(.12,.065,-.59),l3=V3(.105,.05,-.94),r1=V3(-.095,.075,-.19),r2=V3(-.13,.065,-.58),r3=V3(-.12,.05,-.92);
+ seg(g,l1,l2,.066,skin);sph(skinShade,l2.x,l2.y,l2.z,.06,.048,.065);seg(g,l2,l3,.043,skin);seg(g,r1,r2,.066,skin);sph(skinShade,r2.x,r2.y,r2.z,.06,.048,.065);seg(g,r2,r3,.043,skin);foot(l3.x,l3.z,1);foot(r3.x,r3.z,-1);
+ // Broken spectacles beside her head.
+ const glasses=new R.Group();glasses.position.set(.34,.012,.77);glasses.rotation.y=.2;g.add(glasses);for(const side of [-1,1]){const lens=add(new R.TorusGeometry(.034,.003,8,24),dark,side*.044,0,0,glasses);lens.rotation.x=Math.PI/2}add(new R.BoxGeometry(.025,.004,.006),dark,0,0,0,glasses);
+ // Soft, irregular floor stain rather than a flat red primitive.
+ const stainCanvas=document.createElement('canvas');stainCanvas.width=128;stainCanvas.height=128;const sc=stainCanvas.getContext('2d'),grad=sc.createRadialGradient(64,64,8,64,64,62);grad.addColorStop(0,'rgba(35,5,7,.5)');grad.addColorStop(.55,'rgba(55,8,10,.3)');grad.addColorStop(1,'rgba(40,5,8,0)');sc.fillStyle=grad;sc.fillRect(0,0,128,128);for(let i=0;i<18;i++){const an=Math.random()*Math.PI*2,rr=24+Math.random()*34;sc.fillStyle='rgba(45,5,8,.2)';sc.beginPath();sc.ellipse(64+Math.cos(an)*rr,64+Math.sin(an)*rr,2+Math.random()*5,2+Math.random()*3,an,0,Math.PI*2);sc.fill()}
+ const st=new R.Mesh(new R.CircleGeometry(.5,48),new R.MeshBasicMaterial({map:new R.CanvasTexture(stainCanvas),transparent:true,depthWrite:false,opacity:.8}));st.rotation.x=-Math.PI/2;st.position.set(0,.006,0);st.scale.set(1.1,1.5,1);g.add(st);
  g.position.y=.04;g.userData={arm,closeEyes(){eyeWh.forEach(m=>m.visible=false);eyeBlue.forEach(m=>m.visible=false);eyeLids.forEach(m=>m.visible=true)}};return g
 }
 // Room 0 — calibration
