@@ -85,7 +85,7 @@ for(let i=0;i<16;i++){const c=cz(i);
  if(i<15){const d={mesh:box(0,1.5,c-HD,3,3,.3,M.door),open:false};d.col=d.mesh.userData.col;
   d.btn=box(2.4,1.4,c-HD+.3,.45,.6,.15,mat(0x220000,{emissive:0xff2000,emissiveIntensity:.8}),false);
   d.btn.userData={hand:'red',label:'Open door',fn(){const n=needs[i];if(n&&!F[n]){say(hints[n]);tone(110,.3,'square',.15);return}if(!d.open){openDoor(i);snd.door()}}};doors.push(d)}}
-function makeShelly(){const g=new R.Group(),sk=mat(0xe3b999,{roughness:.75}),sk2=mat(0xd9a888,{roughness:.8}),dr=mat(0x1f4fd0,{roughness:.9}),sdr=mat(0x3d8be8,{roughness:.9}),cuff=mat(0x9fd0ff,{roughness:.7}),wh=mat(0xf2f2f2,{roughness:.7}),hr=mat(0xe8b830,{roughness:.8}),dk=mat(0x1a0f0c),lip=mat(0xb04a55,{roughness:.5}),red=mat(0xcc2233,{roughness:.4}),gold=mat(0xd4af37,{metalness:.8,roughness:.3}),blk=mat(0x111111,{roughness:.5}),
+function makeShelly(){const g=new R.Group(),sk=mat(0xe3b999,{roughness:.75}),sk2=mat(0xd9a888,{roughness:.8}),dr=mat(0xe88fb4,{roughness:.9}),sdr=mat(0xf3b6cf,{roughness:.9}),cuff=mat(0xf4eee8,{roughness:.7}),wh=mat(0xf2f2f2,{roughness:.7}),hr=mat(0xe8b830,{roughness:.8}),dk=mat(0x1a0f0c),lip=mat(0xb04a55,{roughness:.5}),red=mat(0xcc2233,{roughness:.4}),gold=mat(0xd4af37,{metalness:.8,roughness:.3}),blk=mat(0x111111,{roughness:.5}),
  add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o},Sp=r=>new R.SphereGeometry(r,32,24),Bx=(w,h,d)=>new R.BoxGeometry(w,h,d),
  seg=(p,a,b,r,m)=>{const d=b.clone().sub(a),L=d.length(),o=new R.Mesh(new R.CapsuleGeometry(r,Math.max(.001,L),8,16),m);o.position.copy(a).add(b).multiplyScalar(.5);o.quaternion.setFromUnitVectors(V3(0,1,0),d.normalize());p.add(o);return o},
  hand=(p,x,y,z,ang,m)=>{const h=new R.Group();h.position.set(x,y,z);h.rotation.y=ang;p.add(h);add(Bx(.07,.022,.075),m,0,0,-.035,h);for(let i=-1.5;i<=1.5;i++){const l=.05-Math.abs(i)*.006;seg(h,V3(i*.019,0,-.07),V3(i*.019+i*.002,0,-.07-l),.0085,m)}seg(h,V3(.038,0,-.02),V3(.058,0,-.07),.01,m)},
@@ -112,12 +112,12 @@ function makeShelly(){const g=new R.Group(),sk=mat(0xe3b999,{roughness:.75}),sk2
  // neck + head
  seg(g,V3(0,.12,.4),V3(0,.14,.52),.045,sk);
  const hd=new R.Group();hd.position.set(0,.15,.63);hd.rotation.y=.35;g.add(hd);
- add(Sp(.11),sk,0,0,0,hd).scale.set(.95,1,1.1);add(Sp(.07),sk,0,-.01,-.07,hd).scale.set(.95,.8,.8);
+ add(Sp(.105),sk,0,0,0,hd).scale.set(.95,.95,1);add(Sp(.07),sk,0,-.01,-.07,hd).scale.set(.95,.8,.8);
  add(new R.CylinderGeometry(0,.018,.05,8),sk,0,.118,-.015,hd).rotation.x=-.3;
  [-1,1].forEach(sd=>{add(Sp(.022),sk2,sd*.045,.1,.025,hd).scale.set(1.4,.5,.9);add(Bx(.04,.003,.006),dk,sd*.045,.108,.02,hd);add(Bx(.05,.006,.01),hr,sd*.047,.106,.055,hd).rotation.y=-sd*.2;add(Sp(.025),sk2,sd*.108,0,0,hd).scale.set(.5,1,1.2);add(Sp(.016),wh,sd*.045,.108,.025,hd).scale.set(1.3,.45,.9);add(Sp(.011),mat(0x2a8fe8),sd*.045,.112,.025,hd).scale.set(1,.5,1);add(Sp(.012),sk2,sd*.075,.095,-.03,hd).scale.set(1,.4,1)});
  add(Sp(.025),lip,0,.1,-.065,hd).scale.set(1.5,.5,.8);add(Bx(.04,.003,.006),dk,0,.108,-.062,hd);
- add(Sp(.125),hr,0,-.03,.02,hd).scale.set(1.08,.8,1.12);add(Sp(.1),hr,0,.04,.07,hd).scale.set(1.05,.45,.55);add(new R.TorusGeometry(.113,.011,6,20,Math.PI),mat(0x1e3fb0),0,0,.05,hd);
- for(let k=-4;k<=4;k++)seg(g,V3(k*.035,.03,.72),V3(k*.07+Math.sin(k)*.03,.02,1.07+Math.cos(k)*.08),.02,hr);seg(g,V3(.04,.12,.7),V3(.09,.1,.62),.012,hr);
+ add(Sp(.115),hr,0,-.03,.02,hd).scale.set(1.04,.72,1);add(Sp(.085),hr,0,.04,.07,hd).scale.set(1,.4,.5);add(new R.TorusGeometry(.11,.009,6,20,Math.PI),mat(0xe84a75),0,0,.05,hd);
+ for(let k=-4;k<=4;k++)seg(g,V3(k*.03,.03,.7),V3(k*.055+Math.sin(k)*.02,.02,.9+Math.cos(k)*.035),.016,hr);seg(g,V3(.04,.12,.7),V3(.09,.1,.62),.012,hr);
  // left arm over belly (+x)
  const SL=V3(.19,.11,.38),EL=V3(.3,.075,.2),WL=V3(.1,.19,.1);seg(g,SL,V3(.24,.095,.3),.04,dr);seg(g,V3(.24,.095,.3),EL,.036,dr);seg(g,EL,WL,.032,dr);ring(g,WL.clone().lerp(EL,.1),WL.clone().sub(EL),.034,.01,cuff);hand(g,.1,.19,.1,1.15,sk);
  
@@ -155,7 +155,7 @@ function makeShelly(){const g=new R.Group(),sk=mat(0xe3b999,{roughness:.75}),sk2
  lore('m7',-8.5,.93,c+8,'CARETAKER LOG',"1345 sings the nap song at two o'clock. The kids call him Hedge. He never raises his voice. The Prototype's orders say he should. He refuses, every time.",true)}
 // Room 3 — toy repair bay
 {const c=cz(3);box(-8,.5,c+3,2,1,6,0x555a60);box(8,.5,c-3,2,1,6,0x555a60);box(0,.3,c,1.4,.6,16,0x222226);crate(-4,c-6,1.2);crate(4,c+6,1);
- const k=box(-8,1.04,c+3,.3,.03,.2,mat(0x3aa0ff,{emissive:0x1060ff}),false);k.userData={hand:'blue',label:'Grab keycard',fn(){F.key=true;kill(k);snd.grab();say('Keycard acquired: ARCHIVE ACCESS.',4)}};
+ // Shelly carries the Archive keycard; it is recovered by inspecting her after the collapse.
  sign('NO MORE PLAYTIME',RW,3,c+6,-Math.PI/2,2.6);
  lore('m8',8,1.03,c-3,'REPAIR TICKET 1345',"Chassis assembled from salvaged frames. Mr. Sawyer personally overrode the obedience chip. Reason given: 'The children need someone who can say no.'");
  lore('m9',8,1.03,c-5,'POSTED NOTICE',"Do NOT repair any of the Prototype's old frames. They are not toys anymore. -- Management")}
@@ -183,7 +183,7 @@ function makeShelly(){const g=new R.Group(),sk=mat(0xe3b999,{roughness:.75}),sk2
  box(7.9,.85,c-3,.18,.14,.25,0x3a62ff,false);box(8.15,.85,c-3,.18,.14,.25,0xff7aa8,false);
  lore('m18',8,.83,c-2.5,'TWO TOYS',"Two toys were laid side by side on this crate, covered with a work jacket. No note. Only a small pink ribbon and a scrap of blue fur.");
  lore('m19',5.5,1.13,c-7,'TRAM CONDUCTOR LOG',"Emergency brake override from the passenger car: authorization GIBLET. The brakes failed on purpose. Impact at the junction. One survivor ran from the wreck toward the Data Center. The Prototype walked out of the fire.");
- const sh=makeShelly();sh.position.set(-7.9,0,c-3);sh.rotation.y=.3;scene.add(sh);colr(-7.9,c-3.2,1.0,2.4);SHL.x=-7.9;SHL.z=c-3;SHL.arm=sh.userData.arm;SHL.arm.rotation.x=.6;
+ const sh=makeShelly();sh.position.set(-7.9,0,c-3);sh.rotation.y=.3;scene.add(sh);colr(-7.9,c-3.2,1.0,2.4);SHL.x=-7.9;SHL.z=c-3;SHL.arm=sh.userData.arm;SHL.arm.rotation.x=.6;SHL.body=new R.Mesh(new R.BoxGeometry(.65,.45,2.2),new R.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,colorWrite:false}));SHL.body.position.set(-7.9,.28,c-3);SHL.body.userData={hand:'',label:'Inspect Shelly',fn(){if(!SHL.done)return;if(F.key){SHL.body.userData.hand='';say('You already recovered the keycard.',3);return}F.key=true;SHL.body.userData.hand='';snd.grab();got('shellycard');showDoc("SHELLY — PLAYCARE STAFF\\n\\nA battered Archive keycard is tucked beneath her ID badge. You carefully remove it.\\n\\nKEYCARD ACQUIRED: ARCHIVE ACCESS.");say('Keycard acquired: ARCHIVE ACCESS.',4)}};scene.add(SHL.body);solids.push(SHL.body);
  SHL.m=lore('m31',-8.36,.26,c-2.9,"SHELLY'S TAPE","Shelly recording: Ludwig and I built the Lullaby protocol so Playcare had a gentle voice when the kids woke up afraid. We borrowed Mr. Sawyer's voice because they trusted it. The Prototype heard it and learned to speak with it. Everything it ever said to you through the speakers, we taught it. I'm sorry.",true);SHL.m.userData.hand=''}
 // Room 8 — poppy gel vat hall
 {const vat=(x,z)=>{const m=new R.Mesh(new R.CylinderGeometry(1.7,1.7,3.6,20),new R.MeshStandardMaterial({color:0xff4fa0,emissive:0xff2a80,emissiveIntensity:.7,transparent:true,opacity:.75,roughness:.2}));m.position.set(x,1.8,z);scene.add(m);colr(x,z,3.4,3.4);const b=new R.Mesh(new R.CylinderGeometry(1.9,1.9,.3,20),M.metal);b.position.set(x,.15,z);scene.add(b)};
@@ -294,7 +294,7 @@ function shoot(a,b){const m=new R.Mesh(new R.SphereGeometry(.09,8,6),glow(0x66ff
 function startFight(){if(FT.on||F.fight||!mhFree)return;const m=CR.m;FT.on=true;FT.hits=0;FT.t=.5;CR.state='fight';m.visible=true;grate.visible=false;m.scale.setScalar(1.4);m.rotation.set(0,0,0);m.position.set(0,.4,cz(14)-HD+3);snd.growl();seq([[0,"Giblet: Something's in here with us!",3],[3,"Metal Hedge: I've got it! Stay behind me, kid!",4]])}
 function updShelly(){if(SHL.drop&&SHL.arm.rotation.x>0)SHL.arm.rotation.x=Math.max(0,SHL.arm.rotation.x-.03);if(SHL.done||SHL.on||ri!=7||!started||intro||performance.now()-SHL.t0<11000||Math.hypot(P.x-SHL.x,P.z-SHL.z)>5.5)return;SHL.on=true;
  seq([[0,"Shelly: …is someone there?",3],[3.2,"Shelly: I didn't want this to happen. Neither did Ludwig.",5],[8.7,"Shelly: Take my tape… it's how he learned to talk. Please… stop him.",5.5],[15.5,"Giblet: …She's gone.",3],[19,"Sawyer: She and Ludwig built that system on my orders. This one is on me.",5]]);
- setTimeout(()=>{SHL.drop=true;SHL.done=true;tone(120,1.2,'sine',.15,-60);setTimeout(()=>{SHL.m.position.y=.07;SHL.m.userData.hand='use'},700)},9500)}
+ setTimeout(()=>{SHL.drop=true;SHL.done=true;tone(120,1.2,'sine',.15,-60);setTimeout(()=>{SHL.m.position.y=.07;SHL.m.userData.hand='use';SHL.body.userData.hand=F.key?'':'use'},700)},9500)}
 function updFight(dt,t){bolts.forEach(o=>{o.b.position.addScaledVector(o.v,dt);o.life-=dt});for(let i=bolts.length-1;i>=0;i--)if(bolts[i].life<=0){scene.remove(bolts[i].b);bolts.splice(i,1)}
  if(!FT.on)return;const m=CR.m,dx=P.x-m.position.x,dz=P.z-m.position.z,d=Math.hypot(dx,dz)||1;if(d>5){m.position.x+=dx/d*1.4*dt;m.position.z+=dz/d*1.4*dt}m.rotation.y=Math.atan2(dx,dz);animCr(t,1.8);
  FT.t-=dt;if(FT.t<=0){FT.t=.55;shoot(V3(MH.position.x+.4,1.2,MH.position.z),V3(m.position.x,.8,m.position.z));tone(700,.1,'square',.12,-400)}
@@ -350,7 +350,7 @@ function scare(kind){V.on=false;CH.on=false;vl.intensity=0;hideCr();const e=$('s
  setTimeout(()=>{e.style.display='none';yaw=pitch=0;blackout=false;
   if(kind=='chase'){P.set(0,1.65,cz(8)+HD-3);say('Sawyer: RUN! Red hand on the door panel!',4);setTimeout(startChase,3500)}
   else{P.set(0,1.65,c4+4);covers.forEach(c=>c.userData.hand='');V.closed=[0,0,0];say('It will find you again… be quick.',4);setTimeout(startVents,5000)}},2200)}
-function restore(k){for(let i=0;i<k;i++)openDoor(i,true);if(k>=1)F.power=true;if(k>=5)F.gen=true;if(k>=9)CH.done=true;if(k>=8){SHL.done=true;SHL.m.position.y=.07;SHL.m.userData.hand='use';SHL.arm.rotation.x=0}if(k>=10)F.key=true;if(k>=11){F.vents=V.done=true;covers.forEach(c=>c.position.y=1.2);kill(file)}if(k>=12){F.hedge=true;released=1;glass.visible=false;capCol.on=false;mhFree=true;MH.position.set(0,0,cz(k)+HD-1)}if(k>=15)F.fight=true;P.set(0,1.65,cz(k)+HD-3);yaw=pitch=0}
+function restore(k){for(let i=0;i<k;i++)openDoor(i,true);if(k>=1)F.power=true;if(k>=5)F.gen=true;if(k>=9)CH.done=true;if(k>=8){SHL.done=true;SHL.m.position.y=.07;SHL.m.userData.hand='use';SHL.body.userData.hand=F.key?'':'use';SHL.arm.rotation.x=0}if(k>=10)F.key=true;if(k>=11){F.vents=V.done=true;covers.forEach(c=>c.position.y=1.2);kill(file)}if(k>=12){F.hedge=true;released=1;glass.visible=false;capCol.on=false;mhFree=true;MH.position.set(0,0,cz(k)+HD-1)}if(k>=15)F.fight=true;P.set(0,1.65,cz(k)+HD-3);yaw=pitch=0}
 /* ---------- player ---------- */
 const keys={},P=cam.position;let intro=false,locked=false,started=false,ended=false,yaw=0,pitch=0,ri=-1,moving=false,stepT=0,shake=0,aim=null,aimD=9,aimPt=V3(),creak=8;
 const ray=new R.Raycaster();ray.far=7.5;
