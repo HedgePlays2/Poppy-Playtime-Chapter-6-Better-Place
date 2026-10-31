@@ -83,21 +83,21 @@ for(let i=0;i<16;i++){const c=cz(i);
  if(i<15){const d={mesh:box(0,1.5,c-HD,3,3,.3,M.door),open:false};d.col=d.mesh.userData.col;
   d.btn=box(2.4,1.4,c-HD+.3,.45,.6,.15,mat(0x220000,{emissive:0xff2000,emissiveIntensity:.8}),false);
   d.btn.userData={hand:'red',label:'Open door',fn(){const n=needs[i];if(n&&!F[n]){say(hints[n]);tone(110,.3,'square',.15);return}if(!d.open){openDoor(i);snd.door()}}};doors.push(d)}}
-function makeShelly(){const g=new R.Group(),sk=mat(0xe3b999,{roughness:.75}),sk2=mat(0xd9a888,{roughness:.8}),dr=mat(0x2f5f86,{roughness:.9}),wh=mat(0xf2f2f2,{roughness:.7}),hr=mat(0x5a2e1a,{roughness:.85}),dk=mat(0x1a0f0c),lip=mat(0xb04a55,{roughness:.5}),red=mat(0xcc2233,{roughness:.4}),gold=mat(0xd4af37,{metalness:.8,roughness:.3}),blk=mat(0x111111,{roughness:.5}),
+function makeShelly(){const g=new R.Group(),sk=mat(0xe3b999,{roughness:.75}),sk2=mat(0xd9a888,{roughness:.8}),dr=mat(0x1f4fd0,{roughness:.9}),sdr=mat(0x3d8be8,{roughness:.9}),cuff=mat(0x9fd0ff,{roughness:.7}),wh=mat(0xf2f2f2,{roughness:.7}),hr=mat(0xe8b830,{roughness:.8}),dk=mat(0x1a0f0c),lip=mat(0xb04a55,{roughness:.5}),red=mat(0xcc2233,{roughness:.4}),gold=mat(0xd4af37,{metalness:.8,roughness:.3}),blk=mat(0x111111,{roughness:.5}),
  add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o},Sp=r=>new R.SphereGeometry(r,14,10),Bx=(w,h,d)=>new R.BoxGeometry(w,h,d),
  seg=(p,a,b,r,m)=>{const d=b.clone().sub(a),L=d.length(),o=new R.Mesh(new R.CapsuleGeometry(r,Math.max(.001,L),4,8),m);o.position.copy(a).add(b).multiplyScalar(.5);o.quaternion.setFromUnitVectors(V3(0,1,0),d.normalize());p.add(o);return o},
- hand=(p,x,y,z,ang,m)=>{const h=new R.Group();h.position.set(x,y,z);h.rotation.y=ang;p.add(h);add(Bx(.07,.022,.075),m,0,0,-.035,h);for(let i=-1.5;i<=1.5;i++){const l=.05-Math.abs(i)*.006;seg(h,V3(i*.019,0,-.07),V3(i*.019+i*.002,0,-.07-l),.0085,m);add(Sp(.005),red,i*.019+i*.002,.007,-.07-l-.004,h)}seg(h,V3(.038,0,-.02),V3(.058,0,-.07),.01,m)},
+ hand=(p,x,y,z,ang,m)=>{const h=new R.Group();h.position.set(x,y,z);h.rotation.y=ang;p.add(h);add(Bx(.07,.022,.075),m,0,0,-.035,h);for(let i=-1.5;i<=1.5;i++){const l=.05-Math.abs(i)*.006;seg(h,V3(i*.019,0,-.07),V3(i*.019+i*.002,0,-.07-l),.0085,m)}seg(h,V3(.038,0,-.02),V3(.058,0,-.07),.01,m)},
  ring=(p,pos,dir,r,t,m)=>{const o=add(new R.TorusGeometry(r,t,6,14),m,pos.x,pos.y,pos.z,p);o.quaternion.setFromUnitVectors(V3(0,0,1),dir.clone().normalize());return o},
  foot=(x,y,z,rot,sd)=>{const f=new R.Group();f.position.set(x,y,z);f.rotation.set(.6,rot,0);g.add(f);add(Sp(.045),sk,0,0,0,f);add(Sp(.055),sk,0,-.015,-.08,f).scale.set(.85,.5,1.7);
-  [.019,.015,.014,.013,.011].forEach((r,k)=>{const tx=sd*(-.038+k*.019),tz=-.185-(k?k*.004:0);add(Sp(r),sk2,tx,-.012,tz,f);add(Sp(.0055),red,tx,-.012+r*.82,tz-.002,f)})};
+  add(Sp(.04),sk2,0,-.012,-.185,f).scale.set(1.1,.45,.8)};
  // dress: torso, bust, waist, hips, flared skirt, belt
- add(Sp(.17),dr,0,.13,.24).scale.set(1.1,.55,.9);[-1,1].forEach(sd=>add(Sp(.078),dr,sd*.07,.2,.27).scale.set(1,.8,1));
- add(Sp(.13),dr,0,.1,.05).scale.set(.95,.55,.95);add(Sp(.17),dr,0,.1,-.12).scale.set(1.2,.5,.85);
- const sk3=add(new R.CylinderGeometry(.17,.31,.55,18),dr,0,.115,-.38);sk3.rotation.x=Math.PI/2;sk3.scale.set(1,1,.42);
+ add(Sp(.17),dr,0,.13,.24).scale.set(1.1,.55,.9);
+ add(Sp(.13),dr,0,.1,.05).scale.set(.95,.55,.95);add(Sp(.17),sdr,0,.1,-.12).scale.set(1.2,.5,.85);
+ const sk3=add(new R.CylinderGeometry(.17,.31,.55,18),sdr,0,.115,-.38);sk3.rotation.x=Math.PI/2;sk3.scale.set(1,1,.42);
  add(new R.TorusGeometry(.13,.013,6,18),blk,0,.1,.07).scale.set(1,.6,1);add(Bx(.03,.012,.025),gold,0,.168,.07);
- [-1,1].forEach(sd=>add(Bx(.07,.012,.04),wh,sd*.04,.2,.43).rotation.y=sd*.5);[[.226,.2],[.215,.15],[.185,.1]].forEach(([y,z])=>add(Sp(.007),wh,0,y,z));
+ add(new R.CylinderGeometry(.052,.056,.05,12),cuff,0,.145,.47).rotation.x=Math.PI/2;add(Bx(.02,.006,.3),wh,0,.2235,.24);
  // badge + lanyard
- const bc=document.createElement('canvas');bc.width=128;bc.height=80;const bx=bc.getContext('2d');bx.fillStyle='#f4f1e6';bx.fillRect(0,0,128,80);bx.fillStyle='#2f5f86';bx.fillRect(0,0,128,16);bx.fillStyle='#fff';bx.font='bold 11px Georgia';bx.fillText('PLAYTIME CO.',6,12);bx.fillStyle='#bbb';bx.fillRect(8,24,34,44);bx.fillStyle='#111';bx.font='bold 16px Georgia';bx.fillText('SHELLY',50,42);bx.font='10px Georgia';bx.fillText('PLAYCARE STAFF',50,58);
+ const bc=document.createElement('canvas');bc.width=128;bc.height=80;const bx=bc.getContext('2d');bx.fillStyle='#f4f1e6';bx.fillRect(0,0,128,80);bx.fillStyle='#1f4fd0';bx.fillRect(0,0,128,16);bx.fillStyle='#fff';bx.font='bold 11px Georgia';bx.fillText('PLAYTIME CO.',6,12);bx.fillStyle='#bbb';bx.fillRect(8,24,34,44);bx.fillStyle='#111';bx.font='bold 16px Georgia';bx.fillText('SHELLY',50,42);bx.font='10px Georgia';bx.fillText('PLAYCARE STAFF',50,58);
  const bt=new R.CanvasTexture(bc);bt.colorSpace=R.SRGBColorSpace;const bd=add(new R.PlaneGeometry(.1,.0625),new R.MeshStandardMaterial({map:bt,roughness:.6}),-.1,.212,.19);bd.rotation.x=-Math.PI/2;
  const lan=mat(0x3377cc);seg(g,V3(-.03,.19,.45),V3(-.1,.214,.23),.004,lan);seg(g,V3(.03,.19,.45),V3(-.1,.214,.23),.004,lan);
  // neck + head
@@ -105,21 +105,21 @@ function makeShelly(){const g=new R.Group(),sk=mat(0xe3b999,{roughness:.75}),sk2
  const hd=new R.Group();hd.position.set(0,.15,.63);hd.rotation.y=.35;g.add(hd);
  add(Sp(.11),sk,0,0,0,hd).scale.set(.95,1,1.1);add(Sp(.07),sk,0,-.01,-.07,hd).scale.set(.95,.8,.8);
  add(new R.CylinderGeometry(0,.018,.05,8),sk,0,.118,-.015,hd).rotation.x=-.3;
- [-1,1].forEach(sd=>{add(Sp(.022),sk2,sd*.045,.1,.025,hd).scale.set(1.4,.5,.9);add(Bx(.04,.003,.006),dk,sd*.045,.108,.02,hd);add(Bx(.05,.006,.01),hr,sd*.047,.106,.055,hd).rotation.y=-sd*.2;add(Sp(.025),sk2,sd*.108,0,0,hd).scale.set(.5,1,1.2);add(Sp(.012),sk2,sd*.075,.095,-.03,hd).scale.set(1,.4,1)});
+ [-1,1].forEach(sd=>{add(Sp(.022),sk2,sd*.045,.1,.025,hd).scale.set(1.4,.5,.9);add(Bx(.04,.003,.006),dk,sd*.045,.108,.02,hd);add(Bx(.05,.006,.01),hr,sd*.047,.106,.055,hd).rotation.y=-sd*.2;add(Sp(.025),sk2,sd*.108,0,0,hd).scale.set(.5,1,1.2);add(Sp(.016),wh,sd*.045,.108,.025,hd).scale.set(1.3,.45,.9);add(Sp(.011),mat(0x2a8fe8),sd*.045,.112,.025,hd).scale.set(1,.5,1);add(Sp(.012),sk2,sd*.075,.095,-.03,hd).scale.set(1,.4,1)});
  add(Sp(.025),lip,0,.1,-.065,hd).scale.set(1.5,.5,.8);add(Bx(.04,.003,.006),dk,0,.108,-.062,hd);
- add(Sp(.125),hr,0,-.03,.02,hd).scale.set(1.08,.8,1.12);add(Sp(.1),hr,0,.04,.07,hd).scale.set(1.05,.45,.55);add(Bx(.025,.012,.012),red,.1,.03,.06,hd);
+ add(Sp(.125),hr,0,-.03,.02,hd).scale.set(1.08,.8,1.12);add(Sp(.1),hr,0,.04,.07,hd).scale.set(1.05,.45,.55);add(new R.TorusGeometry(.113,.011,6,20,Math.PI),mat(0x1e3fb0),0,0,.05,hd);
  for(let k=-4;k<=4;k++)seg(g,V3(k*.035,.03,.72),V3(k*.07+Math.sin(k)*.03,.02,1.07+Math.cos(k)*.08),.02,hr);seg(g,V3(.04,.12,.7),V3(.09,.1,.62),.012,hr);
  // left arm over belly (+x)
- const SL=V3(.19,.11,.38),EL=V3(.3,.075,.2),WL=V3(.1,.19,.1);seg(g,SL,V3(.24,.095,.3),.04,dr);seg(g,V3(.24,.095,.3),EL,.03,sk);seg(g,EL,WL,.026,sk);hand(g,.1,.19,.1,1.15,sk);
- ring(g,V3(.13,.178,.12),WL.clone().sub(EL),.03,.006,blk);add(Bx(.02,.008,.02),gold,.13,.2,.12);
+ const SL=V3(.19,.11,.38),EL=V3(.3,.075,.2),WL=V3(.1,.19,.1);seg(g,SL,V3(.24,.095,.3),.04,dr);seg(g,V3(.24,.095,.3),EL,.036,dr);seg(g,EL,WL,.032,dr);ring(g,WL.clone().lerp(EL,.1),WL.clone().sub(EL),.034,.01,cuff);hand(g,.1,.19,.1,1.15,sk);
+ 
  // right arm (drops the tape)
- const arm=new R.Group();arm.position.set(-.19,.11,.38);g.add(arm);seg(arm,V3(0,0,0),V3(-.05,-.015,-.08),.04,dr);seg(arm,V3(-.05,-.015,-.08),V3(-.15,-.05,-.18),.03,sk);seg(arm,V3(-.15,-.05,-.18),V3(-.27,-.06,-.38),.026,sk);hand(arm,-.28,-.06,-.4,.45,sk);ring(arm,V3(-.25,-.06,-.34),V3(-.12,-.01,-.2),.03,.005,gold);
+ const arm=new R.Group();arm.position.set(-.19,.11,.38);g.add(arm);seg(arm,V3(0,0,0),V3(-.05,-.015,-.08),.04,dr);seg(arm,V3(-.05,-.015,-.08),V3(-.15,-.05,-.18),.036,dr);seg(arm,V3(-.15,-.05,-.18),V3(-.27,-.06,-.38),.032,dr);ring(arm,V3(-.26,-.06,-.36),V3(-.12,-.01,-.2),.034,.01,cuff);hand(arm,-.28,-.06,-.4,.45,sk);
  // legs + bare feet
  const HL=V3(.1,.09,-.2),KL=V3(.12,.085,-.66),AL=V3(.1,.07,-1.1),HR=V3(-.1,.09,-.2),KR=V3(-.19,.15,-.6),AR=V3(-.12,.07,-1.02);
  seg(g,HL,KL,.065,sk);seg(g,KL,AL,.045,sk);add(Sp(.05),sk,KL.x,KL.y,KL.z);seg(g,HR,KR,.065,sk);seg(g,KR,AR,.045,sk);add(Sp(.05),sk,KR.x,KR.y,KR.z);
- foot(AL.x,AL.y,AL.z,.3,1);foot(AR.x,AR.y,AR.z,-.35,-1);ring(g,V3(.1,.075,-1.0),AL.clone().sub(KL),.047,.004,gold);
+ foot(AL.x,AL.y,AL.z,.3,1);foot(AR.x,AR.y,AR.z,-.35,-1);
  // her shoes, torn off in the crash
- add(Sp(.07),blk,.62,.045,-.85).scale.set(.9,.55,1.9);add(Sp(.07),blk,.82,.06,-1.2).rotation.z=1.2;add(Sp(.012),red,.62,.085,-.8);
+ const bs=mat(0x1a3fcf,{roughness:.5});add(Sp(.07),bs,.62,.045,-.85).scale.set(.9,.55,1.9);add(Sp(.07),bs,.82,.06,-1.2).rotation.z=1.2;
  // broken glasses
  [.3,.37].forEach(x=>{const l=add(new R.TorusGeometry(.035,.004,6,14),blk,x,.012,.78);l.rotation.x=Math.PI/2});add(Bx(.04,.004,.004),blk,.335,.012,.78);
  const st=new R.Mesh(new R.CircleGeometry(.5,24),mat(0x3a0808,{roughness:.25}));st.rotation.x=-Math.PI/2;st.position.y=.004;st.scale.set(1,1.5,1);g.add(st);
