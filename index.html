@@ -90,7 +90,7 @@ function makeShelly(){const g=new R.Group(),sk=mat(0xe3b999,{roughness:.75}),sk2
  seg=(p,a,b,r,m)=>{const d=b.clone().sub(a),L=d.length(),o=new R.Mesh(new R.CapsuleGeometry(r,Math.max(.001,L),8,16),m);o.position.copy(a).add(b).multiplyScalar(.5);o.quaternion.setFromUnitVectors(V3(0,1,0),d.normalize());p.add(o);return o},
  hand=(p,x,y,z,ang,m)=>{const h=new R.Group();h.position.set(x,y,z);h.rotation.y=ang;p.add(h);add(Bx(.07,.022,.075),m,0,0,-.035,h);for(let i=-1.5;i<=1.5;i++){const l=.05-Math.abs(i)*.006;seg(h,V3(i*.019,0,-.07),V3(i*.019+i*.002,0,-.07-l),.0085,m)}seg(h,V3(.038,0,-.02),V3(.058,0,-.07),.01,m)},
  ring=(p,pos,dir,r,t,m)=>{const o=add(new R.TorusGeometry(r,t,6,14),m,pos.x,pos.y,pos.z,p);o.quaternion.setFromUnitVectors(V3(0,0,1),dir.clone().normalize());return o},
- foot=(x,y,z,rot,sd)=>{const f=new R.Group();f.position.set(x,y,z);f.rotation.set(.6,rot,0);g.add(f);
+ foot=(x,y,z,rot,sd)=>{const f=new R.Group();f.position.set(x,y,z);f.rotation.set(Math.PI/2,rot,0);g.add(f);
    // Sculpted bare foot: heel, arch, ball, five separate toes and small toenails.
    add(Sp(.052),sk,0,0,-.025,f).scale.set(.9,.72,1.05);
    add(Sp(.055),sk,0,-.006,-.105,f).scale.set(.72,.62,1.55);
