@@ -125,22 +125,22 @@ function makeShelly(){
  const eyeWh=[],eyeBlue=[],eyeLids=[];
  for(const side of [-1,1]){
   // Soft eyelids and naturally sized eyes; no heavy dark socket shapes.
-  eyeWh.push(sph(white,side*.046,.079,.045,.019,.007,.012,head));
-  eyeBlue.push(sph(mat(0x668b9d),side*.046,.084,.052,.009,.004,.006,head));
-  sph(dark,side*.046,.087,.056,.0035,.003,.003,head);
-  sph(skinHi,side*.046,.068,.047,.019,.003,.008,head);
-  const lid=sph(skin,side*.046,.083,.053,.021,.005,.011,head);lid.visible=false;eyeLids.push(lid);
+  eyeWh.push(sph(white,side*.046,.079,.112,.019,.009,.012,head));
+  eyeBlue.push(sph(mat(0x668b9d),side*.046,.084,.121,.009,.005,.006,head));
+  sph(dark,side*.046,.087,.126,.0035,.003,.003,head);
+  sph(skinHi,side*.046,.068,.113,.019,.003,.008,head);
+  const lid=sph(skinShade,side*.046,.083,.122,.021,.006,.008,head);lid.visible=false;eyeLids.push(lid);
   // Fine, lightly coloured brows follow a natural arch instead of oversized blocks.
-  const browCurve=new R.CatmullRomCurve3([V3(side*.022,.099,.048),V3(side*.038,.103,.052),V3(side*.055,.101,.05),V3(side*.068,.096,.044)]);
+  const browCurve=new R.CatmullRomCurve3([V3(side*.022,.099,.108),V3(side*.038,.103,.116),V3(side*.055,.101,.115),V3(side*.068,.096,.105)]);
   add(new R.TubeGeometry(browCurve,12,.0018,5,false),mat(0x98734d,{roughness:1}),0,0,0,head);
   sph(skin,side*.111,.004,-.005,.018,.034,.036,head);
  }
  // A restrained nose bridge and rounded tip, blended into the face.
- const bridge=add(new R.CapsuleGeometry(.007,.032,8,12),skin,0,.071,.026,head);bridge.rotation.x=.2;
- sph(skinHi,0,.059,.014,.012,.009,.012,head);
- sph(skinShade,0,.052,.008,.007,.003,.006,head);
- const mouth=new R.CatmullRomCurve3([V3(-.018,.045,-.066),V3(-.009,.043,-.069),V3(0,.042,-.07),V3(.009,.043,-.069),V3(.018,.045,-.066)]);add(new R.TubeGeometry(mouth,16,.0022,7),lip,0,0,0,head);
- const lowerLip=new R.CatmullRomCurve3([V3(-.011,.039,-.067),V3(0,.037,-.069),V3(.011,.039,-.067)]);add(new R.TubeGeometry(lowerLip,8,.0018,6),skinShade,0,0,0,head);
+ const bridge=add(new R.CapsuleGeometry(.007,.032,8,12),skin,0,.071,.115,head);bridge.rotation.x=.2;
+ sph(skinHi,0,.059,.105,.012,.009,.012,head);
+ sph(skinShade,0,.052,.101,.007,.003,.006,head);
+ const mouth=new R.CatmullRomCurve3([V3(-.018,.045,.105),V3(-.009,.043,.111),V3(0,.042,.112),V3(.009,.043,.111),V3(.018,.045,.105)]);add(new R.TubeGeometry(mouth,16,.0022,7),lip,0,0,0,head);
+ const lowerLip=new R.CatmullRomCurve3([V3(-.011,.039,.108),V3(0,.037,.111),V3(.011,.039,.108)]);add(new R.TubeGeometry(lowerLip,8,.0018,6),skinShade,0,0,0,head);
  // Layered bob haircut, nape, side locks and individual fringe pieces.
  sph(hairDark,0,-.035,-.005,.124,.078,.157,head);sph(hair,0,-.014,.028,.12,.067,.127,head);
  for(const side of [-1,1]){const lock=sph(hair,side*.096,-.005,-.035,.035,.083,.115,head);lock.rotation.z=side*.12;sph(hairHi,side*.104,.012,-.047,.012,.053,.079,head);const fringe=sph(hairHi,side*.075,.025,.075,.039,.032,.067,head);fringe.rotation.z=-side*.24}
@@ -301,7 +301,7 @@ function makeMH(){const g=new R.Group(),mk=(c,m=.5,r=.4,e=0)=>new R.MeshStandard
  g.scale.setScalar(.85);g.userData={arms,legs,hd};return g}
 MH=makeMH();MH.position.set(0,.3,c5-1);scene.add(MH);
 let mhFree=false,endT=0;
-function freeHedge(){mhFree=true;F.hedge=true;endT=0;seq([[.5,'Metal Hedge: Systems online… Sawyer? You actually did it.'],[5,'Metal Hedge: I\'m Experiment 1345. Friends call me Hedge. The Prototype sealed me away to bury Playcare\'s secrets.',5],[11,'Giblet: Can he really help us?'],[15,'Metal Hedge: My blaster\'s charged. We\'re getting Poppy back, kid. Together, to a better place.',5]])}
+function freeHedge(){mhFree=true;F.hedge=true;endT=0;seq([[.5,'Metal Hedge: Systems online… Sawyer? You actually did it.'],[5,'Metal Hedge: I\'m Experiment 1345. Friends call me Hedge. The Prototype sealed me away to bury Playcare\'s secrets.',5],[11,'Giblet: Can he really help us?'],[15,'Metal Hedge: My blaster\'s charged. We\'re getting Poppy back, kid. Together, to a better place.',5],[22,'Metal Hedge: There\'s someone I still need to get home to. My wife, Mary. I promised her I\'d make it back… and I intend to keep that promise.',6]])}
 /* ---------- the Vent Crawler ---------- */
 function makeCrawler(){const g=new R.Group(),sk=mat(0x1b1816,{roughness:.6,metalness:.2}),pl=mat(0xcfc8a8,{roughness:.5}),dk=mat(0x050505),eye=mat(0x220000,{emissive:0xff1a1a,emissiveIntensity:2}),wh=mat(0xf2efe0,{roughness:.4}),
  add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o},Sp=r=>new R.SphereGeometry(r,12,10),Cy=(a,b,h)=>new R.CylinderGeometry(a,b,h,8);
