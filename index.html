@@ -132,7 +132,7 @@ function makeShelly(){const g=new R.Group(),sk=mat(0xe3b999,{roughness:.75}),sk2
  // broken glasses
  [.3,.37].forEach(x=>{const l=add(new R.TorusGeometry(.035,.004,6,14),blk,x,.012,.78);l.rotation.x=Math.PI/2});add(Bx(.04,.004,.004),blk,.335,.012,.78);
  const st=new R.Mesh(new R.CircleGeometry(.5,24),mat(0x3a0808,{roughness:.25}));st.rotation.x=-Math.PI/2;st.position.y=.004;st.scale.set(1,1.5,1);g.add(st);
- g.rotation.x=-Math.PI/2;g.position.y=1.1;g.userData={arm};return g}
+ g.rotation.x=-Math.PI/2;g.position.y=1.15;g.userData={arm};return g}
 // Room 0 — calibration
 {const c=cz(0);sign('LEFT CLICK: BLUE HAND  ·  RIGHT CLICK: RED HAND',RW,2.3,c,-Math.PI/2,4,'#8cf');sign('EVERY TOY IS A FRIEND',LW,2.8,c-5,Math.PI/2,3,'#fd6');
  box(-9.7,1.5,c+2,.2,.5,.3,0x222222,false);
