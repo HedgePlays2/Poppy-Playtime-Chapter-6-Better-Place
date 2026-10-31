@@ -20,7 +20,7 @@ button{padding:12px 30px;font:18px Georgia;background:#1b1b22;color:#fff;border:
 <div class="o" id="menu"><h1>POPPY PLAYTIME</h1><h2>Chapter 6 — A Better Place</h2><p class="s" style="color:#ccc;font-size:16px">Directly after Chapter 5, you find yourself with a Backup of Sawyer and Giblet, and the Prototype is on the loose…</p>
 <p class="s">Fan-made · not affiliated with MOB Games</p>
 <button id="new">New Game</button><button id="cont" style="display:none">Continue</button><button id="cloud">Sign in with Puter (cloud save)</button>
-<p class="s">WASD move · Shift run · Mouse look · <b style="color:#59f">Left-click = blue hand</b> · <b style="color:#f54">Right-click = red hand</b> · E use/read · F flashlight</p></div>
+<p class="s">WASD move · Shift run · Space jump · Mouse look · <b style="color:#59f">Left-click = blue hand</b> · <b style="color:#f54">Right-click = red hand</b> · E use/read · F flashlight</p></div>
 <script src="https://js.puter.com/v2/"></script>
 <script type="module">
 import * as R from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
@@ -352,9 +352,9 @@ function scare(kind){V.on=false;CH.on=false;vl.intensity=0;hideCr();const e=$('s
   else{P.set(0,1.65,c4+4);covers.forEach(c=>c.userData.hand='');V.closed=[0,0,0];say('It will find you again… be quick.',4);setTimeout(startVents,5000)}},2200)}
 function restore(k){for(let i=0;i<k;i++)openDoor(i,true);if(k>=1)F.power=true;if(k>=5)F.gen=true;if(k>=9)CH.done=true;if(k>=8){SHL.done=true;SHL.m.position.y=.07;SHL.m.userData.hand='use';SHL.body.userData.hand=F.key?'':'use';SHL.arm.rotation.x=0}if(k>=10)F.key=true;if(F.key)SHL.body.userData.hand='';if(k>=11){F.vents=V.done=true;covers.forEach(c=>c.position.y=1.2);kill(file)}if(k>=12){F.hedge=true;released=1;glass.visible=false;capCol.on=false;mhFree=true;MH.position.set(0,0,cz(k)+HD-1)}if(k>=15)F.fight=true;P.set(0,1.65,cz(k)+HD-3);yaw=pitch=0}
 /* ---------- player ---------- */
-const keys={},P=cam.position;let intro=false,locked=false,started=false,ended=false,yaw=0,pitch=0,ri=-1,moving=false,stepT=0,shake=0,aim=null,aimD=9,aimPt=V3(),creak=8;
+const keys={},P=cam.position;let intro=false,locked=false,started=false,ended=false,yaw=0,pitch=0,ri=-1,moving=false,stepT=0,shake=0,aim=null,aimD=9,aimPt=V3(),creak=8,jumpY=0,jumpV=0;
 const ray=new R.Raycaster();ray.far=7.5;
-addEventListener('keydown',e=>{keys[e.code]=1;if(e.code=='Enter'&&intro)endIntro();if(!locked)return;if(e.code=='KeyE'&&aim&&aim.hand=='use'&&aimD<4)aim.fn();if(e.code=='KeyF')fl.visible=!fl.visible});
+addEventListener('keydown',e=>{keys[e.code]=1;if(e.code=='Space'){e.preventDefault();if(locked&&jumpY<=.001)jumpV=5.2}if(e.code=='Enter'&&intro)endIntro();if(!locked)return;if(e.code=='KeyE'&&aim&&aim.hand=='use'&&aimD<4)aim.fn();if(e.code=='KeyF')fl.visible=!fl.visible});
 addEventListener('keyup',e=>keys[e.code]=0);
 addEventListener('mousemove',e=>{if(!locked)return;yaw-=e.movementX*.0022;pitch=Math.max(-1.4,Math.min(1.4,pitch-e.movementY*.0022))});
 addEventListener('contextmenu',e=>e.preventDefault());
@@ -369,7 +369,7 @@ scene.traverse(o=>{if(o.isMesh){o.receiveShadow=true;if(o.geometry.type!=='Plane
 const clock=new R.Clock(),fwdV=V3();
 function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime;
  if(locked&&!ended&&!intro){move(dt);stepT-=dt;if(moving&&stepT<=0){noise(.08,.12,500);stepT=keys.ShiftLeft?.3:.46}creak-=dt;if(creak<=0){tone(100+Math.random()*100,.9,'triangle',.07,-40);creak=8+Math.random()*12}}
- const bob=moving?Math.sin(t*9)*.03:0;shake=Math.max(0,shake-dt);P.y=1.65+bob;
+ const bob=moving?Math.sin(t*9)*.03:0;shake=Math.max(0,shake-dt);if(locked){jumpV-=13.5*dt;jumpY+=jumpV*dt;if(jumpY<0){jumpY=0;jumpV=0}}else{jumpY=0;jumpV=0}P.y=1.65+bob+jumpY;
  cam.rotation.set(pitch,yaw+(shake?(Math.random()-.5)*.04:0),0);cam.updateMatrixWorld();
  // aim
  ray.setFromCamera({x:0,y:0},cam);const h=ray.intersectObjects(solids,false)[0];aim=null;
