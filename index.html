@@ -14,7 +14,7 @@ h1{font-size:54px;letter-spacing:8px;color:#f33;text-shadow:0 0 22px #a00}h2{fon
 button{padding:12px 30px;font:18px Georgia;background:#1b1b22;color:#fff;border:1px solid #f33;cursor:pointer}button:hover{background:#a11}
 #intro{inset:0;background:#000;display:none;align-items:center;justify-content:center;text-align:center;padding:10%;font-size:26px;line-height:1.5;color:#ddd;font-style:italic;z-index:7;transition:opacity 1.5s}#obj{top:14px;left:18px;color:#cba;font-size:14px;line-height:1.5;opacity:.85;max-width:40%}#vig{inset:0;pointer-events:none;box-shadow:inset 0 0 170px #50000099}#logs{top:14px;right:18px;color:#cba;font-size:14px;opacity:.85}#scare{inset:0;display:none;z-index:8;background:radial-gradient(circle at 35% 42%,#fff 0 3%,transparent 3.5%),radial-gradient(circle at 65% 42%,#fff 0 3%,transparent 3.5%),radial-gradient(ellipse at 50% 72%,#000 0 14%,#d00 15% 17%,transparent 18%),#400}
 </style></head><body>
-<div class="o" id="cross"></div><div class="o" id="label"></div><div class="o" id="sub"></div><div class="o" id="banner"></div><div class="o" id="doc"></div><div class="o" id="scare"></div><div class="o" id="logs">Logs 0/30</div><div class="o" id="obj"></div><div class="o" id="vig"></div><div class="o" id="intro"></div>
+<div class="o" id="cross"></div><div class="o" id="label"></div><div class="o" id="sub"></div><div class="o" id="banner"></div><div class="o" id="doc"></div><div class="o" id="scare"></div><div class="o" id="logs">Logs 0/31</div><div class="o" id="obj"></div><div class="o" id="vig"></div><div class="o" id="intro"></div>
 <div class="o" id="pause"><h2>PAUSED — click to resume</h2></div>
 <div class="o" id="end"><h1>TO BE CONTINUED…</h1><h2>Poppy Playtime: Chapter 6 — A Better Place</h2><p class="s" id="endlogs"></p><p class="s">Fan-made by Hedge. Not affiliated with MOB Games.</p></div>
 <div class="o" id="menu"><h1>POPPY PLAYTIME</h1><h2>Chapter 6 — A Better Place</h2><p class="s" style="color:#ccc;font-size:16px">Directly after Chapter 5, you find yourself with a Backup of Sawyer and Giblet, and the Prototype is on the loose…</p>
@@ -67,7 +67,7 @@ box(0,-.1,-195,2*HW+.4,.2,414,M.floor,false);box(0,4.1,-195,2*HW+.4,.2,414,M.cei
 const gap=z=>{box(-5.75,2,z,8.5,4,.4,M.wall);box(5.75,2,z,8.5,4,.4,M.wall);box(0,3.5,z,3,1,.4,M.wall,false)};
 const doors=[],needs=['power',null,null,null,'gen',null,null,null,null,'key','vents','hedge',null,null,'fight'],hints={hedge:'The blast shutter is welded shut. Free Experiment 1345 first.',fight:'The door is locked. Deal with the creature first.',gen:'No power to this door. Start the generator.',power:'The door panel has no power. Find the lever.',key:'Keycard required.',vents:'Sealed. Something is still in the vents.'};
 function openDoor(i,instant){const d=doors[i];if(d.open)return;d.open=true;d.col.on=false;d.btn.material.emissive.set(0x00ff40);if(instant)d.mesh.position.y=5.1}
-const blink=[],seen=new Set(),LOGS=30;
+const SHL={done:false,on:false,t0:0},blink=[],seen=new Set(),LOGS=31;
 function got(id){if(!seen.has(id)){seen.add(id);$('logs').textContent='Logs '+seen.size+'/'+LOGS}}
 function lore(id,x,y,z,title,body,tape){const m=box(x,y,z,tape?.28:.32,.03,tape?.18:.42,tape?mat(0x111111,{emissive:0x3399ff,emissiveIntensity:.8}):0xeee5c0,false);m.userData={hand:'use',label:tape?'Play tape':'Read note',fn(){showDoc(title+'\n\n'+body,!!tape);got(id)}};return m}
 const tb=(x,z,w=2.2,d=1)=>box(x,.45,z,w,.9,d,0x6b4a2a),crate=(x,z,s=1)=>box(x,s/2,z,s,s,s,0x5a4a32),shelf=(x,z,w,d)=>box(x,1.2,z,w,2.4,d,0x3a3a40),RW=HW-.22,LW=-HW+.22;
@@ -83,6 +83,12 @@ for(let i=0;i<16;i++){const c=cz(i);
  if(i<15){const d={mesh:box(0,1.5,c-HD,3,3,.3,M.door),open:false};d.col=d.mesh.userData.col;
   d.btn=box(2.4,1.4,c-HD+.3,.45,.6,.15,mat(0x220000,{emissive:0xff2000,emissiveIntensity:.8}),false);
   d.btn.userData={hand:'red',label:'Open door',fn(){const n=needs[i];if(n&&!F[n]){say(hints[n]);tone(110,.3,'square',.15);return}if(!d.open){openDoor(i);snd.door()}}};doors.push(d)}}
+function makeShelly(){const g=new R.Group(),sk=mat(0xe0b090,{roughness:.8}),dr=mat(0x3a6a8a,{roughness:.9}),hr=mat(0x2a1a14,{roughness:.9}),add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o};
+ add(new R.BoxGeometry(.38,.16,.6),dr,0,.1,0);add(new R.BoxGeometry(.4,.14,.35),dr,0,.09,-.45);add(new R.SphereGeometry(.13,12,10),sk,0,.14,.45);add(new R.SphereGeometry(.14,12,10),hr,0,.17,.5).scale.set(1,.8,1);
+ [-1,1].forEach(sd=>{add(new R.BoxGeometry(.1,.09,.55),sk,sd*.1,.06,-.95);add(new R.BoxGeometry(.1,.05,.18),sk,sd*.1,.04,-1.28);for(let k=0;k<5;k++)add(new R.SphereGeometry(.014,6,5),sk,sd*.1-.04+k*.02,.04,-1.38)});
+ add(new R.BoxGeometry(.09,.08,.45),sk,.3,.07,.25).rotation.y=-.3;
+ const arm=new R.Group();arm.position.set(-.24,.08,.3);g.add(arm);add(new R.BoxGeometry(.09,.08,.5),sk,0,0,.25,arm);
+ add(new R.BoxGeometry(.5,.01,.9),mat(0x2a0a0a),0,.005,-.1);g.userData={arm};return g}
 // Room 0 — calibration
 {const c=cz(0);sign('LEFT CLICK: BLUE HAND  ·  RIGHT CLICK: RED HAND',RW,2.3,c,-Math.PI/2,4,'#8cf');sign('EVERY TOY IS A FRIEND',LW,2.8,c-5,Math.PI/2,3,'#fd6');
  box(-9.7,1.5,c+2,.2,.5,.3,0x222222,false);
@@ -132,7 +138,9 @@ for(let i=0;i<16;i++){const c=cz(i);
  crate(6,c+6,1.4);crate(7.5,c+5.5,.9);crate(5.5,c-7,1.1);crate(8,c-3,.8);
  box(7.9,.85,c-3,.18,.14,.25,0x3a62ff,false);box(8.15,.85,c-3,.18,.14,.25,0xff7aa8,false);
  lore('m18',8,.83,c-2.5,'TWO TOYS',"Two toys were laid side by side on this crate, covered with a work jacket. No note. Only a small pink ribbon and a scrap of blue fur.");
- lore('m19',5.5,1.13,c-7,'TRAM CONDUCTOR LOG',"Emergency brake override from the passenger car: authorization GIBLET. The brakes failed on purpose. Impact at the junction. One survivor ran from the wreck toward the Data Center. The Prototype walked out of the fire.")}
+ lore('m19',5.5,1.13,c-7,'TRAM CONDUCTOR LOG',"Emergency brake override from the passenger car: authorization GIBLET. The brakes failed on purpose. Impact at the junction. One survivor ran from the wreck toward the Data Center. The Prototype walked out of the fire.");
+ const sh=makeShelly();sh.position.set(-7.9,0,c-3);sh.rotation.y=.3;scene.add(sh);colr(-7.9,c-3,.9,1.9);SHL.x=-7.9;SHL.z=c-3;SHL.arm=sh.userData.arm;SHL.arm.rotation.x=-.6;
+ SHL.m=lore('m31',-7.9,.06,c-2.1,"SHELLY'S TAPE","Shelly recording: Ludwig and I built the Lullaby protocol so Playcare had a gentle voice when the kids woke up afraid. We borrowed Mr. Sawyer's voice because they trusted it. The Prototype heard it and learned to speak with it. Everything it ever said to you through the speakers, we taught it. I'm sorry.",true);SHL.m.userData.hand='';SHL.m.visible=false}
 // Room 8 — poppy gel vat hall
 {const vat=(x,z)=>{const m=new R.Mesh(new R.CylinderGeometry(1.7,1.7,3.6,20),new R.MeshStandardMaterial({color:0xff4fa0,emissive:0xff2a80,emissiveIntensity:.7,transparent:true,opacity:.75,roughness:.2}));m.position.set(x,1.8,z);scene.add(m);colr(x,z,3.4,3.4);const b=new R.Mesh(new R.CylinderGeometry(1.9,1.9,.3,20),M.metal);b.position.set(x,.15,z);scene.add(b)};
  const c=cz(8);vat(-6,c+5);vat(6,c+5);vat(-6,c-4);vat(6,c-4);box(0,.02,c+2,2.4,.02,12,glow(0xff4fa0,.35),false);
@@ -240,6 +248,9 @@ function updCrawler(dt,t){const m=CR.m;
 const bolts=[],FT={on:false,hits:0,t:0};
 function shoot(a,b){const m=new R.Mesh(new R.SphereGeometry(.09,8,6),glow(0x66ff88,2));m.position.copy(a);scene.add(m);bolts.push({b:m,v:b.clone().sub(a).normalize().multiplyScalar(16),life:1.2})}
 function startFight(){if(FT.on||F.fight||!mhFree)return;const m=CR.m;FT.on=true;FT.hits=0;FT.t=.5;CR.state='fight';m.visible=true;grate.visible=false;m.scale.setScalar(1.4);m.rotation.set(0,0,0);m.position.set(0,.4,cz(14)-HD+3);snd.growl();seq([[0,"Giblet: Something's in here with us!",3],[3,"Metal Hedge: I've got it! Stay behind me, kid!",4]])}
+function updShelly(){if(SHL.done||SHL.on||ri!=7||!started||intro||performance.now()-SHL.t0<11000||Math.hypot(P.x-SHL.x,P.z-SHL.z)>5.5)return;SHL.on=true;
+ seq([[0,"Shelly: …is someone there?",3],[3.2,"Shelly: I didn't want this to happen. Neither did Ludwig.",5],[8.7,"Shelly: Take my tape… it's how he learned to talk. Please… stop him.",5.5],[15.5,"Giblet: …She's gone.",3],[19,"Sawyer: She and Ludwig built that system on my orders. This one is on me.",5]]);
+ setTimeout(()=>{SHL.arm.rotation.x=0;SHL.m.visible=true;SHL.m.userData.hand='use';SHL.done=true;tone(120,1.2,'sine',.15,-60)},9500)}
 function updFight(dt,t){bolts.forEach(o=>{o.b.position.addScaledVector(o.v,dt);o.life-=dt});for(let i=bolts.length-1;i>=0;i--)if(bolts[i].life<=0){scene.remove(bolts[i].b);bolts.splice(i,1)}
  if(!FT.on)return;const m=CR.m,dx=P.x-m.position.x,dz=P.z-m.position.z,d=Math.hypot(dx,dz)||1;if(d>5){m.position.x+=dx/d*1.4*dt;m.position.z+=dz/d*1.4*dt}m.rotation.y=Math.atan2(dx,dz);animCr(t,1.8);
  FT.t-=dt;if(FT.t<=0){FT.t=.55;shoot(V3(MH.position.x+.4,1.2,MH.position.z),V3(m.position.x,.8,m.position.z));tone(700,.1,'square',.12,-400)}
@@ -295,7 +306,7 @@ function scare(kind){V.on=false;CH.on=false;vl.intensity=0;hideCr();const e=$('s
  setTimeout(()=>{e.style.display='none';yaw=pitch=0;blackout=false;
   if(kind=='chase'){P.set(0,1.65,cz(8)+HD-3);say('Sawyer: RUN! Red hand on the door panel!',4);setTimeout(startChase,3500)}
   else{P.set(0,1.65,c4+4);covers.forEach(c=>c.userData.hand='');V.closed=[0,0,0];say('It will find you again… be quick.',4);setTimeout(startVents,5000)}},2200)}
-function restore(k){for(let i=0;i<k;i++)openDoor(i,true);if(k>=1)F.power=true;if(k>=5)F.gen=true;if(k>=9)CH.done=true;if(k>=10)F.key=true;if(k>=11){F.vents=V.done=true;covers.forEach(c=>c.position.y=1.2);kill(file)}if(k>=12){F.hedge=true;released=1;glass.visible=false;capCol.on=false;mhFree=true;MH.position.set(0,0,cz(k)+HD-1)}if(k>=15)F.fight=true;P.set(0,1.65,cz(k)+HD-3);yaw=pitch=0}
+function restore(k){for(let i=0;i<k;i++)openDoor(i,true);if(k>=1)F.power=true;if(k>=5)F.gen=true;if(k>=9)CH.done=true;if(k>=8){SHL.done=true;SHL.m.visible=true;SHL.m.userData.hand='use';SHL.arm.rotation.x=0}if(k>=10)F.key=true;if(k>=11){F.vents=V.done=true;covers.forEach(c=>c.position.y=1.2);kill(file)}if(k>=12){F.hedge=true;released=1;glass.visible=false;capCol.on=false;mhFree=true;MH.position.set(0,0,cz(k)+HD-1)}if(k>=15)F.fight=true;P.set(0,1.65,cz(k)+HD-3);yaw=pitch=0}
 /* ---------- player ---------- */
 const keys={},P=cam.position;let intro=false,locked=false,started=false,ended=false,yaw=0,pitch=0,ri=-1,moving=false,stepT=0,shake=0,aim=null,aimD=9,aimPt=V3(),creak=8;
 const ray=new R.Raycaster();ray.far=7.5;
@@ -347,6 +358,7 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.
   if(r==3)say('Giblet: Look for any kind of keycard. The Archive door won\'t open without one.',5);
   if(r==4)say("Sawyer: Generator 3 feeds the Neural wing. Start it.",4);
   if(r==6)say('Giblet: The cameras… they\'re all turning toward us.',4);
+  if(r==7){SHL.t0=performance.now()}
   if(r==7)seq([[.5,"Giblet: This is the tram I crashed. It didn't stop him.",4],[5,"Sawyer: I'm sorry. About Kissy and Huggy. About all of it.",4]]);
   if(r==8){say("Sawyer: Careful. The gel remembers.",4);if(!CH.done)setTimeout(startChase,3500)}
   if(r==9)say("Sawyer: My old studio. I recorded the welcome message here.",4);
@@ -355,7 +367,7 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.
   if(r==14)setTimeout(startFight,2500);
   if(r==15){seq([[.5,"Giblet: Poppy was here. The cage is open from the inside…",4],[5,"Sawyer: He is taking her deeper. To what he calls a better place.",5],[10.5,"Metal Hedge: Then that is where we are going. Stay close, kid.",5]]);endT=18}
   if(r==5)seq([[.5,"Sawyer: Well now, this is a rather interesting turn of events. These were my halls once.",5],[6,"Sawyer: I can feel the Prototype listening in the wires.",4],[11,'Giblet: Then keep your voice down.',3],[15,"Sawyer: Read my log on the terminal. File 7 in the Archive explains Experiment 1345.",6]])}
- updFight(dt,t);updCrawler(dt,t);ren.render(scene,cam)}
+ updShelly();updFight(dt,t);updCrawler(dt,t);ren.render(scene,cam)}
 /* ---------- menu ---------- */
 const INTRO=["Chapter Five ended in the dark.","The Prototype wounded you, sank you in Poppy Gel, and took Poppy with him.","Giblet's cane pulled you back. In the Data Center you found the Doctor: \"Well now, this is a rather interesting turn of events.\"","Now Sawyer himself glows on your GrabPack as Glowby, and the Prototype is on the loose.","Save Poppy. Destroy the Prototype.  (Press Enter to skip)"],introTm=[];
 function endIntro(){if(!intro)return;intro=false;introTm.forEach(clearTimeout);const e=$('intro');e.style.opacity=0;setTimeout(()=>e.style.display='none',1600)}
