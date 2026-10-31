@@ -90,33 +90,62 @@ function makeShelly(){
  const g=new R.Group(),skin=mat(0xe7c3a8,{roughness:.72}),skinShade=mat(0xd6a58e),skinLight=mat(0xf0d1b9),navy=mat(0x193d78),blue=mat(0x8fc9ed),pale=mat(0xd9eff8),white=mat(0xf1eee6),hair=mat(0xd7a52f),hairLight=mat(0xf0c85a),hairDark=mat(0x9e6d20),dark=mat(0x34251f),lip=mat(0x9e5e61),gold=mat(0xc5a04a,{metalness:.35,roughness:.48});
  const add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o},sph=(m,x,y,z,sx,sy,sz,p=g)=>{const o=add(new R.SphereGeometry(1,32,24),m,x,y,z,p);o.scale.set(sx,sy,sz);return o};
  const seg=(p,a,b,r,m)=>{const d=b.clone().sub(a),o=new R.Mesh(new R.CapsuleGeometry(r,Math.max(.001,d.length()-2*r),10,18),m);o.position.copy(a).add(b).multiplyScalar(.5);o.quaternion.setFromUnitVectors(V3(0,1,0),d.normalize());p.add(o);return o};
- const foot=(x,z,side)=>{const f=new R.Group();f.position.set(x,.045,z);f.rotation.y=side*.07;g.add(f);sph(skin,0,0,-.035,.052,.038,.075,f);sph(skin,0,-.002,-.12,.045,.032,.105,f);sph(skinLight,0,-.003,-.205,.061,.033,.075,f);for(let i=0;i<5;i++){const u=i-2,len=[.035,.046,.041,.034,.028][i];sph(skinLight,u*.023,-.002,-.255-Math.max(0,2-Math.abs(u))*.004,.014,.014,len*.55,f)}};
- // Tailored blue dress with a shaped bodice, waist, flared skirt and white collar.
+ // Shelly lies flat on her back: her face points upward, with her head supported by her neck.
  sph(navy,0,.105,.22,.175,.105,.235);sph(navy,0,.105,.045,.145,.085,.14);sph(blue,0,.095,-.18,.18,.082,.21);
  const skirt=add(new R.CylinderGeometry(.16,.29,.39,32),blue,0,.105,-.39);skirt.rotation.x=Math.PI/2;skirt.scale.set(1,.72,1);
  sph(pale,0,.19,.365,.095,.025,.055);for(const s of [-1,1]){sph(pale,s*.13,.14,.29,.055,.045,.07);sph(white,s*.145,.14,.245,.045,.04,.045)}
  const belt=add(new R.TorusGeometry(.135,.012,8,32),navy,0,.12,.015);belt.scale.set(1,.6,1);add(new R.BoxGeometry(.035,.018,.018),gold,0,.145,.015);
- // Staff badge.
+ // Staff ID badge.
  const badge=document.createElement('canvas');badge.width=256;badge.height=160;const bc=badge.getContext('2d');bc.fillStyle='#f3f0e8';bc.fillRect(0,0,256,160);bc.fillStyle='#193d78';bc.fillRect(0,0,256,34);bc.fillStyle='#fff';bc.font='bold 22px Georgia';bc.fillText('PLAYTIME CO.',12,25);bc.fillStyle='#333';bc.font='bold 29px Georgia';bc.fillText('SHELLY',90,83);bc.font='19px Georgia';bc.fillText('PLAYCARE STAFF',90,116);bc.fillStyle='#c6d9e5';bc.fillRect(16,48,58,92);
  const bt=new R.CanvasTexture(badge);bt.colorSpace=R.SRGBColorSpace;const bd=add(new R.PlaneGeometry(.15,.095),new R.MeshStandardMaterial({map:bt,roughness:.7}),-.09,.205,.19);bd.rotation.x=-Math.PI/2;
- seg(g,V3(-.035,.205,.38),V3(-.09,.205,.23),.004,navy);seg(g,V3(0,.12,.39),V3(0,.13,.51),.045,skin);
- // Face with cheeks, nose, lips, brows and a blonde bob.
- const head=new R.Group();head.position.set(0,.145,.64);head.rotation.y=.35;g.add(head);
- sph(skin,0,0,0,.112,.105,.135,head);sph(skinLight,0,-.006,-.075,.082,.074,.07,head);
- for(const s of [-1,1])sph(skinLight,s*.064,.032,-.035,.033,.03,.045,head);
- sph(skinShade,0,.085,-.015,.014,.023,.025,head);sph(lip,0,.083,-.072,.026,.009,.014,head);sph(skin,0,.035,-.105,.045,.035,.035,head);
- const eyeWh=[],eyeBlue=[],eyeLids=[];
- for(const s of [-1,1]){sph(skinShade,s*.046,.083,.025,.03,.012,.022,head);const ew=sph(white,s*.046,.091,.025,.022,.009,.014,head);eyeWh.push(ew);const ir=sph(mat(0x5d9cc9),s*.046,.098,.024,.011,.005,.011,head);eyeBlue.push(ir);sph(dark,s*.046,.101,.023,.004,.003,.006,head);const brow=sph(hairDark,s*.047,.105,.061,.032,.007,.009,head);brow.rotation.z=-s*.08;const lid=sph(skin,s*.046,.094,.026,.025,.006,.012,head);lid.visible=false;eyeLids.push(lid);sph(skinShade,s*.108,-.005,-.005,.018,.032,.03,head);sph(gold,s*.119,.012,-.005,.006,.006,.006,head)}
- sph(hair,0,.055,.025,.119,.075,.15,head);sph(hairDark,0,-.018,.065,.112,.065,.12,head);
- for(const s of [-1,1]){const lock=sph(hair,s*.096,.018,-.015,.034,.085,.115,head);lock.rotation.z=s*.12;sph(hairLight,s*.096,.02,-.035,.012,.07,.075,head);seg(head,V3(s*.08,.085,.085),V3(s*.055,.085,-.035),.018,hairLight)}
- sph(hairLight,0,.105,.018,.085,.018,.055,head);const band=add(new R.TorusGeometry(.108,.012,8,32,Math.PI),navy,0,.075,.035,head);band.rotation.x=Math.PI/2;
- // Arms and hands resting naturally against her sides.
- const arm=new R.Group();arm.position.set(-.18,.12,.34);g.add(arm);seg(arm,V3(0,0,0),V3(-.055,-.015,-.13),.043,navy);seg(arm,V3(-.055,-.015,-.13),V3(-.14,-.035,-.25),.034,skin);sph(skin,-.15,-.04,-.28,.034,.022,.048,arm);for(let i=0;i<4;i++)seg(arm,V3(-.16+i*.012,-.04,-.29),V3(-.17+i*.014,-.045,-.33),.008,skin);
- const other=new R.Group();other.position.set(.18,.12,.34);g.add(other);seg(other,V3(0,0,0),V3(.075,-.015,-.13),.043,navy);seg(other,V3(.075,-.015,-.13),V3(.12,.015,-.22),.033,skin);sph(skin,.12,.018,-.245,.035,.022,.05,other);
- // Natural legs and detailed bare feet.
+ // Neck runs naturally from the shoulders to the base of the skull.
+ const neck=new R.Mesh(new R.CylinderGeometry(.047,.055,.15,20),skin);neck.position.set(0,.12,.49);neck.rotation.x=Math.PI/2;g.add(neck);
+ // Face is deliberately kept clear on the upward-facing side of the head.
+ const head=new R.Group();head.position.set(0,.135,.655);g.add(head);
+ sph(skin,0,0,0,.112,.105,.135,head);
+ sph(skinLight,0,.045,-.015,.084,.065,.085,head);
+ for(const s of [-1,1]){
+  sph(skinLight,s*.065,.066,-.035,.032,.024,.04,head);
+  const ew=sph(white,s*.046,.095,.025,.022,.009,.014,head);eyeWh.push(ew);
+  const ir=sph(mat(0x5d9cc9),s*.046,.103,.024,.011,.005,.011,head);eyeBlue.push(ir);
+  sph(dark,s*.046,.106,.023,.004,.003,.006,head);
+  const brow=sph(hairDark,s*.047,.108,.061,.032,.007,.009,head);brow.rotation.z=-s*.08;
+  const lid=sph(skin,s*.046,.098,.026,.025,.006,.012,head);lid.visible=false;eyeLids.push(lid);
+ }
+ sph(skinShade,0,.102,-.012,.012,.012,.025,head);
+ sph(lip,0,.101,-.065,.026,.008,.012,head);
+ // Blonde bob sits behind the face, not over it. A soft fringe frames the forehead.
+ sph(hairDark,0,-.045,.005,.12,.072,.15,head);
+ sph(hair,0,-.012,.055,.115,.06,.105,head);
+ for(const s of [-1,1]){
+  const lock=sph(hair,s*.097,-.005,-.025,.031,.075,.11,head);lock.rotation.z=s*.12;
+  sph(hairLight,s*.098,.005,-.045,.012,.055,.075,head);
+ }
+ sph(hairLight,0,.035,.112,.075,.025,.035,head);
+ const band=add(new R.TorusGeometry(.108,.012,8,32,Math.PI),navy,0,.025,.04,head);band.rotation.x=Math.PI/2;
+ // Both arms rest alongside her body and end in complete, visible hands.
+ const arm=new R.Group();arm.position.set(-.16,.105,.32);g.add(arm);
+ seg(arm,V3(0,0,0),V3(-.07,-.005,-.13),.043,navy);
+ seg(arm,V3(-.07,-.005,-.13),V3(-.145,.012,-.25),.032,skin);
+ const makeHand=(p,x,y,z,dir)=>{
+  const h=new R.Group();h.position.set(x,y,z);h.rotation.y=dir*.08;p.add(h);
+  sph(skin,0,0,0,.043,.025,.052,h);
+  // Four separated fingers with rounded tips, plus a distinct thumb.
+  for(let i=0;i<4;i++){const fx=(i-1.5)*.019,len=[.045,.057,.052,.04][i];seg(h,V3(fx,0,-.025),V3(fx+dir*.006,-.002,-.025-len),.009,skin);sph(skinLight,fx+dir*.006,-.002,-.025-len,.009,.009,.012,h)}
+  seg(h,V3(dir*.034,0,.006),V3(dir*.064,-.002,-.035),.011,skin);sph(skinLight,dir*.064,-.002,-.035,.011,.009,.012,h);
+  sph(skinShade,0,.022,-.002,.018,.004,.018,h);
+  return h
+ };
+ makeHand(arm,-.16,.012,-.29,-1);
+ const other=new R.Group();other.position.set(.16,.105,.32);g.add(other);
+ seg(other,V3(0,0,0),V3(.07,-.005,-.13),.043,navy);
+ seg(other,V3(.07,-.005,-.13),V3(.145,.012,-.25),.032,skin);
+ makeHand(other,.16,.012,-.29,1);
+ // Legs and bare feet, with toes individually modeled.
+ const foot=(x,z,side)=>{const f=new R.Group();f.position.set(x,.045,z);f.rotation.y=side*.07;g.add(f);sph(skin,0,0,-.035,.052,.038,.075,f);sph(skin,0,-.002,-.12,.045,.032,.105,f);sph(skinLight,0,-.003,-.205,.061,.033,.075,f);for(let i=0;i<5;i++){const u=i-2,len=[.035,.046,.041,.034,.028][i];sph(skinLight,u*.023,-.002,-.255-Math.max(0,2-Math.abs(u))*.004,.014,.014,len*.55,f)}};
  const l1=V3(.095,.075,-.2),l2=V3(.12,.065,-.63),l3=V3(.105,.05,-1.02),r1=V3(-.095,.075,-.2),r2=V3(-.13,.065,-.62),r3=V3(-.12,.05,-1);
  seg(g,l1,l2,.067,skin);sph(skinShade,l2.x,l2.y,l2.z,.06,.05,.065);seg(g,l2,l3,.043,skin);seg(g,r1,r2,.067,skin);sph(skinShade,r2.x,r2.y,r2.z,.06,.05,.065);seg(g,r2,r3,.043,skin);foot(l3.x,l3.z,1);foot(r3.x,r3.z,-1);
- // Her broken glasses lie beside her.
+ // Her broken glasses rest beside her head.
  const glasses=new R.Group();glasses.position.set(.34,.012,.77);glasses.rotation.y=.2;g.add(glasses);for(const s of [-1,1]){const lens=add(new R.TorusGeometry(.035,.0035,6,20),dark,s*.045,0,0,glasses);lens.rotation.x=Math.PI/2}add(new R.BoxGeometry(.02,.004,.006),dark,0,0,0,glasses);
  const stain=new R.Mesh(new R.CircleGeometry(.5,32),mat(0x3a0808,{roughness:.3}));stain.rotation.x=-Math.PI/2;stain.position.set(0,.004,0);stain.scale.set(1,1.5,1);g.add(stain);
  g.position.y=.04;g.userData={arm,closeEyes(){eyeWh.forEach(m=>m.visible=false);eyeBlue.forEach(m=>m.visible=false);eyeLids.forEach(m=>m.visible=true)}};return g
