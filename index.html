@@ -86,54 +86,41 @@ for(let i=0;i<16;i++){const c=cz(i);
  if(i<15){const d={mesh:box(0,1.5,c-HD,3,3,.3,M.door),open:false};d.col=d.mesh.userData.col;
   d.btn=box(2.4,1.4,c-HD+.3,.45,.6,.15,mat(0x220000,{emissive:0xff2000,emissiveIntensity:.8}),false);
   d.btn.userData={hand:'red',label:'Open door',fn(){const n=needs[i];if(n&&!F[n]){say(hints[n]);tone(110,.3,'square',.15);return}if(!d.open){openDoor(i);snd.door()}}};doors.push(d)}}
-function makeShelly(){const g=new R.Group(),sk=mat(0xe3b999,{roughness:.75}),sk2=mat(0xd9a888,{roughness:.8}),dr=mat(0x183c83,{roughness:.9}),sdr=mat(0x8fc9ed,{roughness:.9}),cuff=mat(0xc5e8fa,{roughness:.7}),wh=mat(0xf2f2f2,{roughness:.7}),hr=mat(0xe8b830,{roughness:.8}),dk=mat(0x1a0f0c),lip=mat(0xb04a55,{roughness:.5}),red=mat(0xcc2233,{roughness:.4}),gold=mat(0xd4af37,{metalness:.8,roughness:.3}),blk=mat(0x111111,{roughness:.5}),
- add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o},Sp=r=>new R.SphereGeometry(r,32,24),Bx=(w,h,d)=>new R.BoxGeometry(w,h,d),
- seg=(p,a,b,r,m)=>{const d=b.clone().sub(a),L=d.length(),o=new R.Mesh(new R.CapsuleGeometry(r,Math.max(.001,L),8,16),m);o.position.copy(a).add(b).multiplyScalar(.5);o.quaternion.setFromUnitVectors(V3(0,1,0),d.normalize());p.add(o);return o},
- hand=(p,x,y,z,ang,m)=>{const h=new R.Group();h.position.set(x,y,z);h.rotation.y=ang;p.add(h);add(Bx(.07,.022,.075),m,0,0,-.035,h);for(let i=-1.5;i<=1.5;i++){const l=.05-Math.abs(i)*.006;seg(h,V3(i*.019,0,-.07),V3(i*.019+i*.002,0,-.07-l),.0085,m)}seg(h,V3(.038,0,-.02),V3(.058,0,-.07),.01,m)},
- ring=(p,pos,dir,r,t,m)=>{const o=add(new R.TorusGeometry(r,t,6,14),m,pos.x,pos.y,pos.z,p);o.quaternion.setFromUnitVectors(V3(0,0,1),dir.clone().normalize());return o},
- foot=(x,y,z,rot,sd)=>{const f=new R.Group();f.position.set(x,y,z);f.rotation.set(0,rot,0);g.add(f);
-   // Sculpted bare foot: heel, arch, ball, five separate toes and small toenails.
-   add(Sp(.052),sk,0,0,-.025,f).scale.set(.9,.72,1.05);
-   add(Sp(.055),sk,0,-.006,-.105,f).scale.set(.72,.62,1.55);
-   add(Sp(.064),sk2,0,-.008,-.177,f).scale.set(1.02,.58,.82);
-   for(let ti=0;ti<5;ti++){const u=ti-2,spread=u*.025,len=[.033,.042,.038,.032,.026][ti],tx=spread,tz=-.225-Math.max(0,2-Math.abs(u))*.004;
-    const toe=add(Sp(len*.52),sk,tx,-.004,tz-len*.22,f);toe.scale.set(.72,.72,1.55);toe.rotation.y=-u*.11+sd*.035;
-    const nail=add(Sp(.009),wh,tx,-.001,tz-len*.72,f);nail.scale.set(.72,.22,1.05);nail.rotation.y=toe.rotation.y;
-   }};
- // dress: torso, bust, waist, hips, flared skirt, belt
- add(Sp(.17),dr,0,.13,.24).scale.set(1.1,.55,.9);
- add(Sp(.13),dr,0,.1,.05).scale.set(.95,.55,.95);add(Sp(.17),sdr,0,.1,-.12).scale.set(1.2,.5,.85);
- const sk3=add(new R.CylinderGeometry(.17,.31,.55,18),sdr,0,.115,-.38);sk3.rotation.x=Math.PI/2;sk3.scale.set(1,1,.42);
- add(new R.TorusGeometry(.13,.013,6,18),blk,0,.1,.07).scale.set(1,.6,1);add(Bx(.03,.012,.025),gold,0,.168,.07);
- add(new R.CylinderGeometry(.052,.056,.05,12),cuff,0,.145,.47).rotation.x=Math.PI/2;add(Bx(.02,.006,.3),wh,0,.2235,.24);
- // badge + lanyard
- const bc=document.createElement('canvas');bc.width=128;bc.height=80;const bx=bc.getContext('2d');bx.fillStyle='#f4f1e6';bx.fillRect(0,0,128,80);bx.fillStyle='#183c83';bx.fillRect(0,0,128,16);bx.fillStyle='#fff';bx.font='bold 11px Georgia';bx.fillText('PLAYTIME CO.',6,12);bx.fillStyle='#bbb';bx.fillRect(8,24,34,44);bx.fillStyle='#111';bx.font='bold 16px Georgia';bx.fillText('SHELLY',50,42);bx.font='10px Georgia';bx.fillText('PLAYCARE STAFF',50,58);
- const bt=new R.CanvasTexture(bc);bt.colorSpace=R.SRGBColorSpace;const bd=add(new R.PlaneGeometry(.1,.0625),new R.MeshStandardMaterial({map:bt,roughness:.6}),-.1,.212,.19);bd.rotation.x=-Math.PI/2;
- const lan=mat(0x3377cc);seg(g,V3(-.03,.19,.45),V3(-.1,.214,.23),.004,lan);seg(g,V3(.03,.19,.45),V3(-.1,.214,.23),.004,lan);
- // neck + head
- seg(g,V3(0,.12,.4),V3(0,.14,.52),.045,sk);
- const hd=new R.Group();hd.position.set(0,.15,.63);hd.rotation.y=.35;g.add(hd);
- add(Sp(.105),sk,0,0,0,hd).scale.set(.95,.95,1);add(Sp(.07),sk,0,-.01,-.07,hd).scale.set(.95,.8,.8);
- add(new R.CylinderGeometry(0,.018,.05,8),sk,0,.118,-.015,hd).rotation.x=-.3;
- const eyeWh=[],eyeBlue=[],eyeLids=[];[-1,1].forEach(sd=>{add(Sp(.022),sk2,sd*.045,.1,.025,hd).scale.set(1.4,.5,.9);add(Bx(.04,.003,.006),dk,sd*.045,.108,.02,hd);add(Bx(.05,.006,.01),hr,sd*.047,.106,.055,hd).rotation.y=-sd*.2;add(Sp(.025),sk2,sd*.108,0,0,hd).scale.set(.5,1,1.2);const ew=add(Sp(.016),wh,sd*.045,.108,.025,hd);ew.scale.set(1.3,.45,.9);eyeWh.push(ew);const eb=add(Sp(.011),mat(0x2a8fe8),sd*.045,.112,.025,hd);eb.scale.set(1,.5,1);eyeBlue.push(eb);const lid=add(Sp(.016),sk2,sd*.045,.109,.026,hd);lid.scale.set(1.25,.12,.9);lid.visible=false;eyeLids.push(lid);add(Sp(.012),sk2,sd*.075,.095,-.03,hd).scale.set(1,.4,1)});
- add(Sp(.025),lip,0,.1,-.065,hd).scale.set(1.5,.5,.8);add(Bx(.04,.003,.006),dk,0,.108,-.062,hd);
- add(Sp(.115),hr,0,-.03,.02,hd).scale.set(1.04,.72,1);add(Sp(.085),hr,0,.04,.07,hd).scale.set(1,.4,.5);add(new R.TorusGeometry(.11,.009,6,20,Math.PI),mat(0x183c83),0,0,.05,hd);
- for(let k=-4;k<=4;k++)seg(g,V3(k*.03,.03,.7),V3(k*.055+Math.sin(k)*.02,.02,.9+Math.cos(k)*.035),.016,hr);seg(g,V3(.04,.12,.7),V3(.09,.1,.62),.012,hr);
- // left arm over belly (+x)
- const SL=V3(.19,.11,.38),EL=V3(.3,.075,.2),WL=V3(.1,.19,.1);seg(g,SL,V3(.24,.095,.3),.04,dr);seg(g,V3(.24,.095,.3),EL,.036,dr);seg(g,EL,WL,.032,dr);ring(g,WL.clone().lerp(EL,.1),WL.clone().sub(EL),.034,.01,cuff);hand(g,.1,.19,.1,1.15,sk);
- 
- // right arm (drops the tape)
- const arm=new R.Group();arm.position.set(-.19,.11,.38);g.add(arm);seg(arm,V3(0,0,0),V3(-.05,-.015,-.08),.04,dr);seg(arm,V3(-.05,-.015,-.08),V3(-.15,-.05,-.18),.036,dr);seg(arm,V3(-.15,-.05,-.18),V3(-.27,-.06,-.38),.032,dr);ring(arm,V3(-.26,-.06,-.36),V3(-.12,-.01,-.2),.034,.01,cuff);hand(arm,-.28,-.06,-.4,.45,sk);
- // legs + bare feet
- const HL=V3(.1,.09,-.2),KL=V3(.12,.085,-.66),AL=V3(.1,.07,-1.1),HR=V3(-.1,.09,-.2),KR=V3(-.19,.15,-.6),AR=V3(-.12,.07,-1.02);
- seg(g,HL,KL,.065,sk);seg(g,KL,AL,.045,sk);add(Sp(.05),sk,KL.x,KL.y,KL.z);seg(g,HR,KR,.065,sk);seg(g,KR,AR,.045,sk);add(Sp(.05),sk,KR.x,KR.y,KR.z);
- foot(AL.x,AL.y,AL.z,.3,1);foot(AR.x,AR.y,AR.z,-.35,-1);
- // her shoes, torn off in the crash
- const bs=mat(0x1a3fcf,{roughness:.5});add(Sp(.07),bs,.62,.045,-.85).scale.set(.9,.55,1.9);add(Sp(.07),bs,.82,.06,-1.2).rotation.z=1.2;
- // broken glasses
- [.3,.37].forEach(x=>{const l=add(new R.TorusGeometry(.035,.004,6,14),blk,x,.012,.78);l.rotation.x=Math.PI/2});add(Bx(.04,.004,.004),blk,.335,.012,.78);
- const st=new R.Mesh(new R.CircleGeometry(.5,24),mat(0x3a0808,{roughness:.25}));st.rotation.x=-Math.PI/2;st.position.y=.004;st.scale.set(1,1.5,1);g.add(st);
- g.rotation.set(0,0,0);g.position.y=.04;g.userData={arm,closeEyes(){eyeWh.forEach(m=>m.visible=false);eyeBlue.forEach(m=>m.visible=false);eyeLids.forEach(m=>m.visible=true)}};return g}
+function makeShelly(){
+ const g=new R.Group(),skin=mat(0xe7c3a8,{roughness:.72}),skinShade=mat(0xd6a58e),skinLight=mat(0xf0d1b9),navy=mat(0x193d78),blue=mat(0x8fc9ed),pale=mat(0xd9eff8),white=mat(0xf1eee6),hair=mat(0xd7a52f),hairLight=mat(0xf0c85a),hairDark=mat(0x9e6d20),dark=mat(0x34251f),lip=mat(0x9e5e61),gold=mat(0xc5a04a,{metalness:.35,roughness:.48});
+ const add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o},sph=(m,x,y,z,sx,sy,sz,p=g)=>{const o=add(new R.SphereGeometry(1,32,24),m,x,y,z,p);o.scale.set(sx,sy,sz);return o};
+ const seg=(p,a,b,r,m)=>{const d=b.clone().sub(a),o=new R.Mesh(new R.CapsuleGeometry(r,Math.max(.001,d.length()-2*r),10,18),m);o.position.copy(a).add(b).multiplyScalar(.5);o.quaternion.setFromUnitVectors(V3(0,1,0),d.normalize());p.add(o);return o};
+ const foot=(x,z,side)=>{const f=new R.Group();f.position.set(x,.045,z);f.rotation.y=side*.07;g.add(f);sph(skin,0,0,-.035,.052,.038,.075,f);sph(skin,0,-.002,-.12,.045,.032,.105,f);sph(skinLight,0,-.003,-.205,.061,.033,.075,f);for(let i=0;i<5;i++){const u=i-2,len=[.035,.046,.041,.034,.028][i];sph(skinLight,u*.023,-.002,-.255-Math.max(0,2-Math.abs(u))*.004,.014,.014,len*.55,f)}};
+ // Tailored blue dress with a shaped bodice, waist, flared skirt and white collar.
+ sph(navy,0,.105,.22,.175,.105,.235);sph(navy,0,.105,.045,.145,.085,.14);sph(blue,0,.095,-.18,.18,.082,.21);
+ const skirt=add(new R.CylinderGeometry(.16,.29,.39,32),blue,0,.105,-.39);skirt.rotation.x=Math.PI/2;skirt.scale.set(1,.72,1);
+ sph(pale,0,.19,.365,.095,.025,.055);for(const s of [-1,1]){sph(pale,s*.13,.14,.29,.055,.045,.07);sph(white,s*.145,.14,.245,.045,.04,.045)}
+ const belt=add(new R.TorusGeometry(.135,.012,8,32),navy,0,.12,.015);belt.scale.set(1,.6,1);add(new R.BoxGeometry(.035,.018,.018),gold,0,.145,.015);
+ // Staff badge.
+ const badge=document.createElement('canvas');badge.width=256;badge.height=160;const bc=badge.getContext('2d');bc.fillStyle='#f3f0e8';bc.fillRect(0,0,256,160);bc.fillStyle='#193d78';bc.fillRect(0,0,256,34);bc.fillStyle='#fff';bc.font='bold 22px Georgia';bc.fillText('PLAYTIME CO.',12,25);bc.fillStyle='#333';bc.font='bold 29px Georgia';bc.fillText('SHELLY',90,83);bc.font='19px Georgia';bc.fillText('PLAYCARE STAFF',90,116);bc.fillStyle='#c6d9e5';bc.fillRect(16,48,58,92);
+ const bt=new R.CanvasTexture(badge);bt.colorSpace=R.SRGBColorSpace;const bd=add(new R.PlaneGeometry(.15,.095),new R.MeshStandardMaterial({map:bt,roughness:.7}),-.09,.205,.19);bd.rotation.x=-Math.PI/2;
+ seg(g,V3(-.035,.205,.38),V3(-.09,.205,.23),.004,navy);seg(g,V3(0,.12,.39),V3(0,.13,.51),.045,skin);
+ // Face with cheeks, nose, lips, brows and a blonde bob.
+ const head=new R.Group();head.position.set(0,.145,.64);head.rotation.y=.35;g.add(head);
+ sph(skin,0,0,0,.112,.105,.135,head);sph(skinLight,0,-.006,-.075,.082,.074,.07,head);
+ for(const s of [-1,1])sph(skinLight,s*.064,.032,-.035,.033,.03,.045,head);
+ sph(skinShade,0,.085,-.015,.014,.023,.025,head);sph(lip,0,.083,-.072,.026,.009,.014,head);sph(skin,0,.035,-.105,.045,.035,.035,head);
+ const eyeWh=[],eyeBlue=[],eyeLids=[];
+ for(const s of [-1,1]){sph(skinShade,s*.046,.083,.025,.03,.012,.022,head);const ew=sph(white,s*.046,.091,.025,.022,.009,.014,head);eyeWh.push(ew);const ir=sph(mat(0x5d9cc9),s*.046,.098,.024,.011,.005,.011,head);eyeBlue.push(ir);sph(dark,s*.046,.101,.023,.004,.003,.006,head);const brow=sph(hairDark,s*.047,.105,.061,.032,.007,.009,head);brow.rotation.z=-s*.08;const lid=sph(skin,s*.046,.094,.026,.025,.006,.012,head);lid.visible=false;eyeLids.push(lid);sph(skinShade,s*.108,-.005,-.005,.018,.032,.03,head);sph(gold,s*.119,.012,-.005,.006,.006,.006,head)}
+ sph(hair,0,.055,.025,.119,.075,.15,head);sph(hairDark,0,-.018,.065,.112,.065,.12,head);
+ for(const s of [-1,1]){const lock=sph(hair,s*.096,.018,-.015,.034,.085,.115,head);lock.rotation.z=s*.12;sph(hairLight,s*.096,.02,-.035,.012,.07,.075,head);seg(head,V3(s*.08,.085,.085),V3(s*.055,.085,-.035),.018,hairLight)}
+ sph(hairLight,0,.105,.018,.085,.018,.055,head);const band=add(new R.TorusGeometry(.108,.012,8,32,Math.PI),navy,0,.075,.035,head);band.rotation.x=Math.PI/2;
+ // Arms and hands resting naturally against her sides.
+ const arm=new R.Group();arm.position.set(-.18,.12,.34);g.add(arm);seg(arm,V3(0,0,0),V3(-.055,-.015,-.13),.043,navy);seg(arm,V3(-.055,-.015,-.13),V3(-.14,-.035,-.25),.034,skin);sph(skin,-.15,-.04,-.28,.034,.022,.048,arm);for(let i=0;i<4;i++)seg(arm,V3(-.16+i*.012,-.04,-.29),V3(-.17+i*.014,-.045,-.33),.008,skin);
+ const other=new R.Group();other.position.set(.18,.12,.34);g.add(other);seg(other,V3(0,0,0),V3(.075,-.015,-.13),.043,navy);seg(other,V3(.075,-.015,-.13),V3(.12,.015,-.22),.033,skin);sph(skin,.12,.018,-.245,.035,.022,.05,other);
+ // Natural legs and detailed bare feet.
+ const l1=V3(.095,.075,-.2),l2=V3(.12,.065,-.63),l3=V3(.105,.05,-1.02),r1=V3(-.095,.075,-.2),r2=V3(-.13,.065,-.62),r3=V3(-.12,.05,-1);
+ seg(g,l1,l2,.067,skin);sph(skinShade,l2.x,l2.y,l2.z,.06,.05,.065);seg(g,l2,l3,.043,skin);seg(g,r1,r2,.067,skin);sph(skinShade,r2.x,r2.y,r2.z,.06,.05,.065);seg(g,r2,r3,.043,skin);foot(l3.x,l3.z,1);foot(r3.x,r3.z,-1);
+ // Her broken glasses lie beside her.
+ const glasses=new R.Group();glasses.position.set(.34,.012,.77);glasses.rotation.y=.2;g.add(glasses);for(const s of [-1,1]){const lens=add(new R.TorusGeometry(.035,.0035,6,20),dark,s*.045,0,0,glasses);lens.rotation.x=Math.PI/2}add(new R.BoxGeometry(.02,.004,.006),dark,0,0,0,glasses);
+ const stain=new R.Mesh(new R.CircleGeometry(.5,32),mat(0x3a0808,{roughness:.3}));stain.rotation.x=-Math.PI/2;stain.position.set(0,.004,0);stain.scale.set(1,1.5,1);g.add(stain);
+ g.position.y=.04;g.userData={arm,closeEyes(){eyeWh.forEach(m=>m.visible=false);eyeBlue.forEach(m=>m.visible=false);eyeLids.forEach(m=>m.visible=true)}};return g
+}
 // Room 0 — calibration
 {const c=cz(0);sign('LEFT CLICK: BLUE HAND  ·  RIGHT CLICK: RED HAND',RW,2.3,c,-Math.PI/2,4,'#8cf');sign('EVERY TOY IS A FRIEND',LW,2.8,c-5,Math.PI/2,3,'#fd6');
  box(-9.7,1.5,c+2,.2,.5,.3,0x222222,false);
@@ -191,11 +178,11 @@ function makeShelly(){const g=new R.Group(),sk=mat(0xe3b999,{roughness:.75}),sk2
  const graveStone=box(gardenX,.42,gardenZ-1.15,.62,.72,.16,mat(0x77766d,{roughness:1}),false);graveStone.visible=false;
  const graveName=document.createElement('canvas');graveName.width=256;graveName.height=96;const gn=graveName.getContext('2d');gn.fillStyle='#d7d1bf';gn.font='bold 42px Georgia';gn.textAlign='center';gn.fillText('SHELLY',128,56);const graveLabel=new R.Mesh(new R.PlaneGeometry(.54,.2),new R.MeshBasicMaterial({map:new R.CanvasTexture(graveName),transparent:true}));graveLabel.position.set(gardenX,.48,gardenZ-1.055);graveLabel.visible=false;scene.add(graveLabel);
  const shovel=new R.Group(),shovelWood=mat(0x76502e),shovelMetal=mat(0x777f83,{metalness:.65,roughness:.4});const shHandle=new R.Mesh(new R.CylinderGeometry(.025,.032,.78,8),shovelWood);shHandle.position.y=.39;shovel.add(shHandle);const shBlade=new R.Mesh(new R.BoxGeometry(.22,.3,.035),shovelMetal);shBlade.position.set(0,.02,.035);shovel.add(shBlade);shovel.position.set(7.2,.02,c+7.35);shovel.rotation.z=-.45;scene.add(shovel);
- const shovelHit=new R.Mesh(new R.BoxGeometry(1.15,1.8,1.15),new R.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,colorWrite:false}));shovelHit.position.set(7.2,.9,c+7.35);shovelHit.userData={hand:'use',label:'Pick up maintenance shovel',fn(){if(SHL.shovel)return;SHL.shovel=true;scene.remove(shovel);shovelHit.userData.hand='';SHL.body.userData.hand=SHL.carrying?'':'use';say('Maintenance shovel acquired. Return to Shelly when you are ready to bury her.',6);tone(440,.12,'sine',.12,.12)}};scene.add(shovelHit);solids.push(shovelHit);const graveHit=new R.Mesh(new R.BoxGeometry(2.8,2.4,2.8),new R.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,colorWrite:false}));graveHit.position.set(gardenX,1.2,gardenZ+.45);graveHit.userData={hand:'',label:'Lay Shelly to rest',fn(){if(!SHL.carrying){say('Bring Shelly to this garden first.',3);return}if(!SHL.shovel){say('We need the maintenance shovel before we can prepare her grave.',4);return}startBurial()}};scene.add(graveHit);solids.push(graveHit);SHL.grave={x:gardenX,z:gardenZ,mound:graveMound,stone:graveStone,label:graveLabel,shovel,hit:graveHit};
+ const shovelHit=new R.Mesh(new R.BoxGeometry(1.15,1.8,1.15),new R.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,colorWrite:false}));shovelHit.userData.hitbox=true;shovelHit.castShadow=false;shovelHit.receiveShadow=false;shovelHit.position.set(7.2,.9,c+7.35);shovelHit.userData={hand:'use',label:'Pick up maintenance shovel',fn(){if(SHL.shovel)return;SHL.shovel=true;scene.remove(shovel);shovelHit.userData.hand='';SHL.body.userData.hand=SHL.carrying?'':'use';say('Maintenance shovel acquired. Return to Shelly when you are ready to bury her.',6);tone(440,.12,'sine',.12,.12)}};scene.add(shovelHit);solids.push(shovelHit);const graveHit=new R.Mesh(new R.BoxGeometry(2.8,2.4,2.8),new R.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,colorWrite:false}));graveHit.userData.hitbox=true;graveHit.castShadow=false;graveHit.receiveShadow=false;graveHit.position.set(gardenX,1.2,gardenZ+.45);graveHit.userData={hand:'',label:'Lay Shelly to rest',fn(){if(!SHL.carrying){say('Bring Shelly to this garden first.',3);return}if(!SHL.shovel){say('We need the maintenance shovel before we can prepare her grave.',4);return}startBurial()}};scene.add(graveHit);solids.push(graveHit);SHL.grave={x:gardenX,z:gardenZ,mound:graveMound,stone:graveStone,label:graveLabel,shovel,hit:graveHit};
  box(7.9,.85,c-3,.18,.14,.25,0x3a62ff,false);box(8.15,.85,c-3,.18,.14,.25,0xff7aa8,false);
  lore('m18',8,.83,c-2.5,'TWO TOYS',"Two toys were laid side by side on this crate, covered with a work jacket. No note. Only a small pink ribbon and a scrap of blue fur.");
  lore('m19',5.5,1.13,c-7,'TRAM CONDUCTOR LOG',"Emergency brake override from the passenger car: authorization GIBLET. The brakes failed on purpose. Impact at the junction. One survivor ran from the wreck toward the Data Center. The Prototype walked out of the fire.");
- const sh=makeShelly();sh.position.set(-7.9,0,c-3);sh.rotation.y=.3;scene.add(sh);colr(-7.9,c-3.2,1.0,2.4);SHL.x=-7.9;SHL.z=c-3;SHL.arm=sh.userData.arm;SHL.model=sh;SHL.arm.rotation.x=.6;SHL.body=new R.Mesh(new R.BoxGeometry(.65,.45,2.2),new R.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,colorWrite:false}));SHL.body.position.set(-7.9,.28,c-3);SHL.body.userData={hand:'',label:'Inspect Shelly',fn(){if(!SHL.done||SHL.buried||SHL.carrying)return;if(!F.key){F.key=true;SHL.body.userData.hand='use';snd.grab();got('shellycard');showDoc("SHELLY — PLAYCARE STAFF\\n\\nA battered Archive keycard is tucked beneath her ID badge. You carefully remove it.\\n\\nKEYCARD ACQUIRED: ARCHIVE ACCESS.");say('Keycard acquired: ARCHIVE ACCESS. Maybe we can give her a proper goodbye.',5);return}SHL.carrying=true;SHL.carryTime=0;SHL.carryWarned=false;SHL.body.userData.hand='';const bi=solids.indexOf(SHL.body);if(bi>=0)solids.splice(bi,1);say('You lift Shelly carefully. Find somewhere to lay her to rest.',5);tone(180,.2,'sine',.1)}};scene.add(SHL.body);solids.push(SHL.body);
+ const sh=makeShelly();sh.position.set(-7.9,0,c-3);sh.rotation.y=.3;scene.add(sh);colr(-7.9,c-3.2,1.0,2.4);SHL.x=-7.9;SHL.z=c-3;SHL.arm=sh.userData.arm;SHL.model=sh;SHL.arm.rotation.x=.6;SHL.body=new R.Mesh(new R.BoxGeometry(.65,.45,2.2),new R.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,colorWrite:false}));SHL.body.position.set(-7.9,.28,c-3);SHL.body.userData.hitbox=true;SHL.body.castShadow=false;SHL.body.receiveShadow=false;SHL.body.userData={hand:'',label:'Inspect Shelly',fn(){if(!SHL.done||SHL.buried||SHL.carrying)return;if(!F.key){F.key=true;SHL.body.userData.hand='use';snd.grab();got('shellycard');showDoc("SHELLY — PLAYCARE STAFF\\n\\nA battered Archive keycard is tucked beneath her ID badge. You carefully remove it.\\n\\nKEYCARD ACQUIRED: ARCHIVE ACCESS.");say('Keycard acquired: ARCHIVE ACCESS. Maybe we can give her a proper goodbye.',5);return}SHL.carrying=true;SHL.carryTime=0;SHL.carryWarned=false;SHL.body.userData.hand='';const bi=solids.indexOf(SHL.body);if(bi>=0)solids.splice(bi,1);say('You lift Shelly carefully. Find somewhere to lay her to rest.',5);tone(180,.2,'sine',.1)}};scene.add(SHL.body);solids.push(SHL.body);
  SHL.m=lore('m31',-8.36,.26,c-2.9,"SHELLY'S TAPE","Shelly recording: Ludwig and I built the Lullaby protocol so Playcare had a gentle voice when the kids woke up afraid. We borrowed Mr. Sawyer's voice because they trusted it. The Prototype heard it and learned to speak with it. Everything it ever said to you through the speakers, we taught it. I'm sorry.",true);SHL.m.userData.hand=''}
 // Room 8 — poppy gel vat hall
 {const vat=(x,z)=>{const m=new R.Mesh(new R.CylinderGeometry(1.7,1.7,3.6,20),new R.MeshStandardMaterial({color:0xff4fa0,emissive:0xff2a80,emissiveIntensity:.7,transparent:true,opacity:.75,roughness:.2}));m.position.set(x,1.8,z);scene.add(m);colr(x,z,3.4,3.4);const b=new R.Mesh(new R.CylinderGeometry(1.9,1.9,.3,20),M.metal);b.position.set(x,.15,z);scene.add(b)};
@@ -378,7 +365,7 @@ function move(dt){const sp=(keys.ShiftLeft?3.9:2.4)*dt;let f=(keys.KeyW?1:0)-(ke
  const dx=(-Math.sin(yaw)*f+Math.cos(yaw)*s)*sp,dz=(-Math.cos(yaw)*f-Math.sin(yaw)*s)*sp;P.x+=dx;P.z+=dz;moving=!!(dx||dz);
  for(let k=0;k<3;k++)for(const c of cols){if(!c.on)continue;const qx=Math.max(c.a,Math.min(P.x,c.b)),qz=Math.max(c.c,Math.min(P.z,c.d)),ax=P.x-qx,az=P.z-qz,d2=ax*ax+az*az;if(d2<.16){if(d2>1e-8){const d=Math.sqrt(d2),q=(.4-d)/d;P.x+=ax*q;P.z+=az*q}else P.x+=(P.x<(c.a+c.b)/2?-.4:.4)}}
  P.z=Math.min(P.z,cz(0)+HD-.4)}
-scene.traverse(o=>{if(o.isMesh){o.receiveShadow=true;if(o.geometry.type!=='PlaneGeometry')o.castShadow=true}});
+scene.traverse(o=>{if(o.isMesh){if(o.userData.hitbox){o.castShadow=false;o.receiveShadow=false;o.material.colorWrite=false;o.material.depthWrite=false;o.material.transparent=true;o.material.opacity=0}else{o.receiveShadow=true;if(o.geometry.type!=='PlaneGeometry')o.castShadow=true}}});
 const clock=new R.Clock(),fwdV=V3();
 function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime;
  if(locked&&!ended&&!intro&&!SHL.burying){move(dt);stepT-=dt;if(moving&&stepT<=0){noise(.08,.12,500);stepT=keys.ShiftLeft?.3:.46}creak-=dt;if(creak<=0){tone(100+Math.random()*100,.9,'triangle',.07,-40);creak=8+Math.random()*12}}
