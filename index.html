@@ -32,7 +32,7 @@ const $=id=>document.getElementById(id),V3=(x=0,y=0,z=0)=>new R.Vector3(x,y,z);
 /* ---------- renderer ---------- */
 const scene=new R.Scene();scene.background=new R.Color(0x050608);scene.fog=new R.FogExp2(0x090b0e,.052);
 const cam=new R.PerspectiveCamera(70,innerWidth/innerHeight,.05,80);cam.rotation.order='YXZ';scene.add(cam);
-const ren=new R.WebGLRenderer({antialias:true,powerPreference:'high-performance'});ren.setSize(innerWidth,innerHeight);ren.setPixelRatio(Math.min(devicePixelRatio,1.75));ren.outputColorSpace=R.SRGBColorSpace;ren.toneMapping=R.ACESFilmicToneMapping;ren.toneMappingExposure=1.12;ren.shadowMap.enabled=true;ren.shadowMap.type=R.PCFSoftShadowMap;document.body.prepend(ren.domElement);
+const ren=new R.WebGLRenderer({antialias:true,powerPreference:'high-performance'});ren.setSize(innerWidth,innerHeight);ren.setPixelRatio(Math.min(devicePixelRatio,1.75));ren.outputColorSpace=R.SRGBColorSpace;ren.toneMapping=R.ACESFilmicToneMapping;ren.toneMappingExposure=.96;ren.shadowMap.enabled=true;ren.shadowMap.type=R.PCFSoftShadowMap;document.body.prepend(ren.domElement);
 addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight)});
 scene.add(new R.HemisphereLight(0x7b8799,0x171411,.24));
 scene.add(new R.AmbientLight(0x222832,.13));
@@ -55,7 +55,20 @@ function colr(x,z,w,d){const c={a:x-w/2,b:x+w/2,c:z-d/2,d:z+d/2,on:true};cols.pu
 function kill(m){scene.remove(m);const i=solids.indexOf(m);if(i>=0)solids.splice(i,1)}
 function sign(t,x,y,z,ry,w=3,col='#e33'){const c=document.createElement('canvas');c.width=512;c.height=128;const g=c.getContext('2d');g.fillStyle='#111';g.fillRect(0,0,512,128);g.strokeStyle=col;g.lineWidth=4;g.strokeRect(4,4,504,120);g.fillStyle=col;g.font='bold 38px Georgia';g.textAlign='center';g.textBaseline='middle';g.fillText(t,256,66);const m=new R.Mesh(new R.PlaneGeometry(w,w/4),new R.MeshBasicMaterial({map:new R.CanvasTexture(c),color:0xaaaaaa}));m.position.set(x,y,z);m.rotation.y=ry;scene.add(m)}
 const glow=(c,i=1)=>mat(0x111111,{emissive:c,emissiveIntensity:i});
-function toys(c,n){const cs=[0xee3333,0x3399ff,0xffcc33,0x33cc66,0xdd55aa];for(let i=0;i<n;i++){const g=new R.Group(),m=mat(cs[i%5]);g.add(new R.Mesh(new R.SphereGeometry(.14,10,8),m));const b=new R.Mesh(new R.BoxGeometry(.22,.26,.14),m);b.position.y=-.2;g.add(b);g.position.set((Math.random()-.5)*(2*HW-3),.15,c+(Math.random()-.5)*(2*HD-3));g.rotation.set(Math.random()*3,Math.random()*6,Math.random()*3);scene.add(g)}}
+function toys(c,n){
+ const palette=[0x9b3731,0x315c8a,0xa17b35,0x42694b,0x80506d];
+ for(let i=0;i<Math.min(n,9);i++){
+  const g=new R.Group(),fur=mat(palette[i%palette.length],{roughness:1}),darkFur=mat(0x29262a,{roughness:1}),button=mat(0xd8c7a2,{roughness:.7});
+  const part=(geo,m,x,y,z,sx=1,sy=1,sz=1)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);o.scale.set(sx,sy,sz);o.castShadow=true;o.receiveShadow=true;g.add(o);return o};
+  part(new R.CapsuleGeometry(.095,.13,5,9),fur,0,.19,0,1,.9,.8);
+  part(new R.SphereGeometry(.105,12,10),fur,0,.39,0,1,.95,.9);
+  for(const side of [-1,1]){part(new R.SphereGeometry(.045,8,6),fur,side*.105,.47,0,.75,1,.65);part(new R.CapsuleGeometry(.035,.1,4,7),fur,side*.12,.2,0,1,1,1);part(new R.SphereGeometry(.05,8,6),fur,side*.055,.055,.015,1,.8,1)}
+  part(new R.SphereGeometry(.014,8,6),button,-.038,.405,.094,.8,1,.5);
+  if(i%3!==0)part(new R.SphereGeometry(.014,8,6),button,.038,.405,.094,.8,1,.5);
+  part(new R.BoxGeometry(.055,.008,.008),darkFur,0,.35,.095);
+  g.position.set((Math.random()-.5)*(2*HW-3),0,c+(Math.random()-.5)*(2*HD-3));g.rotation.set((Math.random()-.5)*.22,Math.random()*6.28,(Math.random()-.5)*.2);scene.add(g)
+ }
+}
 /* ---------- security cameras ---------- */
 const cams=[];
 function wallCam(x,y,z,c){const g=new R.Group(),dk=mat(0x2a2d30,{metalness:.6,roughness:.4}),ad=(geo,m,px,py,pz,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(px,py,pz);p.add(o);return o};
@@ -84,7 +97,12 @@ for(let i=0;i<16;i++){const c=cz(i);
  sign(NAMES[i].toUpperCase(),0,3.5,c-HD+.22,0,3,'#cde');
  [-8,8].forEach(x=>{const p=new R.Mesh(new R.CylinderGeometry(.1,.1,2*HD,8),M.metal);p.rotation.x=Math.PI/2;p.position.set(x,3.7,c);scene.add(p)});
  lights.push({base:24,t:0});
- [-4,4].forEach(z=>{const fx=new R.Mesh(new R.BoxGeometry(2,.1,.4),glow(0xffe0a0));fx.position.set(0,3.95,c+z);scene.add(fx)});
+ // Exposed ceiling conduit, battered wall service panels and recessed fluorescent housings.
+ for(const x of [-6.7,6.7]){const pipe=new R.Mesh(new R.CylinderGeometry(.055,.055,2*HD,10),M.metal);pipe.rotation.x=Math.PI/2;pipe.position.set(x,3.78,c);scene.add(pipe);
+  for(const z of [-7,-2,3,8]){const clamp=new R.Mesh(new R.TorusGeometry(.07,.012,5,12),M.door);clamp.rotation.x=Math.PI/2;clamp.position.set(x,3.78,c+z);scene.add(clamp)}}
+ for(const side of [-1,1])for(const z of [-6,0,6]){const panel=new R.Mesh(new R.BoxGeometry(.035,1.05,1.45),mat(0x34383a,{metalness:.35,roughness:.92}));panel.position.set(side*9.77,1.55,c+z);scene.add(panel);
+  for(const yy of [1.12,1.98]){const screw=new R.Mesh(new R.CylinderGeometry(.018,.018,.012,8),M.metal);screw.rotation.z=Math.PI/2;screw.position.set(side*9.79,yy,c+z-.58);scene.add(screw)}}
+ [-4,4].forEach(z=>{const housing=new R.Mesh(new R.BoxGeometry(2.3,.12,.55),M.metal);housing.position.set(0,3.86,c+z);scene.add(housing);const fx=new R.Mesh(new R.BoxGeometry(1.9,.035,.24),glow(0xffdca0,.65));fx.position.set(0,3.94,c+z);scene.add(fx)});
  toys(c,24);wallCam(HW-.65,3.5,c+HD-1,c);wallCam(-(HW-.65),3.5,c-HD+1,c);
  if(i<15){const d={mesh:box(0,1.5,c-HD,3,3,.3,M.door),open:false};d.col=d.mesh.userData.col;
   d.btn=box(2.4,1.4,c-HD+.3,.45,.6,.15,mat(0x220000,{emissive:0xff2000,emissiveIntensity:.8}),false);
