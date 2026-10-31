@@ -101,7 +101,7 @@ function makeShelly(){
  // Neck runs naturally from the shoulders to the base of the skull.
  const neck=new R.Mesh(new R.CylinderGeometry(.047,.055,.15,20),skin);neck.position.set(0,.12,.49);neck.rotation.x=Math.PI/2;g.add(neck);
  // Face is deliberately kept clear on the upward-facing side of the head.
- const head=new R.Group();head.position.set(0,.135,.655);g.add(head);
+ const eyeWh=[],eyeBlue=[],eyeLids=[];const head=new R.Group();head.position.set(0,.135,.655);g.add(head);
  sph(skin,0,0,0,.112,.105,.135,head);
  sph(skinLight,0,.045,-.015,.084,.065,.085,head);
  for(const s of [-1,1]){
