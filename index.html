@@ -183,7 +183,7 @@ function makeShelly(){const g=new R.Group(),sk=mat(0xe3b999,{roughness:.75}),sk2
  box(7.9,.85,c-3,.18,.14,.25,0x3a62ff,false);box(8.15,.85,c-3,.18,.14,.25,0xff7aa8,false);
  lore('m18',8,.83,c-2.5,'TWO TOYS',"Two toys were laid side by side on this crate, covered with a work jacket. No note. Only a small pink ribbon and a scrap of blue fur.");
  lore('m19',5.5,1.13,c-7,'TRAM CONDUCTOR LOG',"Emergency brake override from the passenger car: authorization GIBLET. The brakes failed on purpose. Impact at the junction. One survivor ran from the wreck toward the Data Center. The Prototype walked out of the fire.");
- const sh=makeShelly();sh.position.set(-7.9,0,c-3);sh.rotation.y=.3;scene.add(sh);colr(-7.9,c-3.2,1.0,2.4);SHL.x=-7.9;SHL.z=c-3;SHL.arm=sh.userData.arm;SHL.arm.rotation.x=.6;
+ const sh=makeShelly();sh.position.set(-7.9,1.15,c-3);sh.rotation.y=.3;scene.add(sh);colr(-7.9,c-3.2,1.0,2.4);SHL.x=-7.9;SHL.z=c-3;SHL.arm=sh.userData.arm;SHL.arm.rotation.x=.6;
  SHL.m=lore('m31',-8.36,.26,c-2.9,"SHELLY'S TAPE","Shelly recording: Ludwig and I built the Lullaby protocol so Playcare had a gentle voice when the kids woke up afraid. We borrowed Mr. Sawyer's voice because they trusted it. The Prototype heard it and learned to speak with it. Everything it ever said to you through the speakers, we taught it. I'm sorry.",true);SHL.m.userData.hand=''}
 // Room 8 — poppy gel vat hall
 {const vat=(x,z)=>{const m=new R.Mesh(new R.CylinderGeometry(1.7,1.7,3.6,20),new R.MeshStandardMaterial({color:0xff4fa0,emissive:0xff2a80,emissiveIntensity:.7,transparent:true,opacity:.75,roughness:.2}));m.position.set(x,1.8,z);scene.add(m);colr(x,z,3.4,3.4);const b=new R.Mesh(new R.CylinderGeometry(1.9,1.9,.3,20),M.metal);b.position.set(x,.15,z);scene.add(b)};
