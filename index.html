@@ -141,6 +141,23 @@ function makeShelly(){
  sph(skinShade,0,.052,.101,.007,.003,.006,head);
  const mouth=new R.CatmullRomCurve3([V3(-.018,.045,.105),V3(-.009,.043,.111),V3(0,.042,.112),V3(.009,.043,.111),V3(.018,.045,.105)]);add(new R.TubeGeometry(mouth,16,.0022,7),lip,0,0,0,head);
  const lowerLip=new R.CatmullRomCurve3([V3(-.011,.039,.108),V3(0,.037,.111),V3(.011,.039,.108)]);add(new R.TubeGeometry(lowerLip,8,.0018,6),skinShade,0,0,0,head);
+ // Worn Playcare-issued gas mask: rubber face seal, twin dark lenses, filter canister and head straps.
+ const maskRubber=mat(0x252a2b,{roughness:.94}),maskMetal=mat(0x62686a,{metalness:.72,roughness:.38}),maskGlass=mat(0x101d22,{metalness:.38,roughness:.2}),maskGlow=mat(0x31545a,{emissive:0x102b30,emissiveIntensity:.35,metalness:.25,roughness:.24});
+ sph(maskRubber,0,.067,.139,.083,.052,.025,head);
+ for(const side of [-1,1]){
+  add(new R.TorusGeometry(.021,.006,10,32),maskMetal,side*.043,.086,.158,head);
+  sph(maskGlass,side*.043,.086,.159,.017,.017,.006,head);
+  sph(maskGlow,side*.043,.086,.165,.009,.009,.002,head);
+  sph(maskMetal,side*.066,.057,.157,.004,.004,.003,head);
+  const strap=add(new R.CapsuleGeometry(.009,.11,6,10),maskRubber,side*.103,.07,.025,head);strap.rotation.z=side*.12;strap.rotation.y=Math.PI/2;
+ }
+ // Central respirator valve and ribbed filter canister hide the lower face.
+ const valve=add(new R.CylinderGeometry(.022,.026,.018,24),maskMetal,0,.049,.163,head);valve.rotation.x=Math.PI/2;
+ sph(maskRubber,0,.018,.157,.031,.031,.025,head);
+ const filter=add(new R.CylinderGeometry(.021,.025,.045,20),maskMetal,0,.012,.177,head);filter.rotation.x=Math.PI/2;
+ for(let i=0;i<8;i++){const an=i*Math.PI/4;sph(maskRubber,Math.cos(an)*.013,.012+Math.sin(an)*.013,.202,.003,.003,.002,head)}
+ const filterCap=add(new R.CylinderGeometry(.027,.027,.008,24),maskRubber,0,.012,.204,head);filterCap.rotation.x=Math.PI/2;
+ add(new R.SphereGeometry(.005,10,8),maskMetal,0,.049,.178,head);
  // Layered bob haircut, nape, side locks and individual fringe pieces.
  sph(hairDark,0,-.035,-.005,.124,.078,.157,head);sph(hair,0,-.014,.028,.12,.067,.127,head);
  for(const side of [-1,1]){const lock=sph(hair,side*.096,-.005,-.035,.035,.083,.115,head);lock.rotation.z=side*.12;sph(hairHi,side*.104,.012,-.047,.012,.053,.079,head);const fringe=sph(hairHi,side*.075,.025,.075,.039,.032,.067,head);fringe.rotation.z=-side*.24}
