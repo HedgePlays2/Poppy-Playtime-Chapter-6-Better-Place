@@ -422,6 +422,11 @@ const c5=cz(11),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
 // Room 14 — prototype workshop
 {const c=cz(14);box(-7,.5,c+4,2,1,6,0x333338);box(7,.5,c-3,2,1,6,0x333338);crate(0,c+6,1.2);
  for(let k=0;k<26;k++)box((Math.random()-.5)*16,.1,c+(Math.random()-.5)*16,.4+Math.random()*.5,.16,.2,[0xcc3333,0x3366cc,0x555555][k%3],false);
+ // Low-cost workshop dressing: hanging cables, warning stripes and cold fluorescent housings.
+ const cableMat=mat(0x101114,{roughness:.9}),lampMat=mat(0x9b2922,{emissive:0x6e0905,emissiveIntensity:.65});
+ for(let k=0;k<5;k++){const x=-7.2+k*3.6;const cable=new R.Mesh(new R.CylinderGeometry(.025,.035,1.7,6),cableMat);cable.position.set(x,2.35,c-5+(k%2)*2);cable.rotation.z=(k%2?-.16:.16);scene.add(cable);box(x,3.15,c-5+(k%2)*2,1.05,.09,.22,0x34383b,false)}
+ for(let k=0;k<4;k++){box(-8.9+k*.32,.08,c+1.8,.18,.025,2.1,0xd5a52b,false)}
+ [-6.8,6.8].forEach(x=>{const lamp=box(x,2.72,c+1,.16,.16,.16,lampMat,false);lamp.rotation.z=.2});
  sign('THE PROTOTYPE LISTENS',RW,3.2,c+3,-Math.PI/2,3.4,'#e22');
  lore('m28',-7,1.03,c+4,'BLUEPRINT: A BETTER PLACE',"A schematic of a facility beneath the factory with Poppy's outline in the center. Label: 'A BETTER PLACE, for toys who deserve to live.' The handwriting imitates Sawyer's, badly.");
  lore('m29',7,1.03,c-3,'WORKSHOP SCRAWL',"He promised us a better place. Then he started building it out of us.")}
@@ -692,17 +697,75 @@ function updFight(dt,t){bolts.forEach(o=>{o.b.position.addScaledVector(o.v,dt);o
 /* ---------- the Prototype ---------- */
 var wounded=false;
 const PR={on:false,done:false,t:0,E:V3(),E1:V3(),dir:V3(0,0,1),sweep:0,shards:[],spillT:-1,spill:null,s:{},vy:0},REACH=3.8,ez=k=>k*k*(3-2*k),clp=(x,a,b)=>Math.max(0,Math.min(1,(x-a)/(b-a)));
-function makeProtoArm(){const g=new R.Group(),dk=mat(0x151517,{metalness:.6,roughness:.5}),rust=mat(0x4a2a1a,{metalness:.4,roughness:.8}),wire=mat(0x0a0a0a,{roughness:.7}),bone=mat(0xcfc8b0,{roughness:.6}),red=mat(0x220000,{emissive:0xff1010,emissiveIntensity:1.2}),
- add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);o.castShadow=true;p.add(o);return o},Cy=(a,b,h)=>new R.CylinderGeometry(a,b,h,10);
- add(Cy(.17,.22,6.5),dk,0,3.25,0);for(let k=0;k<7;k++)add(new R.TorusGeometry(.2,.03,6,14),rust,0,.6+k*.8,0).rotation.x=Math.PI/2;
- add(new R.SphereGeometry(.3,14,10),dk,0,0,0);add(new R.SphereGeometry(.07,8,6),red,.05,.05,.28);
- const fa=new R.Group();g.add(fa);add(Cy(.15,.1,2.4),dk,0,0,1.2,fa).rotation.x=Math.PI/2;
- for(let k=0;k<4;k++)add(new R.TorusGeometry(.14-k*.01,.025,6,12),rust,0,0,.4+k*.6,fa);
- [-1,1].forEach(s=>{add(new R.TorusGeometry(.3,.012,6,14),wire,0,0,1.2+s*.3,fa).rotation.set(1.3*s,.4,0)});
- add(Cy(0,.08,1.4),dk,0,0,3.1,fa).rotation.x=Math.PI/2;
- [-1,1].forEach(s=>add(Cy(0,.05,.9),dk,s*.16,0,2.75,fa).rotation.x=Math.PI/2);
- add(new R.SphereGeometry(.09,10,8),bone,.13,.1,1.9,fa);add(new R.SphereGeometry(.035,8,6),mat(0x050505),.13,.1,1.98,fa);
- g.userData={fa};g.visible=false;scene.add(g);return g}
+function makeProtoArm(){
+ const g=new R.Group(),
+  dk=mat(0x171719,{metalness:.72,roughness:.48}),
+  steel=mat(0x414247,{metalness:.78,roughness:.38}),
+  rust=mat(0x573323,{metalness:.42,roughness:.82}),
+  wire=mat(0x09090b,{roughness:.8}),
+  bone=mat(0xbeb7a4,{roughness:.72}),
+  red=mat(0x260606,{emissive:0x9c0808,emissiveIntensity:.85}),
+  add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);o.castShadow=true;p.add(o);return o},
+  Cy=(a,b,h)=>new R.CylinderGeometry(a,b,h,9);
+ // Heavy, uneven upper limb: layered plates around a cable-and-bone core.
+ add(Cy(.2,.29,5.9),dk,0,3.05,0);
+ add(new R.SphereGeometry(.31,12,9),steel,0,.12,0);
+ for(let k=0;k<5;k++){
+  const y=.72+k*.91;
+  add(new R.TorusGeometry(.245,.035,6,12),rust,0,y,0).rotation.x=Math.PI/2;
+  add(Cy(.045,.055,.62),wire,0,y+.36,.12);
+ }
+ // Three exposed tendon cables make the arm feel assembled, not like one smooth pipe.
+ [-1,0,1].forEach((x,i)=>{
+  const cable=add(Cy(.025,.035,5.45),wire,x*.13,3.05,.12);
+  cable.rotation.z=x*.12;
+  add(new R.SphereGeometry(.055,8,6),rust,x*.13,.35,.12);
+ });
+ // A battered shoulder/hinge and a small warning light instead of the old floating eyeball.
+ add(new R.SphereGeometry(.34,12,9),dk,0,0,0);
+ add(new R.TorusGeometry(.24,.045,7,14),steel,0,.02,0);
+ add(new R.BoxGeometry(.16,.055,.035),red,.08,.12,.29);
+ // Forearm bends forward from the hanging upper arm.
+ const fa=new R.Group();g.add(fa);
+ add(Cy(.19,.13,2.25),dk,0,0,1.18,fa).rotation.x=Math.PI/2;
+ add(new R.SphereGeometry(.2,10,8),steel,0,0,2.23,fa);
+ for(let k=0;k<3;k++){
+  add(new R.TorusGeometry(.16-k*.012,.027,6,12),rust,0,0,.48+k*.72,fa);
+ }
+ // Uneven armor ribs and loose wiring along the forearm.
+ [-1,1].forEach(side=>{
+  const plate=add(new R.BoxGeometry(.11,.12,1.05),steel,side*.14,.015,1.25,fa);
+  plate.rotation.y=side*.12;plate.rotation.x=.08;
+  const cable=add(Cy(.018,.025,1.35),wire,side*.19,-.1,1.35,fa);
+  cable.rotation.x=Math.PI/2;
+ });
+ // Palm: broad, skeletal and asymmetrical.
+ add(new R.BoxGeometry(.48,.22,.42),dk,0,-.015,2.55,fa);
+ add(new R.BoxGeometry(.34,.07,.3),rust,0,.105,2.57,fa);
+ // Four long articulated fingers, each with visible knuckles and hooked tips.
+ const fingers=[[-.19,3.02,.82],[-.065,3.12,1.08],[.065,3.08,.98],[.19,2.98,.73]];
+ fingers.forEach(([x,z,len],i)=>{
+  const spread=(i-1.5)*.075;
+  const base=add(Cy(.055,.043,len*.48),bone,x,-.015,z+len*.22,fa);
+  base.rotation.x=-.12;
+  add(new R.SphereGeometry(.065,8,7),steel,x,-.015,z,fa);
+  const mid=add(Cy(.043,.027,len*.38),bone,x+spread,-.025,z+len*.62,fa);
+  mid.rotation.x=-.18;
+  add(new R.SphereGeometry(.047,8,7),rust,x+spread,-.025,z+len*.43,fa);
+  const tip=add(Cy(.012,.034,.28),bone,x+spread*1.35,-.055,z+len*.92,fa);
+  tip.rotation.x=-.48;
+ });
+ // Opposing hooked thumb.
+ add(Cy(.06,.045,.48),bone,-.29,-.01,2.72,fa).rotation.x=-.9;
+ add(new R.SphereGeometry(.055,8,7),steel,-.29,-.01,2.5,fa);
+ add(Cy(.012,.045,.3),bone,-.4,-.045,2.98,fa).rotation.set(-.6,0,-.3);
+ // Ragged cable ends hang from the wrist.
+ [-.12,.02,.15].forEach((x,i)=>{
+  const tail=add(Cy(.012,.022,.62+i*.12),wire,x,-.19,2.3,fa);
+  tail.rotation.x=.22+i*.12;tail.rotation.z=(i-1)*.18;
+ });
+ g.userData={fa};g.visible=false;scene.add(g);return g
+}
 PR.arm=makeProtoArm();
 function debris(x,y,z,n,col,sz,v){for(let i=0;i<n;i++){const m=new R.Mesh(new R.BoxGeometry(sz,sz*.6,sz),mat(col,{roughness:.9}));m.position.set(x+(Math.random()-.5),y,z+(Math.random()-.5));scene.add(m);PR.shards.push({m,vx:(Math.random()-.5)*v,vy:Math.random()*v*.6,vz:(Math.random()-.5)*v,life:3})}}
 function startProto(){if(PR.on||PR.done)return;PR.on=true;PR.done=true;PR.t=0;PR.s={};CH.on=false;CH.done=true;hideCr();CR.next=90;jumpY=0;jumpV=0;blackout=true;
