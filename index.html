@@ -32,12 +32,12 @@ button{padding:12px 30px;font:18px Georgia;background:#1b1b22;color:#fff;border:
 import * as R from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 const $=id=>document.getElementById(id),V3=(x=0,y=0,z=0)=>new R.Vector3(x,y,z);
 /* ---------- renderer ---------- */
-const scene=new R.Scene();scene.background=new R.Color(0x050608);scene.fog=new R.FogExp2(0x090b0e,.052);
+const scene=new R.Scene();scene.background=new R.Color(0x080a0d);scene.fog=new R.FogExp2(0x11151a,.034);
 const cam=new R.PerspectiveCamera(70,innerWidth/innerHeight,.05,80);cam.rotation.order='YXZ';scene.add(cam);
 const ren=new R.WebGLRenderer({antialias:true,powerPreference:'high-performance'});ren.setSize(innerWidth,innerHeight);ren.setPixelRatio(Math.min(devicePixelRatio,1.75));ren.outputColorSpace=R.SRGBColorSpace;ren.toneMapping=R.ACESFilmicToneMapping;ren.toneMappingExposure=.96;ren.shadowMap.enabled=true;ren.shadowMap.type=R.PCFSoftShadowMap;document.body.prepend(ren.domElement);
 addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight)});
-scene.add(new R.HemisphereLight(0x7b8799,0x171411,.24));
-scene.add(new R.AmbientLight(0x222832,.13));
+scene.add(new R.HemisphereLight(0xaabbd0,0x292019,.38));
+scene.add(new R.AmbientLight(0x39414b,.22));
 const fl=new R.SpotLight(0xffe4c0,48,25,.37,.68,1.35);fl.position.set(.2,-.1,0);fl.target.position.set(0,0,-6);fl.castShadow=true;fl.shadow.mapSize.set(1024,1024);fl.shadow.camera.near=.1;fl.shadow.camera.far=32;fl.shadow.bias=-.00025;cam.add(fl,fl.target);
 /* ---------- audio ---------- */
 let AC,mg;
@@ -50,8 +50,8 @@ const snd={grab:()=>{noise(.12,.2,2000);tone(220,.12,'sawtooth',.08,-120)},door:
 const cols=[],solids=[],F={},lights=[];const pool=[0,1,2].map(()=>{const L=new R.PointLight(0xffd9a0,0,34,1.5);scene.add(L);return L});let blackout=false;
 const mat=(c,o={})=>new R.MeshStandardMaterial({color:c,roughness:.82,...o});
 function tex(base,n,rx,ry){const c=document.createElement('canvas');c.width=c.height=256;const g=c.getContext('2d'),im=g.createImageData(256,256);const hex=base.replace('#',''),br=[parseInt(hex.slice(0,2),16),parseInt(hex.slice(2,4),16),parseInt(hex.slice(4,6),16)];for(let i=0;i<256*256;i++){const v=(Math.random()-.5)*24;im.data[i*4]=Math.max(0,br[0]+v);im.data[i*4+1]=Math.max(0,br[1]+v);im.data[i*4+2]=Math.max(0,br[2]+v);im.data[i*4+3]=255}g.putImageData(im,0,0);for(let i=0;i<n*3;i++){const x=Math.random()*256,y=Math.random()*256;g.strokeStyle=Math.random()>.5?'rgba(8,8,8,.22)':'rgba(210,205,190,.10)';g.lineWidth=Math.random()*1.4+.25;g.beginPath();g.moveTo(x,y);g.lineTo(x+(Math.random()-.5)*34,y+(Math.random()-.5)*8);g.stroke()}for(let y=0;y<256;y+=64){g.fillStyle='rgba(0,0,0,.12)';g.fillRect(0,y,256,1)}const t=new R.CanvasTexture(c);t.wrapS=t.wrapT=R.RepeatWrapping;t.repeat.set(rx,ry);t.colorSpace=R.SRGBColorSpace;t.anisotropy=ren.capabilities.getMaxAnisotropy();return t}
-const wallTex=tex('#555750',100,5,1),floorTex=tex('#393a3c',140,10,207),ceilTex=tex('#292b2e',80,10,207);
-const M={wall:mat(0xffffff,{map:wallTex,bumpMap:wallTex,bumpScale:.035,roughness:.96}),floor:mat(0xffffff,{map:floorTex,bumpMap:floorTex,bumpScale:.065,roughness:.94}),ceil:mat(0xffffff,{map:ceilTex,bumpMap:ceilTex,bumpScale:.025,roughness:.98}),door:mat(0x51403b,{metalness:.35,roughness:.72}),metal:mat(0x666b70,{metalness:.72,roughness:.32})};
+const wallTex=tex('#68665e',180,7,1),floorTex=tex('#454448',220,14,220),ceilTex=tex('#34363a',130,12,220);
+const M={wall:mat(0xffffff,{map:wallTex,bumpMap:wallTex,bumpScale:.055,roughness:.96}),floor:mat(0xffffff,{map:floorTex,bumpMap:floorTex,bumpScale:.085,roughness:.94}),ceil:mat(0xffffff,{map:ceilTex,bumpMap:ceilTex,bumpScale:.025,roughness:.98}),door:mat(0x51403b,{metalness:.35,roughness:.72}),metal:mat(0x666b70,{metalness:.72,roughness:.32})};
 function box(x,y,z,w,h,d,m,col=true){const o=new R.Mesh(new R.BoxGeometry(w,h,d),typeof m=='number'?mat(m):m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;scene.add(o);solids.push(o);if(col)o.userData.col=colr(x,z,w,d);return o}
 function colr(x,z,w,d){const c={a:x-w/2,b:x+w/2,c:z-d/2,d:z+d/2,on:true};cols.push(c);return c}
 function kill(m){scene.remove(m);const i=solids.indexOf(m);if(i>=0)solids.splice(i,1)}
@@ -111,6 +111,62 @@ for(let i=0;i<16;i++){const c=cz(i);curWall=curWall.clone();curWall.color.set(TI
  if(i<15){box(0,3.06,c-HD+.2,3.2,.1,.05,glow(ACC[i%4],.7),false);const d={mesh:box(0,1.5,c-HD,3,3,.3,doorMat),open:false};d.col=d.mesh.userData.col;
   d.btn=box(2.4,1.4,c-HD+.3,.45,.6,.15,mat(0x220000,{emissive:0xff2000,emissiveIntensity:.8}),false);
   d.btn.userData={hand:'red',label:'Open door',fn(){const n=needs[i];if(n&&!F[n]){say(hints[n]);tone(110,.3,'square',.15);return}if(!d.open){openDoor(i);snd.door()}}};doors.push(d)}}
+/* ---------- Playtime Co. environmental art pass ---------- */
+/* Layered wall rails, painted Playcare stripes, floor hazard markings,
+   ceiling cable trays and practical warning lights give each area a
+   more authored toy-factory identity without changing collision. */
+{
+ const trimMat=mat(0x24282c,{metalness:.48,roughness:.58});
+ const darkPanel=mat(0x30343a,{metalness:.22,roughness:.88});
+ const boltMat=mat(0x85817a,{metalness:.72,roughness:.36});
+ const stripeMats=[mat(0xf0c34a,{roughness:.78}),mat(0x24272b,{roughness:.86})];
+ const addDetail=(geo,material,x,y,z,rx=0,ry=0,rz=0)=>{
+  const m=new R.Mesh(geo,material);m.position.set(x,y,z);m.rotation.set(rx,ry,rz);
+  m.castShadow=true;m.receiveShadow=true;scene.add(m);return m
+ };
+ for(let i=0;i<16;i++){
+  const c=cz(i),accent=mat(TINT[i],{roughness:.9}),edge=mat(ACC[i%4],{roughness:.78,emissive:ACC[i%4],emissiveIntensity:i>=7?.08:.025});
+  // Two-tone lower wall cladding and a continuous painted identity stripe.
+  for(const side of [-1,1]){
+   addDetail(new R.BoxGeometry(.075,.92,19.5),darkPanel,side*9.73,.53,c);
+   addDetail(new R.BoxGeometry(.09,.13,19.5),trimMat,side*9.69,1.02,c);
+   addDetail(new R.BoxGeometry(.045,.12,19.5),edge,side*9.69,2.38,c);
+   addDetail(new R.BoxGeometry(.11,.055,19.5),boltMat,side*9.67,3.04,c);
+   // Recessed wall panels, each with visible fasteners.
+   for(const zoff of [-7,-2,3,8]){
+    addDetail(new R.BoxGeometry(.035,.68,1.48),accent,side*9.64,1.72,c+zoff);
+    for(const yy of [1.43,2.01]){
+     addDetail(new R.CylinderGeometry(.022,.022,.018,8),boltMat,side*9.60,yy,c+zoff-.62,0,0,Math.PI/2);
+     addDetail(new R.CylinderGeometry(.022,.022,.018,8),boltMat,side*9.60,yy,c+zoff+.62,0,0,Math.PI/2);
+    }
+   }
+  }
+  // Floor threshold: alternating worn yellow/black safety bars at each doorway.
+  if(i>0){
+   for(let k=0;k<12;k++){
+    const x=-5.25+k*.95;
+    addDetail(new R.BoxGeometry(.62,.012,.24),stripeMats[k%2],x,.012,c+HD-.55);
+   }
+  }
+  // Overhead cable tray and hanging fluorescent fixtures.
+  addDetail(new R.BoxGeometry(1.15,.12,19.2),trimMat,0,3.82,c);
+  for(const zoff of [-7,-2,3,8]){
+   addDetail(new R.BoxGeometry(2.05,.07,.62),trimMat,0,3.78,c+zoff);
+   addDetail(new R.BoxGeometry(1.72,.025,.38),mat(0xd8d4c5,{emissive:0xffdca0,emissiveIntensity:.34,roughness:.5}),0,3.73,c+zoff);
+  }
+  // Small room-specific Playtime Co. colour blocks at the door frame.
+  for(const side of [-1,1]){
+   addDetail(new R.BoxGeometry(.16,2.65,.16),edge,side*1.62,1.32,c-HD-.18);
+   addDetail(new R.BoxGeometry(.16,.16,3.38),edge,0,2.72,c-HD-.18);
+  }
+  // Later rooms gain emergency hardware and a restrained red warning glow.
+  if(i>=7&&i%2===1){
+   const lampMat=mat(0x3b1113,{emissive:0xff2418,emissiveIntensity:1.1});
+   addDetail(new R.BoxGeometry(.42,.18,.22),lampMat,9.48,3.12,c+8.5);
+   const lamp=new R.PointLight(0xff3928,1.15,7,2);lamp.position.set(9.1,3.05,c+8.5);scene.add(lamp);
+  }
+ }
+}
 function makeShelly(){
  const g=new R.Group(),skin=mat(0xd9b49e,{roughness:.9}),skinHi=mat(0xe8c9b5,{roughness:.92}),skinShade=mat(0xb88775,{roughness:1}),navy=mat(0x1d3d70,{roughness:.94}),blue=mat(0x4779ad,{roughness:.95}),pale=mat(0xc7d8df),white=mat(0xece5da),hair=mat(0xb17c39,{roughness:.95}),hairHi=mat(0xd5aa65,{roughness:.9}),hairDark=mat(0x704a25,{roughness:1}),dark=mat(0x342923),lip=mat(0x925f5b),gold=mat(0xa18b61,{metalness:.45,roughness:.5});
  const add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);o.castShadow=true;o.receiveShadow=true;return o},sph=(m,x,y,z,sx,sy,sz,p=g)=>{const o=add(new R.SphereGeometry(1,40,28),m,x,y,z,p);o.scale.set(sx,sy,sz);return o},seg=(p,a,b,r,m)=>{const d=b.clone().sub(a),o=new R.Mesh(new R.CapsuleGeometry(r,Math.max(.001,d.length()-2*r),12,20),m);o.position.copy(a).add(b).multiplyScalar(.5);o.quaternion.setFromUnitVectors(V3(0,1,0),d.normalize());p.add(o);return o};
