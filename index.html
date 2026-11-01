@@ -140,7 +140,7 @@ for(let i=0;i<28;i++){const c=cz(i);curWall=curWall.clone();curWall.color.set(TI
   const m=new R.Mesh(geo,material);m.position.set(x,y,z);m.rotation.set(rx,ry,rz);
   m.castShadow=true;m.receiveShadow=true;scene.add(m);return m
  };
- for(let i=0;i<24;i++){
+ for(let i=0;i<28;i++){
   const c=cz(i),accent=mat(TINT[i],{roughness:.9}),edge=mat(ACC[i%4],{roughness:.78,emissive:ACC[i%4],emissiveIntensity:i>=7?.08:.025});
   // Two-tone lower wall cladding and a continuous painted identity stripe.
   for(const side of [-1,1]){
