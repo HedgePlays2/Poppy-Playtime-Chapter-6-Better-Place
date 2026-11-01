@@ -472,6 +472,23 @@ const c5=cz(11),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
  }
  box(0,.48,c21,3.2,.9,2.1,0x6b4a2a);box(0,.96,c21,3.25,.08,2.15,0x8b6a45);
  sign('EMPLOYEE DORMITORY — NIGHT SHIFT',0,3.3,c21-HD+.22,0,4,'#c9bba0');
+ // Completely random, deliberately non-suggestive employee-room poster.
+ const feetPoster=document.createElement('canvas');feetPoster.width=512;feetPoster.height=320;
+ const fp=feetPoster.getContext('2d');fp.fillStyle='#e8dfc9';fp.fillRect(0,0,512,320);
+ fp.fillStyle='#292a30';fp.font='bold 30px Georgia';fp.textAlign='center';fp.fillText('ANATOMY CLUB NOTICE',256,42);
+ fp.fillStyle='#b78f78';
+ // Simple cartoon footprints: just a silly anatomy-class illustration.
+ for(const x of [190,310]){
+  fp.save();fp.translate(x,150);fp.rotate(x<256?-.18:.18);
+  fp.beginPath();fp.ellipse(0,28,29,48,0,0,Math.PI*2);fp.fill();
+  for(let t=0;t<5;t++){const a=-.9+t*.42;fp.beginPath();fp.arc(Math.sin(a)*24,-25-Math.cos(a)*5,8-t*.7,0,Math.PI*2);fp.fill()}
+  fp.restore();
+ }
+ fp.fillStyle='#292a30';fp.font='bold 17px Arial';fp.fillText('NOT MEANT TO BE TAKEN IN A FETISHIZED WAY.',256,282);
+ const feetFrame=box(0,2.05,c21-HD+.18,3.5,2.25,.16,poster,false);
+ const feetImage=new R.Mesh(new R.PlaneGeometry(3.3,2.05),new R.MeshBasicMaterial({map:new R.CanvasTexture(feetPoster)}));
+ feetImage.position.set(0,2.05,c21-HD+.075);scene.add(feetImage);
+
  lore('m36',0,1.02,c21,'UNCLAIMED PERSONAL EFFECTS',"The evacuation list says every employee was accounted for. The lockers tell a different story. Several names have been crossed out and replaced with experiment numbers.");
  // Creator Guest Room: a fan-made invitation, not a claim that Thinknoodles has visited.
  const rug=mat(0x55416a,{roughness:1}),poster=mat(0x171d29,{roughness:.9});
