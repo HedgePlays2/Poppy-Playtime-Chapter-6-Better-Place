@@ -83,13 +83,13 @@ const nc=document.createElement('canvas');nc.width=nc.height=48;const nx=nc.getC
 function noiseTick(){for(let i=0;i<2304;i++){const v=Math.random()*170;nd.data[i*4]=v*.3;nd.data[i*4+1]=v;nd.data[i*4+2]=v*.4;nd.data[i*4+3]=255}nx.putImageData(nd,0,0);ntx.needsUpdate=true}
 /* ---------- level ---------- */
 const HW=10,HD=10,SP=26,cz=i=>-i*SP;
-const NAMES=['GrabPack Calibration Room','Staff Break Room','Playcare Nursery','Toy Repair Bay','Generator Room','Neural Systems','Security Office','Tram Station Wreckage','Poppy Gel Vat Hall','Recording Studio','Restricted Archive','Metal Hedge Containment Bay','Playcare Corridor','Data Center','Prototype Workshop','The Abyss','Abandoned Toy Assembly','The Prototype’s Playroom','Memory Theatre','A Better Place','Toy Testing Arena','Employee Dormitory','Creator Guest Room','Prototype’s Exit Atrium'];
-box(0,-.1,-299,2*HW+.4,.2,622,M.floor,false);box(0,4.1,-299,2*HW+.4,.2,622,M.ceil,false);
-const TINT=[0x7fa8f0,0xe6c36a,0xf0a8c0,0xe09a58,0x9fb0a0,0x6f9fd8,0x8aa0a0,0x7a8f9f,0xe070a8,0xb08aa8,0x9a9080,0x7fbfa8,0xe0a860,0x5f8fbf,0xa0605a,0x6a5a6a,0xc18b43,0x6b354d,0x4b5878,0xe1b95c,0x3c9a9a,0x8b7650,0x9a6cba,0xb9c9d8],ACC=[0xe03a2a,0x2a7fff,0xf2c14e,0x2fbf6a];let curWall=M.wall;
+const NAMES=['GrabPack Calibration Room','Staff Break Room','Playcare Nursery','Toy Repair Bay','Generator Room','Neural Systems','Security Office','Tram Station Wreckage','Poppy Gel Vat Hall','Recording Studio','Restricted Archive','Metal Hedge Containment Bay','Playcare Corridor','Data Center','Prototype Workshop','The Abyss','Abandoned Toy Assembly','The Prototype’s Playroom','Memory Theatre','A Better Place','Toy Testing Arena','Employee Dormitory','Creator Guest Room','Prototype’s Exit Atrium','Prototype Observation Wing','Playcare Memory Vault','Core Access Tunnels','Prototype’s Throne'];
+box(0,-.1,-351,2*HW+.4,.2,726,M.floor,false);box(0,4.1,-351,2*HW+.4,.2,726,M.ceil,false);
+const TINT=[0x7fa8f0,0xe6c36a,0xf0a8c0,0xe09a58,0x9fb0a0,0x6f9fd8,0x8aa0a0,0x7a8f9f,0xe070a8,0xb08aa8,0x9a9080,0x7fbfa8,0xe0a860,0x5f8fbf,0xa0605a,0x6a5a6a,0xc18b43,0x6b354d,0x4b5878,0xe1b95c,0x3c9a9a,0x8b7650,0x9a6cba,0xb9c9d8,0x7d8798,0x6c7c8c,0x9b6b45,0x3b344b],ACC=[0xe03a2a,0x2a7fff,0xf2c14e,0x2fbf6a];let curWall=M.wall;
 const gap=z=>{box(-5.75,2,z,8.5,4,.4,curWall);box(5.75,2,z,8.5,4,.4,curWall);box(0,3.5,z,3,1,.4,curWall,false)};
-const doors=[],needs=['power',null,null,null,'gen',null,null,null,null,'key','vents','hedge',null,null,'fight',null,null,null,null,null,null,null,null],hints={hedge:'The blast shutter is welded shut. Free Experiment 1345 first.',fight:'The door is locked. Deal with the creature first.',gen:'No power to this door. Start the generator.',power:'The door panel has no power. Find the lever.',key:'Keycard required.',vents:'Sealed. Something is still in the vents.'};
+const doors=[],needs=['power',null,null,null,'gen',null,null,null,null,'key','vents','hedge',null,null,'fight',null,null,null,null,null,null,null,null,null,null,null,null],hints={hedge:'The blast shutter is welded shut. Free Experiment 1345 first.',fight:'The door is locked. Deal with the creature first.',gen:'No power to this door. Start the generator.',power:'The door panel has no power. Find the lever.',key:'Keycard required.',vents:'Sealed. Something is still in the vents.'};
 function openDoor(i,instant){const d=doors[i];if(d.open)return;d.open=true;d.col.on=false;d.btn.material.emissive.set(0x00ff40);if(instant)d.mesh.position.y=5.1}
-const SHL={done:false,on:false,t0:0,buried:false,shovel:false,burying:false,carrying:false,carryTime:0,carryWarned:false,gardenX:0,gardenZ:0},blink=[],VATS=[],TAPES=[],TVS=[],seen=new Set(),LOGS=48;let tvUntil=0,toyTokens=0;
+const SHL={done:false,on:false,t0:0,buried:false,shovel:false,burying:false,carrying:false,carryTime:0,carryWarned:false,gardenX:0,gardenZ:0},blink=[],VATS=[],TAPES=[],TVS=[],seen=new Set(),LOGS=52;let tvUntil=0,toyTokens=0;
 function hud(){const n=TAPES.filter(t=>!t.seen).length;$('logs').textContent='Logs '+seen.size+'/'+LOGS+(n?' · Tapes '+n:'')+' · Toy badges '+toyTokens+'/6'}
 function got(id){if(!seen.has(id)){seen.add(id);hud()}}
 function lore(id,x,y,z,title,body,tape){const m=box(x,y,z,tape?.28:.32,.03,tape?.18:.42,tape?mat(0x111111,{emissive:0x3399ff,emissiveIntensity:.8}):0xeee5c0,false);m.userData={hand:'use',label:tape?'Take tape':'Read note',fn(){if(tape){kill(m);TAPES.push({id,title,body,seen:false});hud();snd.grab();say('You pick up a VHS tape: '+title+'. Find a tape player to watch it.',5);return}showDoc(title+'\n\n'+body,false,false);got(id)}};return m}
@@ -110,7 +110,7 @@ function toyBadge(x,z,index){
  blink.push(gold);
 }
 const tb=(x,z,w=2.2,d=1)=>box(x,.45,z,w,.9,d,0x6b4a2a),crate=(x,z,s=1)=>box(x,s/2,z,s,s,s,0x5a4a32),shelf=(x,z,w,d)=>box(x,1.2,z,w,2.4,d,0x3a3a40),RW=HW-.22,LW=-HW+.22;
-for(let i=0;i<24;i++){const c=cz(i);curWall=curWall.clone();curWall.color.set(TINT[i]);const doorMat=mat(ACC[i%4],{metalness:.35,roughness:.7});
+for(let i=0;i<28;i++){const c=cz(i);curWall=curWall.clone();curWall.color.set(TINT[i]);const doorMat=mat(ACC[i%4],{metalness:.35,roughness:.7});
  box(-HW,2,c,.4,4,2*HD+.4,curWall);box(HW,2,c,.4,4,2*HD+.4,curWall);
  i?gap(c+HD):box(0,2,c+HD,2*HW+.4,4,.4,curWall);
  if(i<15){gap(c-HD);box(-1.5,2,c-HD-3,.3,4,6,curWall);box(1.5,2,c-HD-3,.3,4,6,curWall)}else box(0,2,c-HD,2*HW+.4,4,.4,curWall);
@@ -515,6 +515,31 @@ const c5=cz(11),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
  box(0,3.65,c23-6,15,.3,1.1,M.metal);box(0,2.1,c23-6,8,4.1,.25,0x11151a,false);
  sign('THE LAST DOOR',0,3.25,c23-HD+.22,0,5,'#e7d2a0');
  lore('m38',-7,.93,c23+5,'FINAL EVACUATION NOTICE',"All remaining toys are to be moved beyond the atrium. No staff are to follow. The Prototype has requested privacy for the final stage of his plan.");
+ // Prototype Observation Wing: one-way glass, monitoring stations and specimen silhouettes.
+ const c24=cz(24),c25=cz(25),c26=cz(26),c27=cz(27),obs=mat(0x343d48,{metalness:.55,roughness:.55}),screen=mat(0x10252a,{emissive:0x17636b,emissiveIntensity:.55});
+ for(const x of [-6,0,6]){box(x,1.25,c24-2,2.4,2.3,.25,obs);box(x,2.05,c24-1.82,1.9,.85,.04,screen,false);box(x,2.85,c24-2,2.5,.12,.3,M.metal);box(x,.08,c24+4,2.5,.16,2.4,obs)}
+ sign('PROTOTYPE OBSERVATION — LIVE FEEDS',0,3.25,c24-HD+.22,0,4,'#8ed6dc');
+ lore('m47',-7,.95,c24+5,'OBSERVATION LOG 001',"The Prototype has stopped watching the exits. Every camera is now pointed at the same empty chair. The technician assigned to this room has not returned.");
+ // Playcare Memory Vault: preserved drawings and archived child-care records.
+ const vault=mat(0x78664c,{roughness:.9}),paper=mat(0xd9cba9,{roughness:1});
+ for(let k=0;k<5;k++){const x=-7+k*3.5;box(x,1.45,c25-4,2.2,2.7,.22,vault);box(x,1.65,c25-3.86,1.65,1.75,.035,paper,false);box(x,2.85,c25-3.82,1.6,.08,.04,0x9b7650,false)}
+ box(0,.55,c25+3,4,.9,2.4,0x6b4a2a);box(0,1.03,c25+3,4.1,.08,2.5,0x9b7650);
+ sign('PLAYCARE MEMORY VAULT',0,3.3,c25-HD+.22,0,4,'#e5c98c');
+ lore('m48',7,.98,c25+5,'THE CHILDREN REMEMBERED',"A box of drawings survived the evacuation. Every picture shows the same place: a bright garden with a yellow star in the sky. On the back of one drawing: “Please don't let him take our happy place away.”");
+ // Core Access Tunnels: exposed coolant pipes and a narrow service path.
+ const pipeM=mat(0x78949a,{metalness:.8,roughness:.3}),warn=mat(0x9c342d,{emissive:0x4b0905,emissiveIntensity:.5});
+ for(const x of [-7,-4,4,7]){const p=new R.Mesh(new R.CylinderGeometry(.18,.18,18,12),pipeM);p.rotation.x=Math.PI/2;p.position.set(x,2,c26);scene.add(p);for(const z of [-6,0,6])box(x,2,c26+z,.42,.42,.42,warn,false)}
+ for(const z of [-5,0,5]){box(0,.12,c26+z,5,.18,.5,0x7c3430,false);box(0,3.75,c26+z,5,.14,.4,M.metal,false)}
+ sign('CORE ACCESS — PRESSURE WARNING',0,3.25,c26-HD+.22,0,4,'#ff7668');
+ lore('m49',-7,.98,c26+5,'COOLANT FAILURE REPORT',"Pressure is rising in the lower core. The Prototype ordered the pumps left running, even after the evacuation. Whatever is powering the chamber, it is not just electricity.");
+ // Prototype's Throne: a vast toy-maker's control dais and a sealed final door.
+ const throne=mat(0x27252d,{metalness:.6,roughness:.35}),red=mat(0x7b2528,{emissive:0x390608,emissiveIntensity:.65});
+ box(0,.38,c27-3,9,.7,5,throne);box(0,1.5,c27-5,5,2.4,.7,throne);box(0,2.85,c27-5,6,.18,1.1,red);
+ for(const x of [-6,6]){box(x,2.1,c27-5,1.1,4.2,1.1,throne);box(x,3.9,c27-5,1.5,.22,1.4,testRed)}
+ box(0,2.05,c27-8,7,3.9,.28,0x141318,false);
+ sign('THE PROTOTYPE’S THRONE',0,3.25,c27-HD+.22,0,5,'#e9b0a0');
+ lore('m50',-7,.98,c27+5,'THE FINAL RECORDING',"The last surviving recording ends mid-sentence: “If you are hearing this, he has brought you to the throne. Do not mistake the silence for victory. He wants you to come closer.”");
+
 }
 // Optional employee badge locations: tucked beside props, away from the central route.
 [[7,cz(1)-6],[-7,cz(3)+6],[7,cz(6)-6],[-7,cz(9)+6],[7,cz(12)-6],[-7,cz(17)+6]].forEach((p,i)=>toyBadge(p[0],p[1],i));
@@ -808,7 +833,7 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.
   if(endT>0){endT-=dt;if(endT<=0&&!ended){ended=true;document.exitPointerLock();$('endlogs').textContent='Lore logs found: '+seen.size+'/'+LOGS;$('end').style.display='flex'}}}
  else{MH.userData.hd.rotation.y=Math.sin(t*.7)*.2;MH.position.y=.3+Math.sin(t*1.5)*.02}
  // room tracking
- const r=Math.max(0,Math.min(23,Math.round(-P.z/SP)));if(r!=ri&&started){ri=r;const b=$('banner');b.textContent=NAMES[r];b.style.opacity=1;setTimeout(()=>b.style.opacity=0,3200);save(r);$('obj').innerHTML='<b>Save Poppy · Destroy the Prototype</b><br>'+OBJ[r];
+ const r=Math.max(0,Math.min(27,Math.round(-P.z/SP)));if(r!=ri&&started){ri=r;const b=$('banner');b.textContent=NAMES[r];b.style.opacity=1;setTimeout(()=>b.style.opacity=0,3200);save(r);$('obj').innerHTML='<b>Save Poppy · Destroy the Prototype</b><br>'+OBJ[r];
   if(r==0){const o=intro?(500+INTRO.length*3800)/1000+1.5:1;seq([[o,'Giblet: You\'re hurt, but you\'re alive. The Prototype has Poppy. We keep moving.',5],[o+5.5,'Sawyer: Use the lever on the left wall to power the door.',5]])}
   if(r==1)say('Giblet: Something\'s been through here. Stay sharp.',4);
   if(r==2)say('Giblet: Cribs… this is where they kept the Playcare kids.',4);
@@ -829,7 +854,11 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.
   if(r==20)say("Sawyer: A toy testing floor. They used to throw prototypes down those ramps to see what broke first.",5);
   if(r==21)say("Giblet: These were the workers' rooms. They left in a hurry… or they didn't leave at all.",5);
   if(r==22)say("Sawyer: Someone prepared a guest room. A rather unusual name on that pass… Thinknoodles. Whoever that is, they are expected.",5);
-  if(r==23){seq([[.5,"Giblet: This is it. The last door.",4],[5,"Sawyer: Whatever is beyond it, the Prototype has been waiting for us.",5],[10,"Metal Hedge: Then let's finish this. Together.",5]]);endT=18}
+  if(r==23)say("Giblet: The atrium was only the entrance. He's deeper in the complex.",4);
+  if(r==24)seq([[.5,"Sawyer: Observation wing. He has been studying us since we entered.",5],[6,"Giblet: Then let's give him something to worry about.",4]]);
+  if(r==25)say("Metal Hedge: These are the children's drawings. He kept their memories like trophies.",5);
+  if(r==26)say("Sawyer: Core pressure is unstable. Stay on the marked path and keep moving.",5);
+  if(r==27){seq([[.5,"Giblet: That's him, isn't it? The Prototype.",4],[5,"Sawyer: This is where the trail ends… for now.",5],[10,"Metal Hedge: We came this far. We're not leaving Poppy behind.",5]]);endT=20}
   if(r==5)seq([[.5,"Sawyer: Well now, this is a rather interesting turn of events. These were my halls once.",5],[6,"Sawyer: I can feel the Prototype listening in the wires.",4],[11,'Giblet: Then keep your voice down.',3],[15,"Sawyer: Read my log on the terminal. File 7 in the Archive explains Experiment 1345.",6]])}
  if(SHL.carrying&&SHL.done&&!SHL.buried&&!SHL.burying&&!SHL.shovel&&!SHL.hinted&&ri==7&&Math.hypot(P.x-SHL.gardenX,P.z-SHL.gardenZ)<3.2){SHL.hinted=true;say('Sawyer: You will need something to dig with. I saw a shovel by the east wall.',6)}
  musicBox(dt);updGiblet(dt,t);updShelly();updFight(dt,t);updCrawler(dt,t);ren.render(scene,cam)}
@@ -837,7 +866,7 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.
 const INTRO=["Chapter Five ended in the dark.","The Prototype wounded you, sank you in Poppy Gel, and took Poppy with him.","Giblet's cane pulled you back. In the Data Center you found the Doctor: \"Well now, this is a rather interesting turn of events.\"","Now Sawyer himself glows on your GrabPack as Glowby, and the Prototype is on the loose.","Save Poppy. Destroy the Prototype.  (Press Enter to skip)"],introTm=[];
 function endIntro(){if(!intro)return;intro=false;introTm.forEach(clearTimeout);const e=$('intro');e.style.opacity=0;setTimeout(()=>e.style.display='none',1600)}
 function startIntro(){intro=true;const e=$('intro');e.style.display='flex';e.style.opacity=1;e.textContent='';INTRO.forEach((t,i)=>introTm.push(setTimeout(()=>{e.textContent=t},500+i*3800)));introTm.push(setTimeout(endIntro,500+INTRO.length*3800))}
-const OBJ=['Power the door panel (lever on the left wall)','Search the Staff Break Room','Find out what happened to the Playcare kids','Search the Toy Repair Bay','Start Generator 3: plug both hands into the sockets','Reach the Security Office','Search the Security Office, then follow the tram line','Find a way through the wreckage. Someone is hurt','Cross the Gel Hall. Something is hunting you','Use the keycard on the Archive door','Find File 7, then survive the vents','Free Experiment 1345','Search the Playcare Corridor','Find the trail in the Data Center','Survive the Workshop. Hedge will cover you','Search the Abyss for Poppy’s trail','Explore the abandoned toy assembly line','Investigate the Prototype’s playroom','Watch what the Memory Theatre is showing','Enter A Better Place and find where the Prototype took Poppy','Explore the Toy Testing Arena','Search the abandoned employee dormitory','Find the Creator Guest Room and read its visitor pass','Reach the Prototype’s Exit Atrium'];
+const OBJ=['Power the door panel (lever on the left wall)','Search the Staff Break Room','Find out what happened to the Playcare kids','Search the Toy Repair Bay','Start Generator 3: plug both hands into the sockets','Reach the Security Office','Search the Security Office, then follow the tram line','Find a way through the wreckage. Someone is hurt','Cross the Gel Hall. Something is hunting you','Use the keycard on the Archive door','Find File 7, then survive the vents','Free Experiment 1345','Search the Playcare Corridor','Find the trail in the Data Center','Survive the Workshop. Hedge will cover you','Search the Abyss for Poppy’s trail','Explore the abandoned toy assembly line','Investigate the Prototype’s playroom','Watch what the Memory Theatre is showing','Enter A Better Place and find where the Prototype took Poppy','Explore the Toy Testing Arena','Search the abandoned employee dormitory','Find the Creator Guest Room and read its visitor pass','Reach the Prototype’s Exit Atrium','Investigate the Prototype’s observation wing','Recover the hidden Playcare memory records','Navigate the unstable core access tunnels','Reach the Prototype’s throne room'];
 function begin(k){ainit();restore(k);GIB.position.set(P.x-1.4,0,P.z+1.2);started=true;ri=-1;CR.next=30;if(k==0)startIntro();ren.domElement.requestPointerLock()}
 $('new').onclick=()=>{try{delete localStorage.ch6_shellyburied}catch{};SHL.buried=false;SHL.burying=false;SHL.grave.mound.visible=SHL.grave.stone.visible=SHL.grave.label.visible=false;SHL.shovel=false;SHL.hinted=false;SHL.grave.shovel.visible=true;SHL.grave.shovelHit.userData.hand='use';SHL.carrying=false;SHL.carryTime=0;SHL.carryWarned=false;SHL.model.visible=true;begin(0)};$('cont').onclick=()=>begin(+$('cont').dataset.k);
 function showCont(k){if(k>0){$('cont').style.display='';$('cont').dataset.k=k;$('cont').textContent='Continue — '+NAMES[k]}}
