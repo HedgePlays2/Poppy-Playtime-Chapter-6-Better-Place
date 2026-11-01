@@ -364,6 +364,12 @@ function makeShelly(){
  box(7.9,.85,c-3,.18,.14,.25,0x3a62ff,false);box(8.15,.85,c-3,.18,.14,.25,0xff7aa8,false);
  lore('m18',8,.83,c-2.5,'TWO TOYS',"Two toys were laid side by side on this crate, covered with a work jacket. No note. Only a small pink ribbon and a scrap of blue fur.");
  lore('m19',5.5,1.13,c-7,'TRAM CONDUCTOR LOG',"Emergency brake override from the passenger car: authorization GIBLET. The brakes failed on purpose. Impact at the junction. One survivor ran from the wreck toward the Data Center. The Prototype walked out of the fire.");
+ // Low-cost discovery trail: reflective floor markers and a dropped staff badge point toward Shelly.
+ const trailMat=new R.MeshStandardMaterial({color:0xb58b32,emissive:0x49300a,emissiveIntensity:.42,roughness:.78});
+ for(const z of [c+2.1,c+.55,c-.85]){const mark=new R.Mesh(new R.BoxGeometry(.16,.018,.62),trailMat);mark.position.set(-8.85,.035,z);scene.add(mark)}
+ const badgeMat=new R.MeshStandardMaterial({color:0xe5c45b,metalness:.55,roughness:.35,emissive:0x725019,emissiveIntensity:.32});
+ const droppedBadge=new R.Mesh(new R.BoxGeometry(.24,.035,.3),badgeMat);droppedBadge.position.set(-8.55,.075,c-1.55);droppedBadge.rotation.y=-.28;scene.add(droppedBadge);
+ const badgeStripe=new R.Mesh(new R.BoxGeometry(.15,.008,.035),new R.MeshBasicMaterial({color:0x263d65}));badgeStripe.position.set(-8.55,.096,c-1.55);badgeStripe.rotation.y=-.28;scene.add(badgeStripe);
  // A quiet personal keepsake for Mary, left in the garden by Hedge.
  const maryGold=mat(0xc9a45a,{metalness:.72,roughness:.3}),maryPetal=mat(0xe7c6cf,{roughness:.85}),maryStem=mat(0x55734a,{roughness:1});
  const keepsake=new R.Mesh(new R.TorusGeometry(.16,.035,8,20),maryGold);keepsake.position.set(7.05,.82,c+6.75);keepsake.rotation.x=Math.PI/2;scene.add(keepsake);
@@ -841,6 +847,7 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.
  // room tracking
  const r=Math.max(0,Math.min(27,Math.round(-P.z/SP)));if(r!=ri&&started){ri=r;const b=$('banner');b.textContent=NAMES[r];b.style.opacity=1;setTimeout(()=>b.style.opacity=0,3200);save(r);$('obj').innerHTML='<b>Save Poppy · Destroy the Prototype</b><br>'+OBJ[r];
   if(r==0){const o=intro?(500+INTRO.length*3800)/1000+1.5:1;seq([[o,'Giblet: You\'re hurt, but you\'re alive. The Prototype has Poppy. We keep moving.',5],[o+5.5,'Sawyer: Use the lever on the left wall to power the door.',5]])}
+  if(r==7){$('obj').innerHTML='<b>Save Poppy · Destroy the Prototype</b><br>Search the tram wreckage. Follow the dropped Playcare ID badge.';say('Giblet: I see a staff badge near the wreckage. Someone may still be here.',5)}
   if(r==1)say('Giblet: Something\'s been through here. Stay sharp.',4);
   if(r==2)say('Giblet: Cribs… this is where they kept the Playcare kids.',4);
   if(r==3)say('Giblet: Keep looking. The Archive door will need a keycard.',5);
