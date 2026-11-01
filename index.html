@@ -18,13 +18,13 @@ button{padding:12px 30px;font:18px Georgia;background:#1b1b22;color:#fff;border:
 /* Horror presentation pass: restrained exposure, film grain and deep peripheral falloff. */
 #vig{inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 48%,transparent 38%,#0005 73%,#000d 100%);box-shadow:inset 0 0 100px #000b;z-index:2}#vig:after{content:'';position:absolute;inset:0;opacity:.11;pointer-events:none;background-image:repeating-radial-gradient(circle at 20% 30%,#fff2 0 1px,transparent 1px 3px)}#cross{background:#d8d1c2;width:3px;height:3px;box-shadow:0 0 5px #fff8}#label{color:#d4c8a9;text-shadow:0 2px 5px #000,0 0 12px #000;font-size:14px}#sub{color:#e1d9ca;font-size:19px;text-shadow:0 2px 8px #000,0 0 18px #000}
 </style></head><body>
-<div class="o" id="cross"></div><div class="o" id="label"></div><div class="o" id="sub"></div><div class="o" id="banner"></div><div class="o" id="doc"></div><div class="o" id="scare"></div><div class="o" id="burial-scene"></div><div class="o" id="logs">Logs 0/31</div><div class="o" id="obj"></div><div class="o" id="vig"></div><div class="o" id="intro"></div>
+<div class="o" id="cross"></div><div class="o" id="label"></div><div class="o" id="sub"></div><div class="o" id="banner"></div><div class="o" id="doc"></div><div class="o" id="scare"></div><div class="o" id="burial-scene"></div><div class="o" id="logs">Logs 0/32</div><div class="o" id="obj"></div><div class="o" id="vig"></div><div class="o" id="intro"></div>
 <div class="o" id="pause"><h2>PAUSED — click to resume</h2></div>
 <div class="o" id="end"><h1>TO BE CONTINUED…</h1><h2>Poppy Playtime: Chapter 6 — A Better Place</h2><p class="s" id="endlogs"></p><p class="s">Fan-made by Hedge. Not affiliated with MOB Games.</p></div>
 <div class="o" id="menu"><h1>POPPY PLAYTIME</h1><h2>Chapter 6 — A Better Place</h2><p class="s" style="color:#ccc;font-size:16px">Directly after Chapter 5, you find yourself with a Backup of Sawyer and Giblet, and the Prototype is on the loose…</p>
 <p class="s">Fan-made · not affiliated with MOB Games</p>
 <button id="new">New Game</button><button id="cont" style="display:none">Continue</button><button id="cloud">Sign in with Puter (cloud save)</button>
-<p class="s">WASD move · Shift run · Space jump · Mouse look · <b style="color:#59f">Left-click = blue hand</b> · <b style="color:#f54">Right-click = red hand</b> · E use/read · F flashlight</p></div>
+<p class="s">WASD move · Shift run · Space jump · Mouse look · <b style="color:#59f">Left-click = blue hand</b> · <b style="color:#f54">Right-click = red hand</b> · E use/read · Q put down · F flashlight · G graphics</p></div>
 <script src="https://js.puter.com/v2/"></script>
 <script type="module">
 import * as R from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
@@ -86,7 +86,7 @@ box(0,-.1,-195,2*HW+.4,.2,414,M.floor,false);box(0,4.1,-195,2*HW+.4,.2,414,M.cei
 const gap=z=>{box(-5.75,2,z,8.5,4,.4,M.wall);box(5.75,2,z,8.5,4,.4,M.wall);box(0,3.5,z,3,1,.4,M.wall,false)};
 const doors=[],needs=['power',null,null,null,'gen',null,null,null,null,'key','vents','hedge',null,null,'fight'],hints={hedge:'The blast shutter is welded shut. Free Experiment 1345 first.',fight:'The door is locked. Deal with the creature first.',gen:'No power to this door. Start the generator.',power:'The door panel has no power. Find the lever.',key:'Keycard required.',vents:'Sealed. Something is still in the vents.'};
 function openDoor(i,instant){const d=doors[i];if(d.open)return;d.open=true;d.col.on=false;d.btn.material.emissive.set(0x00ff40);if(instant)d.mesh.position.y=5.1}
-const SHL={done:false,on:false,t0:0,buried:false,shovel:false,burying:false,carrying:false,carryTime:0,carryWarned:false,gardenX:0,gardenZ:0},blink=[],seen=new Set(),LOGS=31;
+const SHL={done:false,on:false,t0:0,buried:false,shovel:false,burying:false,carrying:false,carryTime:0,carryWarned:false,gardenX:0,gardenZ:0},blink=[],seen=new Set(),LOGS=32;
 function got(id){if(!seen.has(id)){seen.add(id);$('logs').textContent='Logs '+seen.size+'/'+LOGS}}
 function lore(id,x,y,z,title,body,tape){const m=box(x,y,z,tape?.28:.32,.03,tape?.18:.42,tape?mat(0x111111,{emissive:0x3399ff,emissiveIntensity:.8}):0xeee5c0,false);m.userData={hand:'use',label:tape?'Play tape':'Read note',fn(){showDoc(title+'\n\n'+body,!!tape);got(id)}};return m}
 const tb=(x,z,w=2.2,d=1)=>box(x,.45,z,w,.9,d,0x6b4a2a),crate=(x,z,s=1)=>box(x,s/2,z,s,s,s,0x5a4a32),shelf=(x,z,w,d)=>box(x,1.2,z,w,2.4,d,0x3a3a40),RW=HW-.22,LW=-HW+.22;
@@ -208,6 +208,34 @@ function makeShelly(){
  sign('NO MORE PLAYTIME',RW,3,c+6,-Math.PI/2,2.6);
  lore('m8',8,1.03,c-3,'REPAIR TICKET 1345',"Chassis assembled from salvaged frames. Mr. Sawyer personally overrode the obedience chip. Reason given: 'The children need someone who can say no.'");
  lore('m9',8,1.03,c-5,'POSTED NOTICE',"Do NOT repair any of the Prototype's old frames. They are not toys anymore. -- Management")}
+// ---- early-room dressing: rooms 0-3
+{const pst=(t,x,y,z,ry,w,h,bg,fg,fs)=>{const cv=document.createElement('canvas');cv.width=256;cv.height=Math.round(256*h/w);const g=cv.getContext('2d');g.fillStyle=bg;g.fillRect(0,0,cv.width,cv.height);g.strokeStyle=fg;g.lineWidth=5;g.strokeRect(5,5,cv.width-10,cv.height-10);g.fillStyle=fg;g.font='bold '+fs+'px Georgia';g.textAlign='center';g.textBaseline='middle';const L=t.split('|');L.forEach((ln,i)=>g.fillText(ln,cv.width/2,cv.height/2+(i-(L.length-1)/2)*fs*1.2));const tx=new R.CanvasTexture(cv);tx.colorSpace=R.SRGBColorSpace;const m=new R.Mesh(new R.PlaneGeometry(w,h),new R.MeshStandardMaterial({map:tx,roughness:.9}));m.position.set(x,y,z);m.rotation.y=ry;scene.add(m);return m},
+ dc=(w,h,d,col,x,y,z,em)=>{const m=new R.Mesh(new R.BoxGeometry(w,h,d),em?glow(col,em):mat(col));m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;scene.add(m);return m},
+ cyl=(x,y,z,r,h,col,em,rz)=>{const m=new R.Mesh(new R.CylinderGeometry(r,r,h,18),em?glow(col,em):mat(col));m.position.set(x,y,z);if(rz)m.rotation.z=rz;scene.add(m);return m},
+ stain=(x,z,r)=>{const m=new R.Mesh(new R.CircleGeometry(r,20),mat(0x0c0a08,{roughness:.3}));m.rotation.x=-Math.PI/2;m.position.set(x,.008,z);scene.add(m)},
+ ball=(x,y,z,r,col)=>{const m=new R.Mesh(new R.SphereGeometry(r,10,8),mat(col));m.position.set(x,y,z);scene.add(m);return m};
+ {const c=cz(0);dc(.18,.01,18,0xd9b21c,0,.012,c);dc(6,.01,.18,0xd9b21c,0,.012,c-3);dc(6,.01,.18,0xd9b21c,0,.012,c+4);
+  cyl(-3.5,.03,c+3,.9,.04,0x2a5cff,.7);cyl(3.5,.03,c+3,.9,.04,0xe0302a,.7);
+  for(let k=0;k<3;k++){const t=new R.Mesh(new R.TorusGeometry(.35,.05,8,24),glow(0xff4040,.9));t.position.set(9.72,1.8,c-8+k*2);t.rotation.y=Math.PI/2;scene.add(t);cyl(9.74,1.8,c-8+k*2,.13,.04,0xff4040,1.2,Math.PI/2)}
+  [[-8.5,-8],[-7.6,-8.4],[8.6,8]].forEach(([x,z])=>{cyl(x,.47,c+z,.38,.95,0x3a4a3a);colr(x,c+z,.8,.8)});
+  pst('CALIBRATION|TARGETS',LW,2.2,c+7,Math.PI/2,2.4,1.2,'#14233a','#8cf',30);pst('SAFETY FIRST|TOYS ARE FRIENDS',RW,2.9,c-8,-Math.PI/2,2.6,1.3,'#1a2a14','#fd6',26);stain(-1,c+6,.7);stain(3,c-6,.5)}
+ {const c=cz(1);dc(.05,1.2,.7,0x55aaff,8.57,1.2,c-6,.5);for(let r=0;r<4;r++)for(let k=0;k<3;k++)dc(.06,.22,.16,[0xdd5555,0x55aadd,0xddcc55,0x66bb66][(r+k)%4],8.55,.55+r*.3,c-6.2+k*.2);
+  dc(3,.5,1.1,0x5a3a3a,-5,.3,c+7.5);dc(3,.7,.3,0x5a3a3a,-5,.8,c+8.1);colr(-5,c+7.7,3.1,1.1);
+  [[4.3,4.4],[3.8,3.6],[-3.4,-3.2]].forEach(([x,z])=>cyl(x,.96,c+z,.05,.1,0xeeeeee));dc(.4,.5,.4,0x222222,4.9,1.15,c+3.8);
+  pst('NOTICES|Shifts changed|Do not answer|the intercom',RW,2.1,c-3,-Math.PI/2,2.2,1.4,'#c9b98a','#222',20);pst('2:00',LW,3.3,c-5,Math.PI/2,.9,.9,'#ddd','#222',44);
+  for(let k=0;k<8;k++)dc(.3,.01,.4,0xeeeeee,(Math.random()-.5)*14,.015,c+(Math.random()-.5)*14)}
+ {const c=cz(2);cyl(0,.012,c-4,3,.02,0x5a88c8);cyl(0,.016,c-4,2,.02,0xf2c14e);cyl(0,.02,c-4,1,.02,0xcc4444);
+  dc(.7,1.8,3,0x8a6a4a,9.3,.9,c-6);for(let r=0;r<3;r++)for(let k=0;k<6;k++)dc(.28,.28,.28,[0xdd5555,0x5588dd,0xddcc55,0x55aa66][(r+k)%4],9.2,.35+r*.55,c-7.1+k*.4);colr(9.3,c-6,.8,3);
+  for(let k=0;k<5;k++)dc(1.2,.03,1.8,[0x88aadd,0xddaa88,0xaaddaa,0xddaadd,0xdddd88][k],-8.5,.905,c+8-k*3.4);
+  dc(.5,.5,1.1,0x9a6a3a,7,.5,c+7);dc(.3,.4,.4,0x9a6a3a,7,.9,c+7.5);dc(.1,.1,1.3,0x6b4a2a,6.75,.15,c+7);dc(.1,.1,1.3,0x6b4a2a,7.25,.15,c+7);colr(7,c+7,.8,1.4);
+  [0,1,2,3].forEach(k=>{dc(.01,.8,.01,0x888888,2.55+k*.3,3.3,c);ball(2.55+k*.3,2.88,c,.09,[0xdd5555,0x5588dd,0xddcc55,0x55aa66][k])});dc(1,.01,.01,0x555555,3,3.7,c);
+  pst('A B C|1 2 3',LW,2.5,c+3,Math.PI/2,3,1.4,'#f6e7a1','#d44',56);pst('HOW BIG ARE YOU?',RW,1.6,c-8,-Math.PI/2,.9,1.6,'#d8e8f0','#335',16)}
+ {const c=cz(3);pst('TOOLS',LW,2.4,c-2,Math.PI/2,3,1.5,'#4a3a2a','#cba',30);for(let k=0;k<9;k++)dc(.04,.35,.08,0x8a8f94,-9.72,1.3+(k%3)*.3,c-3.4+k*.4);
+  for(let k=-7;k<=7;k++)cyl(0,.63,c+k,.06,1.3,0x555555,0,Math.PI/2);
+  for(let k=0;k<5;k++){const x=-3+k*1.5;dc(.012,1.1,.012,0x888888,x,3.4,c-5);const bd=new R.Mesh(new R.CapsuleGeometry(.12,.3,4,8),mat([0xcc4444,0x4477cc,0xddaa33,0x55aa66,0xaa55aa][k]));bd.position.set(x,2.55,c-5);scene.add(bd);ball(x,2.9,c-5,.1,0xe0c8a0)}
+  [[8,5],[8,7.4]].forEach(([x,z])=>{dc(1.2,.6,1.2,0x333338,x,.3,c+z);colr(x,c+z,1.2,1.2);for(let k=0;k<4;k++){const l=new R.Mesh(new R.CapsuleGeometry(.05,.4,4,8),mat([0xcc4444,0x4477cc,0xddaa33,0x55aa66][k]));l.position.set(x-.4+k*.26,.75,c+z);l.rotation.z=(k-1.5)*.3;scene.add(l)}});
+  const sp=glow(0xffaa33,2.2);blink.push(sp);[[-7.2,1.15,4],[-7.6,1.1,3.4]].forEach(([x,y,z])=>{const q=new R.Mesh(new R.SphereGeometry(.03,6,6),sp);q.position.set(x,y,c+z);scene.add(q)});
+  stain(-2,c+4,.8);stain(3,c-2,.6);pst('REPAIR TICKETS|NEVER LEAVE|A TOY UNFINISHED',RW,2.5,c-8,-Math.PI/2,2.8,1.4,'#2a2a2a','#9cf',22)}}
 // Room 4 — generator
 {const c=cz(4);box(6.5,1.2,c,3,2.4,5,0x454b52);const pn=box(4.95,1.5,c+.8,.05,.6,1.6,glow(0xff8a20,.9),false);
  box(-8,1.2,c+5,2,2.4,2,0x3b4a55);box(-8,1.2,c-4,2,2.4,2,0x3b4a55);sign('GENERATOR 3 — AUTHORIZED ONLY',LW,3.1,c,Math.PI/2,3.4,'#fa3');tb(-4,c-6,1.6,1);
@@ -239,7 +267,7 @@ function makeShelly(){
  const graveStone=box(gardenX,.42,gardenZ-1.15,.62,.72,.16,mat(0x77766d,{roughness:1}),false);graveStone.visible=false;
  const graveName=document.createElement('canvas');graveName.width=256;graveName.height=96;const gn=graveName.getContext('2d');gn.fillStyle='#d7d1bf';gn.font='bold 42px Georgia';gn.textAlign='center';gn.fillText('SHELLY',128,56);const graveLabel=new R.Mesh(new R.PlaneGeometry(.54,.2),new R.MeshBasicMaterial({map:new R.CanvasTexture(graveName),transparent:true}));graveLabel.position.set(gardenX,.48,gardenZ-1.055);graveLabel.visible=false;scene.add(graveLabel);
  const shovel=new R.Group(),shovelWood=mat(0x76502e),shovelMetal=mat(0x777f83,{metalness:.65,roughness:.4});const shHandle=new R.Mesh(new R.CylinderGeometry(.025,.032,.78,8),shovelWood);shHandle.position.y=.39;shovel.add(shHandle);const shBlade=new R.Mesh(new R.BoxGeometry(.22,.3,.035),shovelMetal);shBlade.position.set(0,.02,.035);shovel.add(shBlade);shovel.position.set(7.2,.02,c+7.35);shovel.rotation.z=-.45;scene.add(shovel);
- const shovelHit=new R.Mesh(new R.BoxGeometry(1.15,1.8,1.15),new R.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,colorWrite:false}));shovelHit.userData.hitbox=true;shovelHit.castShadow=false;shovelHit.receiveShadow=false;shovelHit.position.set(7.2,.9,c+7.35);shovelHit.userData={hand:'',label:'',fn(){}};shovel.visible=false;scene.add(shovelHit);solids.push(shovelHit);const graveHit=new R.Mesh(new R.BoxGeometry(2.8,2.4,2.8),new R.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,colorWrite:false}));graveHit.userData.hitbox=true;graveHit.castShadow=false;graveHit.receiveShadow=false;graveHit.position.set(gardenX,1.2,gardenZ+.45);graveHit.userData={hand:'',label:'',fn(){}};scene.add(graveHit);solids.push(graveHit);SHL.grave={x:gardenX,z:gardenZ,mound:graveMound,stone:graveStone,label:graveLabel,shovel,hit:graveHit};
+ const shovelHit=new R.Mesh(new R.BoxGeometry(1.15,1.8,1.15),new R.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,colorWrite:false}));shovelHit.userData.hitbox=true;shovelHit.castShadow=false;shovelHit.receiveShadow=false;shovelHit.position.set(9.2,.9,c+2.2);shovel.position.set(9.25,.02,c+2.2);shovel.rotation.z=-.25;shovelHit.userData={hand:'use',label:'Take shovel',fn(){SHL.shovel=true;shovel.visible=false;shovelHit.userData.hand='';snd.grab();say('You pick up a rusty shovel.',3)}};scene.add(shovelHit);solids.push(shovelHit);const graveHit=new R.Mesh(new R.BoxGeometry(2.8,2.4,2.8),new R.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,colorWrite:false}));graveHit.userData.hitbox=true;graveHit.castShadow=false;graveHit.receiveShadow=false;graveHit.position.set(gardenX,1.2,gardenZ+.45);graveHit.userData={hand:'',label:'Dig a grave and lay Shelly to rest',fn(){if(SHL.shovel)startBurial();else say('You need something to dig with. There was a shovel by the east wall.',4)}};scene.add(graveHit);solids.push(graveHit);SHL.grave={x:gardenX,z:gardenZ,mound:graveMound,stone:graveStone,label:graveLabel,shovel,shovelHit,hit:graveHit};
  box(7.9,.85,c-3,.18,.14,.25,0x3a62ff,false);box(8.15,.85,c-3,.18,.14,.25,0xff7aa8,false);
  lore('m18',8,.83,c-2.5,'TWO TOYS',"Two toys were laid side by side on this crate, covered with a work jacket. No note. Only a small pink ribbon and a scrap of blue fur.");
  lore('m19',5.5,1.13,c-7,'TRAM CONDUCTOR LOG',"Emergency brake override from the passenger car: authorization GIBLET. The brakes failed on purpose. Impact at the junction. One survivor ran from the wreck toward the Data Center. The Prototype walked out of the fire.");
@@ -322,6 +350,49 @@ function makeMH(){const g=new R.Group(),mk=(c,m=.5,r=.4,e=0)=>new R.MeshStandard
 MH=makeMH();MH.position.set(0,.3,c5-1);scene.add(MH);
 let mhFree=false,endT=0;
 function freeHedge(){mhFree=true;F.hedge=true;endT=0;seq([[.5,'Metal Hedge: Systems online… Sawyer? You actually did it.'],[5,'Metal Hedge: I\'m Experiment 1345. Friends call me Hedge. The Prototype sealed me away to bury Playcare\'s secrets.',5],[11,'Giblet: Can he really help us?'],[15,'Metal Hedge: My blaster\'s charged. We\'re getting Poppy back, kid. Together, to a better place.',5],[22,'Metal Hedge: There\'s someone I still need to get home to. My wife, Mary. I promised her I\'d make it back… and I intend to keep that promise.',6]])}
+/* ---------- Giblet ---------- */
+function makeGiblet(){const g=new R.Group(),M_=(c,o={})=>mat(c,{roughness:1,...o}),fur=M_(0xa65a3b),furD=M_(0x6a1f1c),inner=M_(0xb98a8e,{roughness:.95}),vest=M_(0x575f4c,{roughness:.9}),vestD=M_(0x2c3029,{roughness:.85}),stitch=M_(0xe0922e,{roughness:.8}),cream=M_(0xe8dfc8,{roughness:.35}),purple=M_(0xa030c8,{roughness:.25,emissive:0x3a0a50,emissiveIntensity:.4}),lidM=M_(0xc77a3a,{roughness:.9}),leather=M_(0x34302d,{roughness:.6}),tooth=M_(0xd9d3a8,{roughness:.6}),tongue=M_(0xb83a3a,{roughness:.7}),mitt=M_(0x6f6a5a),metal=M_(0x6b625a,{metalness:.7,roughness:.45}),brass=M_(0x9a7a3a,{metalness:.7,roughness:.4}),yel=M_(0xc9aa3a,{roughness:.6}),wire1=M_(0xe05a20,{roughness:.6}),wire2=M_(0xe0b020,{roughness:.6}),wh=M_(0xe9e2d0,{roughness:.6}),dk=M_(0x120d0a,{roughness:.8}),foot=M_(0x6a4630),gray=M_(0x8a8478),
+ add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;p.add(o);return o},Sp=r=>new R.SphereGeometry(r,16,12),Cy=(a,b,h)=>new R.CylinderGeometry(a,b,h,12),Bx=(w,h,d)=>new R.BoxGeometry(w,h,d),sc=(o,x,y,z)=>(o.scale.set(x,y,z),o),
+ st=(p,x,y,z,rz=0,ry=0)=>{const o=add(Bx(.035,.012,.012),stitch,x,y,z,p);o.rotation.z=rz;o.rotation.y=ry;return o};
+ // body: stitched plush torso with an olive waistcoat
+ sc(add(Sp(.27),fur,0,.6,0),1,1.1,.95);sc(add(Sp(.285),vest,0,.62,.03),1.02,1.02,.95);add(Cy(.27,.34,.2),vest,0,.42,.02).scale.set(1,1,.9);
+ [-1,1].forEach(s=>{const l=add(Bx(.14,.22,.03),vestD,s*.1,.84,.22);l.rotation.z=-s*.5;l.rotation.x=-.2});
+ sc(add(Sp(.035),stitch,.07,.66,.275),1,1,.4);st(g,-.12,.5,.27,.5);st(g,.1,.4,.28,-.4);
+ // head, tilted: long stitched snout, open grin with chunky teeth
+ const hd=new R.Group();hd.position.set(0,1.14,.04);hd.rotation.z=.18;g.add(hd);add(Sp(.3),fur,0,0,0,hd);
+ sc(add(Sp(.17),fur,0,-.04,.3,hd),1.1,.75,1.5);sc(add(Sp(.14),dk,0,-.11,.31,hd),1.1,.5,1.4);const jaw=sc(add(Sp(.15),fur,0,-.19,.29,hd),1.05,.5,1.35);jaw.rotation.x=.25;
+ for(let k=-2;k<=2;k++){add(Bx(.04,.05,.03),tooth,k*.045,-.1,.5,hd).rotation.z=k*.05;if(Math.abs(k)<2)add(Bx(.04,.045,.03),tooth,k*.05+.02,-.155,.47,hd)}
+ sc(add(Sp(.06),tongue,0,-.15,.37,hd),1.3,.5,1.3);add(Sp(.035),dk,0,0,.52,hd);
+ // leather eyepatch over his right eye, with a screw and strap
+ sc(add(Sp(.1),leather,-.12,.1,.25,hd),1,1.15,.4);add(new R.TorusGeometry(.085,.004,6,24),wh,-.12,.1,.275,hd).scale.set(1,1.15,1);add(Bx(.03,.03,.012),metal,-.19,0,.29,hd);
+ add(Bx(.3,.03,.015),leather,-.05,.2,.26,hd).rotation.z=.98;
+ // big cream eye with a purple flower pupil
+ sc(add(Sp(.1),cream,.12,.1,.25,hd),1,1.1,.7);add(new R.TorusGeometry(.1,.02,8,24),lidM,.12,.1,.27,hd);
+ add(Sp(.035),purple,.12,.1,.33,hd);[[1,0],[-1,0],[0,1],[0,-1]].forEach(([x,y])=>add(Sp(.025),purple,.12+x*.03,.1+y*.03,.325,hd));add(Sp(.012),wh,.135,.12,.355,hd);
+ // ears: one tall and pointed, one small and floppy, pink inside, dark red fur edging
+ const earBig=add(Cy(0,.14,.55),fur,.2,.4,-.04,hd);earBig.rotation.z=-.35;add(Cy(0,.1,.45),inner,.2,.39,.01,hd).rotation.z=-.35;add(Cy(0,.15,.56),furD,.2,.4,-.07,hd).rotation.z=-.35;add(Sp(.035),gray,.3,.66,-.04,hd);
+ const earSm=add(Cy(0,.12,.38),fur,-.28,.2,-.02,hd);earSm.rotation.z=.95;add(Cy(0,.085,.3),inner,-.28,.19,.02,hd).rotation.z=.95;add(Sp(.03),gray,-.42,.3,-.02,hd);
+ for(let k=0;k<5;k++)st(hd,.27+k*.012,.28+k*.07,.0,-.35);
+ // swept-back dark red tuft
+ for(let k=0;k<6;k++){const t=.5+k*.08;add(Cy(0,.025,.32),furD,-.12+k*.05,.3+Math.sin(t)*.16,-.02-Math.cos(t)*.16,hd).rotation.x=t-Math.PI/2}
+ st(hd,0,.28,.12,.3);st(hd,.22,-.02,.18,1);st(hd,.06,-.17,.38,.2);sc(add(Sp(.05),gray,.2,-.08,.2,hd),1,1,.3);
+ // arms: his right hand rests on a cane made from a plug-ended cable rod
+ const arms=[],legs=[];
+ [-1,1].forEach(s=>{const a=new R.Group();a.position.set(s*.3,.84,.02);g.add(a);
+  sc(add(Sp(.075),fur,0,-.12,0,a),1,2.2,1);sc(add(Sp(.065),fur,0,-.36,.02,a),1,2,1);st(a,0,-.2,.07,.6);st(a,0,-.4,.07,-.5);
+  if(s<0){add(Sp(.095),mitt,0,-.54,.06,a);add(Sp(.05),cream,0,-.5,.1,a);add(Cy(.035,.035,.26),metal,0,-.7,.1,a);
+   [-.62,-.76].forEach(y=>add(new R.TorusGeometry(.045,.01,6,14),brass,0,y,.1,a).rotation.x=Math.PI/2);
+   add(new R.TorusGeometry(.04,.007,6,12),wire1,0,-.66,.1,a).rotation.x=1.2;add(new R.TorusGeometry(.04,.007,6,12),wire2,0,-.72,.1,a).rotation.x=1.4;
+   add(Bx(.07,.14,.06),yel,.06,-.68,.1,a);add(Bx(.06,.03,.07),brass,0,-.835,.1,a);[-1,1].forEach(q=>add(Bx(.012,.04,.012),metal,q*.015,-.865,.1,a))}
+  else{add(Cy(.085,.075,.1),leather,0,-.5,0,a);sc(add(Sp(.1),mitt,0,-.6,.01,a),1,1.1,.9)}
+  arms.push(a);
+  const l=new R.Group();l.position.set(s*.13,.36,0);g.add(l);sc(add(Sp(.13),fur,0,-.1,0,l),1,1.5,1.1);sc(add(Sp(.06),gray,s*.05,-.12,.11,l),1,1,.3);st(l,s*.05,-.06,.13,.6);
+  add(Cy(.08,.075,.2),fur,0,-.28,.01,l);sc(add(Sp(.12),foot,0,-.33,.06,l),1,.55,1.4);st(l,-.04,-.3,.18,1.4);st(l,.04,-.3,.18,1.7);legs.push(l)});
+ g.scale.setScalar(.9);g.userData={arms,legs,hd};g.visible=false;scene.add(g);return g}
+const GIB=makeGiblet();
+function updGiblet(dt,t){if(!started)return;GIB.visible=true;const u=GIB.userData,tx=P.x-Math.cos(yaw)*1.5+Math.sin(yaw)*.7,tz=P.z+Math.sin(yaw)*1.5+Math.cos(yaw)*.7,dx=tx-GIB.position.x,dz=tz-GIB.position.z,d=Math.hypot(dx,dz);let w=0;
+ if(d>12)GIB.position.set(tx,0,tz);else if(d>.45){const s=Math.min(d,2.3*dt);GIB.position.x+=dx/d*s;GIB.position.z+=dz/d*s;w=1}
+ GIB.rotation.y=Math.atan2(P.x-GIB.position.x,P.z-GIB.position.z);const sw=w?Math.sin(t*9)*.6:0;u.legs[0].rotation.x=sw;u.legs[1].rotation.x=-sw;u.arms[0].rotation.x=-sw*.5;u.arms[1].rotation.x=sw*.15;u.hd.rotation.z=.18+Math.sin(t*1.3)*.05;GIB.position.y=w?Math.abs(Math.sin(t*9))*.02:0}
 /* ---------- the Vent Crawler ---------- */
 function makeCrawler(){const g=new R.Group(),sk=mat(0x1b1816,{roughness:.6,metalness:.2}),pl=mat(0xcfc8a8,{roughness:.5}),dk=mat(0x050505),eye=mat(0x220000,{emissive:0xff1a1a,emissiveIntensity:2}),wh=mat(0xf2efe0,{roughness:.4}),
  add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o},Sp=r=>new R.SphereGeometry(r,12,10),Cy=(a,b,h)=>new R.CylinderGeometry(a,b,h,8);
@@ -400,7 +471,7 @@ function updHand(H,dt){if(H.p>0){if(H.dir==1){H.p=Math.min(1,H.p+dt/.18);if(H.p>
  const w=V3(0,-.4,0).applyQuaternion(H.g.quaternion).add(H.g.position),a=V3(H.sx*.2,-.55,.1),mid=a.clone().lerp(w,.5);mid.y-=.14*(1-e*.5);
  H.cb.geometry.dispose();H.cb.geometry=new R.TubeGeometry(new R.CatmullRomCurve3([a,mid,w]),10,.028,6)}
 /* ---------- UI / state ---------- */
-function startBurial(){if(SHL.burying||SHL.buried)return;SHL.burying=true;intro=true;SHL.body.userData.hand='';if(!F.key){F.key=true;got('shellycard');say('Archive keycard recovered from Shelly’s staff badge.',3)}const bi=solids.indexOf(SHL.body);if(bi>=0)solids.splice(bi,1);SHL.carrying=false;SHL.carryTime=0;SHL.carryWarned=false;const e=$('burial-scene');e.style.display='flex';e.style.opacity=0;const line=t=>{e.textContent=t};setTimeout(()=>{e.style.opacity=1;line('You step into the forgotten garden. You know what you need to do.')},100);setTimeout(()=>line('Beneath the broken skylight, you make a quiet place for Shelly to rest.'),3200);setTimeout(()=>{e.style.opacity=0},6200);setTimeout(()=>{SHL.model.position.set(SHL.grave.x,.04,SHL.grave.z+.15);SHL.model.rotation.y=0;SHL.model.visible=false;SHL.body.position.set(SHL.grave.x,.28,SHL.grave.z+.15);SHL.grave.hit.userData.hand='';SHL.grave.mound.visible=SHL.grave.stone.visible=SHL.grave.label.visible=true;SHL.buried=true;try{localStorage.setItem('ch6_shellyburied','1')}catch{}e.textContent='You lay Shelly to rest beneath the broken skylight.';e.style.opacity=1},7900);setTimeout(()=>line('Sawyer: I don’t believe I understand why you did that… but I think it was kind.'),11200);setTimeout(()=>{e.style.opacity=0},15100);setTimeout(()=>{e.style.display='none';SHL.burying=false;intro=false;SHL.body.userData.hand='';say('Shelly has been laid to rest. A small kindness, in a place that forgot how.',6)},16900)}
+function startBurial(){if(SHL.burying||SHL.buried)return;SHL.burying=true;intro=true;[3300,4100,4900,5700].forEach(d=>setTimeout(()=>{noise(.25,.35,500);tone(90,.2,'sine',.12,-30)},d));SHL.body.userData.hand='';if(!F.key){F.key=true;got('shellycard');say('Archive keycard recovered from Shelly’s staff badge.',3)}const bi=solids.indexOf(SHL.body);if(bi>=0)solids.splice(bi,1);SHL.carrying=false;SHL.carryTime=0;SHL.carryWarned=false;const e=$('burial-scene');e.style.display='flex';e.style.opacity=0;const line=t=>{e.textContent=t};setTimeout(()=>{e.style.opacity=1;line('You step into the forgotten garden. You know what you need to do.')},100);setTimeout(()=>line('Beneath the broken skylight, you make a quiet place for Shelly to rest.'),3200);setTimeout(()=>{e.style.opacity=0},6200);setTimeout(()=>{SHL.model.position.set(SHL.grave.x,.04,SHL.grave.z+.15);SHL.model.rotation.y=0;SHL.model.visible=false;SHL.body.position.set(SHL.grave.x,.28,SHL.grave.z+.15);SHL.grave.hit.userData.hand='';SHL.grave.mound.visible=SHL.grave.stone.visible=SHL.grave.label.visible=true;SHL.buried=true;try{localStorage.setItem('ch6_shellyburied','1')}catch{}e.textContent='You lay Shelly to rest beneath the broken skylight.';e.style.opacity=1},7900);setTimeout(()=>line('Sawyer: I don’t believe I understand why you did that… but I think it was kind.'),11200);setTimeout(()=>{e.style.opacity=0},15100);setTimeout(()=>{e.style.display='none';SHL.burying=false;intro=false;SHL.body.userData.hand='';say('Shelly has been laid to rest. A small kindness, in a place that forgot how.',6)},16900)}
  let sayT;function say(t,s=4){if(/^Sawyer/.test(t))glowT=s;const e=$('sub');e.textContent=t;e.style.opacity=1;clearTimeout(sayT);sayT=setTimeout(()=>e.style.opacity=0,s*1000)}
 const seq=a=>a.forEach(([d,t,s])=>setTimeout(()=>say(t,s||4),d*1000));
 let docT;function showDoc(t,speak){const e=$('doc');e.textContent=t;e.style.display='block';clearTimeout(docT);docT=setTimeout(()=>e.style.display='none',13000);
@@ -411,11 +482,11 @@ function scare(kind){V.on=false;CH.on=false;vl.intensity=0;hideCr();const e=$('s
  setTimeout(()=>{e.style.display='none';yaw=pitch=0;blackout=false;
   if(kind=='chase'){P.set(0,1.65,cz(8)+HD-3);say('Sawyer: RUN! Red hand on the door panel!',4);setTimeout(startChase,3500)}
   else{P.set(0,1.65,c4+4);covers.forEach(c=>c.userData.hand='');V.closed=[0,0,0];say('It will find you again… be quick.',4);setTimeout(startVents,5000)}},2200)}
-function restore(k){for(let i=0;i<k;i++)openDoor(i,true);if(k>=1)F.power=true;if(k>=5)F.gen=true;if(k>=9)CH.done=true;if(k>=8){SHL.done=true;SHL.m.position.y=.07;SHL.m.userData.hand='use';SHL.body.userData.hand=F.key?'':'use';SHL.arm.rotation.x=0}if(k>=10)F.key=true;if(F.key)SHL.body.userData.hand='use';let shellyBuried=false;try{shellyBuried=localStorage.getItem('ch6_shellyburied')==='1'}catch{}if(shellyBuried){SHL.buried=true;SHL.model.visible=false;SHL.grave.mound.visible=SHL.grave.stone.visible=SHL.grave.label.visible=true;SHL.body.userData.hand=''}if(k>=11){F.vents=V.done=true;covers.forEach(c=>c.position.y=1.2);kill(file)}if(k>=12){F.hedge=true;released=1;glass.visible=false;capCol.on=false;mhFree=true;MH.position.set(0,0,cz(k)+HD-1)}if(k>=15)F.fight=true;P.set(0,1.65,cz(k)+HD-3);yaw=pitch=0}
+function restore(k){for(let i=0;i<k;i++)openDoor(i,true);if(k>=1)F.power=true;if(k>=5)F.gen=true;if(k>=9)CH.done=true;if(k>=8){SHL.done=true;SHL.m.position.y=.07;SHL.m.userData.hand='use';SHL.body.userData.hand=F.key?'':'use';SHL.arm.rotation.x=0}if(k>=10)F.key=true;if(F.key)SHL.body.userData.hand='use';let shellyBuried=false;try{shellyBuried=localStorage.getItem('ch6_shellyburied')==='1'}catch{}if(shellyBuried){SHL.buried=true;SHL.model.visible=false;SHL.grave.mound.visible=SHL.grave.stone.visible=SHL.grave.label.visible=true;SHL.body.userData.hand='';SHL.shovel=true;SHL.grave.shovel.visible=false;SHL.grave.shovelHit.userData.hand=''}if(k>=11){F.vents=V.done=true;covers.forEach(c=>c.position.y=1.2);kill(file)}if(k>=12){F.hedge=true;released=1;glass.visible=false;capCol.on=false;mhFree=true;MH.position.set(0,0,cz(k)+HD-1)}if(k>=15)F.fight=true;P.set(0,1.65,cz(k)+HD-3);yaw=pitch=0}
 /* ---------- player ---------- */
 const keys={},P=cam.position;let intro=false,locked=false,started=false,ended=false,yaw=0,pitch=0,ri=-1,moving=false,stepT=0,shake=0,aim=null,aimD=9,aimPt=V3(),creak=8,jumpY=0,jumpV=0;
 const ray=new R.Raycaster();ray.far=7.5;
-addEventListener('keydown',e=>{keys[e.code]=1;if(e.code=='KeyQ'&&locked&&SHL.carrying){SHL.carrying=false;SHL.body.userData.hand='use';if(!solids.includes(SHL.body))solids.push(SHL.body);say('You set Shelly down.',3)}if(e.code=='Space'){e.preventDefault();if(locked&&jumpY<=.001)jumpV=5.2}if(e.code=='Enter'&&intro)endIntro();if(!locked)return;if(e.code=='KeyE'&&aim&&aim.hand=='use'&&aimD<4)aim.fn();if(e.code=='KeyF')fl.visible=!fl.visible});
+addEventListener('keydown',e=>{keys[e.code]=1;if(e.code=='KeyQ'&&locked&&SHL.carrying){SHL.carrying=false;SHL.body.userData.hand='use';if(!solids.includes(SHL.body))solids.push(SHL.body);say('You set Shelly down.',3)}if(e.code=='Space'){e.preventDefault();if(locked&&jumpY<=.001)jumpV=5.2}if(e.code=='Enter'&&intro&&!SHL.burying)endIntro();if(!locked)return;if(e.code=='KeyG'){const on=!fl.castShadow;fl.castShadow=on;ren.setPixelRatio(on?Math.min(devicePixelRatio,1.75):1);ren.setSize(innerWidth,innerHeight);say(on?'Graphics: high (shadows on)':'Graphics: performance (shadows off)',2)}if(e.code=='KeyE'&&aim&&aim.hand=='use'&&aimD<4)aim.fn();if(e.code=='KeyF')fl.visible=!fl.visible});
 addEventListener('keyup',e=>keys[e.code]=0);
 addEventListener('mousemove',e=>{if(!locked)return;yaw-=e.movementX*.0022;pitch=Math.max(-1.4,Math.min(1.4,pitch-e.movementY*.0022))});
 addEventListener('contextmenu',e=>e.preventDefault());
@@ -435,7 +506,7 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.
  // aim
  ray.setFromCamera({x:0,y:0},cam);const h=ray.intersectObjects(solids,false)[0];aim=null;
  if(h&&h.object.userData.hand&&locked){aim=h.object.userData;aimD=h.distance;aimPt.copy(h.point)}
- const lb=$('label');if(SHL.carrying)lb.textContent='[Q] Put Shelly down';else if(aim&&(aim.hand!='use'||aimD<4)){lb.textContent=(aim.hand=='use'?'[E] ':aim.hand=='any'?'Click: ':aim.hand=='red'?'Right-click (red): ':'Left-click (blue): ')+aim.label}else lb.textContent='';
+ const lb=$('label');if(SHL.carrying&&!aim)lb.textContent='[Q] Put Shelly down';else if(aim&&(aim.hand!='use'||aimD<4)){lb.textContent=(aim.hand=='use'?'[E] ':aim.hand=='any'?'Click: ':aim.hand=='red'?'Right-click (red): ':'Left-click (blue): ')+aim.label}else lb.textContent='';
  updHand(hands.blue,dt);updHand(hands.red,dt);
  blink.forEach((m,i)=>m.emissiveIntensity=Math.sin(t*3+i*1.7)>.2?1.2:.1);
  // cameras
@@ -461,7 +532,7 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.
   if(r==0){const o=intro?(500+INTRO.length*3800)/1000+1.5:1;seq([[o,'Giblet: You\'re hurt, but you\'re alive. The Prototype has Poppy. We keep moving.',5],[o+5.5,'Sawyer: Use the lever on the left wall to power the door.',5]])}
   if(r==1)say('Giblet: Something\'s been through here. Stay sharp.',4);
   if(r==2)say('Giblet: Cribs… this is where they kept the Playcare kids.',4);
-  if(r==3)say('Giblet: Look for any kind of keycard. The Archive door won\'t open without one.',5);
+  if(r==3)say('Giblet: Keep looking. The Archive door will need a keycard.',5);
   if(r==4)say("Sawyer: Generator 3 feeds the Neural wing. Start it.",4);
   if(r==6)say('Giblet: The cameras… they\'re all turning toward us.',4);
   if(r==7){SHL.t0=performance.now()}
@@ -473,15 +544,15 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.
   if(r==14)setTimeout(startFight,2500);
   if(r==15){seq([[.5,"Giblet: Poppy was here. The cage is open from the inside…",4],[5,"Sawyer: He is taking her deeper. To what he calls a better place.",5],[10.5,"Metal Hedge: Then that is where we are going. Stay close, kid.",5]]);endT=18}
   if(r==5)seq([[.5,"Sawyer: Well now, this is a rather interesting turn of events. These were my halls once.",5],[6,"Sawyer: I can feel the Prototype listening in the wires.",4],[11,'Giblet: Then keep your voice down.',3],[15,"Sawyer: Read my log on the terminal. File 7 in the Archive explains Experiment 1345.",6]])}
- if(SHL.done&&!SHL.buried&&!SHL.burying&&ri==7&&Math.hypot(P.x-SHL.gardenX,P.z-SHL.gardenZ)<2.35)startBurial();
- updShelly();updFight(dt,t);updCrawler(dt,t);ren.render(scene,cam)}
+ if(SHL.carrying&&SHL.done&&!SHL.buried&&!SHL.burying&&!SHL.shovel&&!SHL.hinted&&ri==7&&Math.hypot(P.x-SHL.gardenX,P.z-SHL.gardenZ)<3.2){SHL.hinted=true;say('Sawyer: You will need something to dig with. I saw a shovel by the east wall.',6)}
+ updGiblet(dt,t);updShelly();updFight(dt,t);updCrawler(dt,t);ren.render(scene,cam)}
 /* ---------- menu ---------- */
 const INTRO=["Chapter Five ended in the dark.","The Prototype wounded you, sank you in Poppy Gel, and took Poppy with him.","Giblet's cane pulled you back. In the Data Center you found the Doctor: \"Well now, this is a rather interesting turn of events.\"","Now Sawyer himself glows on your GrabPack as Glowby, and the Prototype is on the loose.","Save Poppy. Destroy the Prototype.  (Press Enter to skip)"],introTm=[];
 function endIntro(){if(!intro)return;intro=false;introTm.forEach(clearTimeout);const e=$('intro');e.style.opacity=0;setTimeout(()=>e.style.display='none',1600)}
 function startIntro(){intro=true;const e=$('intro');e.style.display='flex';e.style.opacity=1;e.textContent='';INTRO.forEach((t,i)=>introTm.push(setTimeout(()=>{e.textContent=t},500+i*3800)));introTm.push(setTimeout(endIntro,500+INTRO.length*3800))}
-const OBJ=['Power the door panel (lever on the left wall)','Search the Staff Break Room','Find out what happened to the Playcare kids','Find a keycard in the Toy Repair Bay','Start Generator 3','Reach the Security Office','Search the Security Office, then follow the tram line','Find a way through the wreckage','Cross the Gel Hall. Something is hunting you','Use the keycard on the Archive door','Find File 7, then survive the vents','Free Experiment 1345','Search the Playcare Corridor','Find the trail in the Data Center','Survive the Workshop. Hedge will cover you','Find Poppy'];
-function begin(k){ainit();restore(k);started=true;ri=-1;CR.next=30;if(k==0)startIntro();ren.domElement.requestPointerLock()}
-$('new').onclick=()=>{try{delete localStorage.ch6_shellyburied}catch{};SHL.buried=false;SHL.shovel=false;SHL.carrying=false;SHL.carryTime=0;SHL.carryWarned=false;SHL.model.visible=true;begin(0)};$('cont').onclick=()=>begin(+$('cont').dataset.k);
+const OBJ=['Power the door panel (lever on the left wall)','Search the Staff Break Room','Find out what happened to the Playcare kids','Search the Toy Repair Bay','Start Generator 3','Reach the Security Office','Search the Security Office, then follow the tram line','Find a way through the wreckage. Someone is hurt','Cross the Gel Hall. Something is hunting you','Use the keycard on the Archive door','Find File 7, then survive the vents','Free Experiment 1345','Search the Playcare Corridor','Find the trail in the Data Center','Survive the Workshop. Hedge will cover you','Find Poppy'];
+function begin(k){ainit();restore(k);GIB.position.set(P.x-1.4,0,P.z+1.2);started=true;ri=-1;CR.next=30;if(k==0)startIntro();ren.domElement.requestPointerLock()}
+$('new').onclick=()=>{try{delete localStorage.ch6_shellyburied}catch{};SHL.buried=false;SHL.burying=false;SHL.grave.mound.visible=SHL.grave.stone.visible=SHL.grave.label.visible=false;SHL.shovel=false;SHL.hinted=false;SHL.grave.shovel.visible=true;SHL.grave.shovelHit.userData.hand='use';SHL.carrying=false;SHL.carryTime=0;SHL.carryWarned=false;SHL.model.visible=true;begin(0)};$('cont').onclick=()=>begin(+$('cont').dataset.k);
 function showCont(k){if(k>0){$('cont').style.display='';$('cont').dataset.k=k;$('cont').textContent='Continue — '+NAMES[k]}}
 try{showCont(+localStorage.ch6||0)}catch{}
 $('cloud').onclick=async()=>{try{await puter.auth.signIn();const v=await puter.kv.get('ch6_ckpt');if(+v>0)showCont(+v);$('cloud').textContent='Cloud save active ✓'}catch{$('cloud').textContent='Puter unavailable — local save only'}};
