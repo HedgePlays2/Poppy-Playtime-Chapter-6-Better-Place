@@ -89,7 +89,7 @@ const TINT=[0x7fa8f0,0xe6c36a,0xf0a8c0,0xe09a58,0x9fb0a0,0x6f9fd8,0x8aa0a0,0x7a8
 const gap=z=>{box(-5.75,2,z,8.5,4,.4,curWall);box(5.75,2,z,8.5,4,.4,curWall);box(0,3.5,z,3,1,.4,curWall,false)};
 const doors=[],needs=['power',null,null,null,'gen',null,null,null,null,'key','vents','hedge',null,null,'fight',null,null,null,null],hints={hedge:'The blast shutter is welded shut. Free Experiment 1345 first.',fight:'The door is locked. Deal with the creature first.',gen:'No power to this door. Start the generator.',power:'The door panel has no power. Find the lever.',key:'Keycard required.',vents:'Sealed. Something is still in the vents.'};
 function openDoor(i,instant){const d=doors[i];if(d.open)return;d.open=true;d.col.on=false;d.btn.material.emissive.set(0x00ff40);if(instant)d.mesh.position.y=5.1}
-const SHL={done:false,on:false,t0:0,buried:false,shovel:false,burying:false,carrying:false,carryTime:0,carryWarned:false,gardenX:0,gardenZ:0},blink=[],VATS=[],TAPES=[],TVS=[],seen=new Set(),LOGS=32;let tvUntil=0;
+const SHL={done:false,on:false,t0:0,buried:false,shovel:false,burying:false,carrying:false,carryTime:0,carryWarned:false,gardenX:0,gardenZ:0},blink=[],VATS=[],TAPES=[],TVS=[],seen=new Set(),LOGS=36;let tvUntil=0;
 function hud(){const n=TAPES.filter(t=>!t.seen).length;$('logs').textContent='Logs '+seen.size+'/'+LOGS+(n?' · Tapes '+n:'')}
 function got(id){if(!seen.has(id)){seen.add(id);hud()}}
 function lore(id,x,y,z,title,body,tape){const m=box(x,y,z,tape?.28:.32,.03,tape?.18:.42,tape?mat(0x111111,{emissive:0x3399ff,emissiveIntensity:.8}):0xeee5c0,false);m.userData={hand:'use',label:tape?'Take tape':'Read note',fn(){if(tape){kill(m);TAPES.push({id,title,body,seen:false});hud();snd.grab();say('You pick up a VHS tape: '+title+'. Find a tape player to watch it.',5);return}showDoc(title+'\n\n'+body,false,false);got(id)}};return m}
@@ -397,14 +397,14 @@ const c5=cz(11),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
 /* ---------- Four new explorable rooms ---------- */
 {
  const c16=cz(16),c17=cz(17),c18=cz(18),c19=cz(19);
- const blue=mat(0x2869a0,{roughness:.72}),yellow=mat(0xe4b936,{roughness:.72}),red=mat(0xa52d35,{roughness:.78}),rubber=mat(0x242328,{roughness:.95});
+ const blue=mat(0x2869a0,{roughness:.72}),yellow=mat(0xe4b936,{roughness:.72}),red=mat(0xa52d35,{roughness:.78}),roomTrim=mat(0x24282c,{metalness:.48,roughness:.58});
  // Abandoned Toy Assembly: twin conveyor belts, rollers and an overhead gantry.
  for(const x of [-5,5]){
   box(x,.42,c16,2.5,.5,17,0x292d31);box(x,.72,c16,2.25,.08,16.6,M.metal);
   for(let k=0;k<13;k++){const roller=new R.Mesh(new R.CylinderGeometry(.12,.12,2.2,12),M.metal);roller.rotation.z=Math.PI/2;roller.position.set(x,.35,c16-7.5+k*1.25);scene.add(roller)}
   for(let k=0;k<5;k++)box(x,.95,c16-6+k*3,1.1,.38,.8,[blue,yellow,red][k%3]);
  }
- box(0,3.25,c16,12,.22,1.1,M.metal);[-5,5].forEach(x=>box(x,2.55,c16,.18,1.5,.18,trimMat));
+ box(0,3.25,c16,12,.22,1.1,M.metal);[-5,5].forEach(x=>box(x,2.55,c16,.18,1.5,.18,roomTrim));
  for(let k=0;k<4;k++){const arm=box(-1.5+k,2.55,c16-3,.16,1.25,.16,M.metal);arm.rotation.z=k%2?-.35:.35}
  sign('TOY ASSEMBLY — LINE 04',0,3.25,c16-HD+.22,0,4,'#e9c65a');
  lore('m31',-7,.93,c16+6,'ASSEMBLY SHIFT REPORT',"The line kept running after the workers left. The toys coming off it were missing their faces. Someone ordered every finished product sent below the factory.");
@@ -418,7 +418,7 @@ const c5=cz(11),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
  // Memory Theatre: ruined cinema seating and a dead projection screen.
  for(let row=0;row<4;row++)for(const x of [-5,-2.5,0,2.5,5]){box(x,.48,c18+5-row*2.2,.9,.35,.85,mat(0x51404b));box(x,.85,c18+5-row*2.2,.9,.55,.22,mat(0x74495c))}
  box(0,2.1,c18-8,11,4,.35,mat(0x111318));const screen=new R.Mesh(new R.PlaneGeometry(9.8,2.8),new R.MeshBasicMaterial({color:0x9ab4c7,transparent:true,opacity:.18}));screen.position.set(0,2.1,c18-7.78);scene.add(screen);
- for(const x of [-8,8]){box(x,1.4,c18-6,1.3,2.8,1.2,trimMat);const lamp=new R.PointLight(0x7895c8,.8,8);lamp.position.set(x,2.7,c18-5);scene.add(lamp)}
+ for(const x of [-8,8]){box(x,1.4,c18-6,1.3,2.8,1.2,roomTrim);const lamp=new R.PointLight(0x7895c8,.8,8);lamp.position.set(x,2.7,c18-5);scene.add(lamp)}
  sign('THE STORY NEVER ENDS',0,3.3,c18+HD-.22,Math.PI,4,'#9bb9df');
  lore('m33',-8,.93,c18-6,'PROJECTION BOOTH',"The reels show the same smiling mascot welcoming children into Playcare. Frame by frame, the smile changes. The final reel is blank except for one handwritten message: HE REMEMBERS YOU.");
  // A Better Place: a cheerful toy-town facade with an unsettlingly perfect welcome.
@@ -708,7 +708,8 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.
   if(r==12)seq([[.5,"Metal Hedge: This is Playcare. I held this hall for nine hours.",4],[5,"Giblet: Nine hours… alone?",3]]);
   if(r==13)say("Sawyer: The Data Center. This is where they moved me into Glowby.",5);
   if(r==14)setTimeout(startFight,2500);
-  if(r==15)seq([[.5,"Giblet: Poppy was here. The cage is open from the inside…",4],[5,"Sawyer: He is taking her deeper. To what he calls a better place.",5],[10.5,"Metal Hedge: Then that is where we are going. Stay close, kid.",5]]);\n  if(r==16)say("Sawyer: This assembly line was never shut down. Look at the unfinished toys.",5);\n  if(r==17)say("Giblet: This is supposed to be a playroom? It feels like a trap.",4);\n  if(r==18)say("Sawyer: They used to show the children films here. Now it only shows memories.",5);\n  if(r==19){seq([[.5,"Giblet: It looks… nice. Too nice.",4],[5,"Sawyer: This is his idea of a better place. A perfect little world with no doors out.",5],[11,"Metal Hedge: Then we tear the whole thing down. Together.",5]]);endT=18}
+  if(r==15)seq([[.5,"Giblet: Poppy was here. The cage is open from the inside…",4],[5,"Sawyer: He is taking her deeper. To what he calls a better place.",5],[10.5,"Metal Hedge: Then that is where we are going. Stay close, kid.",5]]);
+  if(r==16)say("Sawyer: This assembly line was never shut down. Look at the unfinished toys.",5);\n  if(r==17)say("Giblet: This is supposed to be a playroom? It feels like a trap.",4);\n  if(r==18)say("Sawyer: They used to show the children films here. Now it only shows memories.",5);\n  if(r==19){seq([[.5,"Giblet: It looks… nice. Too nice.",4],[5,"Sawyer: This is his idea of a better place. A perfect little world with no doors out.",5],[11,"Metal Hedge: Then we tear the whole thing down. Together.",5]]);endT=18}
   if(r==5)seq([[.5,"Sawyer: Well now, this is a rather interesting turn of events. These were my halls once.",5],[6,"Sawyer: I can feel the Prototype listening in the wires.",4],[11,'Giblet: Then keep your voice down.',3],[15,"Sawyer: Read my log on the terminal. File 7 in the Archive explains Experiment 1345.",6]])}
  if(SHL.carrying&&SHL.done&&!SHL.buried&&!SHL.burying&&!SHL.shovel&&!SHL.hinted&&ri==7&&Math.hypot(P.x-SHL.gardenX,P.z-SHL.gardenZ)<3.2){SHL.hinted=true;say('Sawyer: You will need something to dig with. I saw a shovel by the east wall.',6)}
  musicBox(dt);updGiblet(dt,t);updShelly();updFight(dt,t);updCrawler(dt,t);ren.render(scene,cam)}
