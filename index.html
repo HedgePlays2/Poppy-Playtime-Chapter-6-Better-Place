@@ -89,10 +89,26 @@ const TINT=[0x7fa8f0,0xe6c36a,0xf0a8c0,0xe09a58,0x9fb0a0,0x6f9fd8,0x8aa0a0,0x7a8
 const gap=z=>{box(-5.75,2,z,8.5,4,.4,curWall);box(5.75,2,z,8.5,4,.4,curWall);box(0,3.5,z,3,1,.4,curWall,false)};
 const doors=[],needs=['power',null,null,null,'gen',null,null,null,null,'key','vents','hedge',null,null,'fight',null,null,null,null],hints={hedge:'The blast shutter is welded shut. Free Experiment 1345 first.',fight:'The door is locked. Deal with the creature first.',gen:'No power to this door. Start the generator.',power:'The door panel has no power. Find the lever.',key:'Keycard required.',vents:'Sealed. Something is still in the vents.'};
 function openDoor(i,instant){const d=doors[i];if(d.open)return;d.open=true;d.col.on=false;d.btn.material.emissive.set(0x00ff40);if(instant)d.mesh.position.y=5.1}
-const SHL={done:false,on:false,t0:0,buried:false,shovel:false,burying:false,carrying:false,carryTime:0,carryWarned:false,gardenX:0,gardenZ:0},blink=[],VATS=[],TAPES=[],TVS=[],seen=new Set(),LOGS=36;let tvUntil=0;
-function hud(){const n=TAPES.filter(t=>!t.seen).length;$('logs').textContent='Logs '+seen.size+'/'+LOGS+(n?' · Tapes '+n:'')}
+const SHL={done:false,on:false,t0:0,buried:false,shovel:false,burying:false,carrying:false,carryTime:0,carryWarned:false,gardenX:0,gardenZ:0},blink=[],VATS=[],TAPES=[],TVS=[],seen=new Set(),LOGS=36;let tvUntil=0,toyTokens=0;
+function hud(){const n=TAPES.filter(t=>!t.seen).length;$('logs').textContent='Logs '+seen.size+'/'+LOGS+(n?' · Tapes '+n:'')+' · Toy badges '+toyTokens+'/6'}
 function got(id){if(!seen.has(id)){seen.add(id);hud()}}
 function lore(id,x,y,z,title,body,tape){const m=box(x,y,z,tape?.28:.32,.03,tape?.18:.42,tape?mat(0x111111,{emissive:0x3399ff,emissiveIntensity:.8}):0xeee5c0,false);m.userData={hand:'use',label:tape?'Take tape':'Read note',fn(){if(tape){kill(m);TAPES.push({id,title,body,seen:false});hud();snd.grab();say('You pick up a VHS tape: '+title+'. Find a tape player to watch it.',5);return}showDoc(title+'\n\n'+body,false,false);got(id)}};return m}
+
+// Optional scavenger hunt: six employee-award tokens hidden off the main path.
+function toyBadge(x,z,index){
+ const gold=new R.MeshStandardMaterial({color:0xf2c84b,metalness:.82,roughness:.24,emissive:0x6b4308,emissiveIntensity:.45});
+ const coin=new R.Mesh(new R.CylinderGeometry(.23,.23,.075,24),gold);
+ coin.rotation.x=Math.PI/2;coin.position.set(x,.72,z);coin.castShadow=true;coin.receiveShadow=true;
+ coin.userData={hand:'use',label:'Collect Playtime employee badge',fn(){
+  if(coin.userData.taken)return;coin.userData.taken=true;kill(coin);toyTokens++;hud();snd.grab();
+  say('Employee badge found: '+toyTokens+'/6. Keep searching for the others.',3.5);
+  if(toyTokens===6){showDoc('EMPLOYEE RECOGNITION — SECRET ARCHIVE\\n\\nCongratulations, employee. You found all six lost service badges.\\n\\nThe badges were not misplaced. They were removed from the staff after the final evacuation. The names on the reverse are all marked: TRANSFERRED TO THE PLAYROOM.\\n\\nA final handwritten line has been added beneath the stamp:\\n\\nTHE PROTOTYPE KEPT THE PEOPLE WHO BUILT HIS HOME.',false,false);say('All six badges collected. You uncovered a hidden Playtime Co. secret!',6)}
+ }};
+ scene.add(coin);solids.push(coin);
+ const halo=new R.Mesh(new R.TorusGeometry(.31,.025,8,24),new R.MeshBasicMaterial({color:0xffd45b,transparent:true,opacity:.7}));
+ halo.position.set(x,.72,z);halo.rotation.x=Math.PI/2;scene.add(halo);
+ blink.push(gold);
+}
 const tb=(x,z,w=2.2,d=1)=>box(x,.45,z,w,.9,d,0x6b4a2a),crate=(x,z,s=1)=>box(x,s/2,z,s,s,s,0x5a4a32),shelf=(x,z,w,d)=>box(x,1.2,z,w,2.4,d,0x3a3a40),RW=HW-.22,LW=-HW+.22;
 for(let i=0;i<20;i++){const c=cz(i);curWall=curWall.clone();curWall.color.set(TINT[i]);const doorMat=mat(ACC[i%4],{metalness:.35,roughness:.7});
  box(-HW,2,c,.4,4,2*HD+.4,curWall);box(HW,2,c,.4,4,2*HD+.4,curWall);
@@ -428,7 +444,7 @@ const c5=cz(11),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
  box(0,.08,c19+2,13,.12,8,mat(0x8c806f),false);sign('WELCOME HOME',0,3.35,c19-HD+.22,0,5,'#f2d78b');sign('A BETTER PLACE',0,2.55,c19-7,0,4,'#e8b8c5');
  lore('m34',-7,.93,c19+5,'WELCOME HOME',"A cheerful brochure describes a safe new home for every toy. The last page has been torn out. Beneath it, scratched into the desk: THERE IS NO WAY OUT.");
 }
-/* ---------- Metal Hedge ---------- */
+// Optional employee badge locations: tucked beside props, away from the central route.\n[[7,cz(1)-6],[-7,cz(3)+6],[7,cz(6)-6],[-7,cz(9)+6],[7,cz(12)-6],[-7,cz(17)+6]].forEach((p,i)=>toyBadge(p[0],p[1],i));\n/* ---------- Metal Hedge ---------- */
 function makeMH(){const g=new R.Group(),mk=(c,m=.5,r=.4,e=0)=>new R.MeshStandardMaterial({color:c,metalness:m,roughness:r,emissive:e}),
  G=mk(0x1fe534),S=mk(0xcfd3d8,.9,.3),Y=mk(0xf2e000,.3,.5),dY=mk(0x66600a),K=mk(0x050505,.2,.6),Rd=mk(0xdd1111,.2,.45),W=mk(0xffffff,0,.5),Gy=mk(0x777777,.6,.4),Pe=mk(0xeaffa0,0,.5),EG=mk(0xb8ffb8,0,.4,0x55ff66),
  add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o},Sp=r=>new R.SphereGeometry(r,16,12),Cy=(a,b,h)=>new R.CylinderGeometry(a,b,h,12),sc=(o,x,y,z)=>(o.scale.set(x,y,z),o);
