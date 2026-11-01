@@ -118,7 +118,7 @@ const tb=(x,z,w=2.2,d=1)=>box(x,.45,z,w,.9,d,0x6b4a2a),crate=(x,z,s=1)=>box(x,s/
 for(let i=0;i<28;i++){const c=cz(i);curWall=curWall.clone();curWall.color.set(TINT[i]);const doorMat=mat(ACC[i%4],{metalness:.35,roughness:.7});
  box(-HW,2,c,.4,4,2*HD+.4,curWall);box(HW,2,c,.4,4,2*HD+.4,curWall);
  i?gap(c+HD):box(0,2,c+HD,2*HW+.4,4,.4,curWall);
- if(i<15){gap(c-HD);box(-1.5,2,c-HD-3,.3,4,6,curWall);box(1.5,2,c-HD-3,.3,4,6,curWall)}else box(0,2,c-HD,2*HW+.4,4,.4,curWall);
+ if(i<=15){gap(c-HD);box(-1.5,2,c-HD-3,.3,4,6,curWall);box(1.5,2,c-HD-3,.3,4,6,curWall)}else box(0,2,c-HD,2*HW+.4,4,.4,curWall);
  sign(NAMES[i].toUpperCase(),0,3.5,c-HD+.22,0,3,'#cde');
  [-8,8].forEach(x=>{const p=new R.Mesh(new R.CylinderGeometry(.1,.1,2*HD,8),M.metal);p.rotation.x=Math.PI/2;p.position.set(x,3.7,c);scene.add(p)});
  lights.push({base:24,t:0});
