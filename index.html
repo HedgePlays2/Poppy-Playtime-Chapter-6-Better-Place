@@ -118,7 +118,7 @@ const tb=(x,z,w=2.2,d=1)=>box(x,.45,z,w,.9,d,0x6b4a2a),crate=(x,z,s=1)=>box(x,s/
 for(let i=0;i<28;i++){const c=cz(i);curWall=curWall.clone();curWall.color.set(TINT[i]);const doorMat=mat(ACC[i%4],{metalness:.35,roughness:.7});
  box(-HW,2,c,.4,4,2*HD+.4,curWall);box(HW,2,c,.4,4,2*HD+.4,curWall);
  i?gap(c+HD):box(0,2,c+HD,2*HW+.4,4,.4,curWall);
- if(i<=15){gap(c-HD);box(-1.5,2,c-HD-3,.3,4,6,curWall);box(1.5,2,c-HD-3,.3,4,6,curWall)}else box(0,2,c-HD,2*HW+.4,4,.4,curWall);
+ if(i<=16){gap(c-HD);box(-1.5,2,c-HD-3,.3,4,6,curWall);box(1.5,2,c-HD-3,.3,4,6,curWall)}else box(0,2,c-HD,2*HW+.4,4,.4,curWall);
  sign(NAMES[i].toUpperCase(),0,3.5,c-HD+.22,0,3,'#cde');
  [-8,8].forEach(x=>{const p=new R.Mesh(new R.CylinderGeometry(.1,.1,2*HD,8),M.metal);p.rotation.x=Math.PI/2;p.position.set(x,3.7,c);scene.add(p)});
  lights.push({base:24,t:0});
@@ -129,9 +129,9 @@ for(let i=0;i<28;i++){const c=cz(i);curWall=curWall.clone();curWall.color.set(TI
   for(const yy of [1.12,1.98]){const screw=new R.Mesh(new R.CylinderGeometry(.018,.018,.012,8),M.metal);screw.rotation.z=Math.PI/2;screw.position.set(side*9.79,yy,c+z-.58);scene.add(screw)}}
  [-4,4].forEach(z=>{const housing=new R.Mesh(new R.BoxGeometry(2.3,.12,.55),M.metal);housing.position.set(0,3.86,c+z);scene.add(housing);const fx=new R.Mesh(new R.BoxGeometry(1.9,.035,.24),glow(0xffdca0,.65));fx.position.set(0,3.94,c+z);scene.add(fx)});
  toys(c,24);wallCam(HW-.65,3.5,c+HD-1,c);wallCam(-(HW-.65),3.5,c-HD+1,c);
- if(i<15){box(0,3.06,c-HD+.2,3.2,.1,.05,glow(ACC[i%4],.7),false);const d={mesh:box(0,1.5,c-HD,3,3,.3,doorMat),open:false};d.col=d.mesh.userData.col;
+ if(i<15||i===16){box(0,3.06,c-HD+.2,3.2,.1,.05,glow(ACC[i%4],.7),false);const d={mesh:box(0,1.5,c-HD,3,3,.3,doorMat),open:false};d.col=d.mesh.userData.col;
   d.btn=box(2.4,1.4,c-HD+.3,.45,.6,.15,mat(0x220000,{emissive:0xff2000,emissiveIntensity:.8}),false);
-  d.btn.userData={hand:'red',label:'Open door',fn(){const n=needs[i];if(n&&!F[n]){say(hints[n]);tone(110,.3,'square',.15);return}if(!d.open){openDoor(i);snd.door()}}};doors.push(d)}}
+  d.btn.userData={hand:'red',label:'Open door',fn(){const n=needs[i];if(n&&!F[n]){say(hints[n]);tone(110,.3,'square',.15);return}if(!d.open){openDoor(i);snd.door()}}};doors[i]=d}}
 /* ---------- Playtime Co. environmental art pass ---------- */
 /* Layered wall rails, painted Playcare stripes, floor hazard markings,
    ceiling cable trays and practical warning lights give each area a
