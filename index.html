@@ -462,8 +462,8 @@ const c5=cz(11),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
   for(let k=0;k<13;k++){const roller=new R.Mesh(new R.CylinderGeometry(.12,.12,2.2,12),M.metal);roller.rotation.z=Math.PI/2;roller.position.set(x,.35,c16-7.5+k*1.25);scene.add(roller)}
   for(let k=0;k<5;k++)box(x,.95,c16-6+k*3,1.1,.38,.8,[blue,yellow,red][k%3]);
  }
- box(0,3.25,c16,12,.22,1.1,M.metal);[-5,5].forEach(x=>box(x,2.55,c16,.18,1.5,.18,roomTrim));
- for(let k=0;k<4;k++){const arm=box(-1.5+k,2.55,c16-3,.16,1.25,.16,M.metal);arm.rotation.z=k%2?-.35:.35}
+ box(0,3.25,c16,12,.22,1.1,M.metal,false);[-5,5].forEach(x=>box(x,2.55,c16,.18,1.5,.18,roomTrim,false));
+ for(let k=0;k<4;k++){const arm=box(-1.5+k,2.55,c16-3,.16,1.25,.16,M.metal,false);arm.rotation.z=k%2?-.35:.35}
  sign('TOY ASSEMBLY — LINE 04',0,3.25,c16-HD+.22,0,4,'#e9c65a');
  lore('m31',-7,.93,c16+6,'ASSEMBLY SHIFT REPORT',"The line kept running after the workers left. The toys coming off it were missing their faces. Someone ordered every finished product sent below the factory.");
  // The Prototype's Playroom: brightly coloured play blocks arranged like a trap.
