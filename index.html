@@ -26,7 +26,10 @@ button{padding:12px 30px;font:18px Georgia;background:#1b1b22;color:#fff;border:
 <div class="o" id="menu"><h1>POPPY PLAYTIME</h1><h2>Chapter 6 — A Better Place</h2><p class="s" style="color:#ccc;font-size:16px">Directly after Chapter 5, you find yourself with a Backup of Sawyer and Giblet, and the Prototype is on the loose…</p>
 <p class="s">Fan-made · not affiliated with MOB Games</p>
 <button id="new">New Game</button><button id="cont" style="display:none">Continue</button><button id="cloud">Sign in with Puter (cloud save)</button>
-<p class="s">WASD move · Shift run · Space jump · Mouse look · <b style="color:#59f">Left-click = blue hand</b> · <b style="color:#f54">Right-click = red hand</b> · E use/read · Q put down · F flashlight · G graphics</p></div>
+<p class="s">WASD move · Shift run · Space jump · Mouse look · <b style="color:#59f">Left-click = blue hand</b> · <b style="color:#f54">Right-click = red hand</b> · E use/read · Q put down · F flashlight · G graphics</p><p class="s" id="boot-status" style="color:#9aa">Loading game engine…</p></div>
+<script>
+(()=>{const s=document.getElementById('boot-status');window.addEventListener('error',e=>{if(s)s.textContent='Game startup error: '+(e.message||'Could not load a game file')});window.addEventListener('unhandledrejection',e=>{if(s)s.textContent='Game startup error: '+(e.reason?.message||String(e.reason||'Unknown error'))})})();
+</script>
 <script src="https://js.puter.com/v2/"></script>
 <script type="module">
 import * as R from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
@@ -868,12 +871,13 @@ const INTRO=["Chapter Five ended in the dark.","The Prototype wounded you, sank 
 function endIntro(){if(!intro)return;intro=false;introTm.forEach(clearTimeout);const e=$('intro');e.style.opacity=0;setTimeout(()=>e.style.display='none',1600)}
 function startIntro(){intro=true;const e=$('intro');e.style.display='flex';e.style.opacity=1;e.textContent='';INTRO.forEach((t,i)=>introTm.push(setTimeout(()=>{e.textContent=t},500+i*3800)));introTm.push(setTimeout(endIntro,500+INTRO.length*3800))}
 const OBJ=['Power the door panel (lever on the left wall)','Search the Staff Break Room','Find out what happened to the Playcare kids','Search the Toy Repair Bay','Start Generator 3: plug both hands into the sockets','Reach the Security Office','Search the Security Office, then follow the tram line','Find a way through the wreckage. Someone is hurt','Cross the Gel Hall. Something is hunting you','Use the keycard on the Archive door','Find File 7, then survive the vents','Free Experiment 1345','Search the Playcare Corridor','Find the trail in the Data Center','Survive the Workshop. Hedge will cover you','Search the Abyss for Poppy’s trail','Explore the abandoned toy assembly line','Investigate the Prototype’s playroom','Watch what the Memory Theatre is showing','Enter A Better Place and find where the Prototype took Poppy','Explore the Toy Testing Arena','Search the abandoned employee dormitory','Find the Creator Guest Room and read its visitor pass','Reach the Prototype’s Exit Atrium','Investigate the Prototype’s observation wing','Recover the hidden Playcare memory records','Navigate the unstable core access tunnels','Reach the Prototype’s throne room'];
-function begin(k){ainit();restore(k);GIB.position.set(P.x-1.4,0,P.z+1.2);started=true;ri=-1;CR.next=30;if(k==0)startIntro();ren.domElement.requestPointerLock()}
+function begin(k){try{ainit();restore(k);GIB.position.set(P.x-1.4,0,P.z+1.2);started=true;ri=-1;CR.next=30;if(k==0)startIntro();$('menu').style.display='none';const pl=ren.domElement.requestPointerLock();if(pl&&pl.catch)pl.catch(e=>{$('boot-status').textContent='Game started, but mouse lock was blocked: '+e.message;$('pause').style.display='flex'});$('boot-status').textContent='Game started — click the game to capture the mouse.'}catch(e){$('boot-status').textContent='Could not start game: '+(e?.stack||e?.message||String(e));console.error(e)}}
 $('new').onclick=()=>{try{delete localStorage.ch6_shellyburied}catch{};SHL.buried=false;SHL.burying=false;SHL.grave.mound.visible=SHL.grave.stone.visible=SHL.grave.label.visible=false;SHL.shovel=false;SHL.hinted=false;SHL.grave.shovel.visible=true;SHL.grave.shovelHit.userData.hand='use';SHL.carrying=false;SHL.carryTime=0;SHL.carryWarned=false;SHL.model.visible=true;begin(0)};$('cont').onclick=()=>begin(+$('cont').dataset.k);
 function showCont(k){if(k>0){$('cont').style.display='';$('cont').dataset.k=k;$('cont').textContent='Continue — '+NAMES[k]}}
 try{showCont(+localStorage.ch6||0)}catch{}
 $('cloud').onclick=async()=>{try{await puter.auth.signIn();const v=await puter.kv.get('ch6_ckpt');if(+v>0)showCont(+v);$('cloud').textContent='Cloud save active ✓'}catch{$('cloud').textContent='Puter unavailable — local save only'}};
 document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockElement==ren.domElement;if(locked){$('menu').style.display='none';$('pause').style.display='none'}else if(started&&!ended)$('pause').style.display='flex'});
 $('pause').onclick=()=>ren.domElement.requestPointerLock();
+$('boot-status').textContent='Game engine ready — click New Game.';
 P.set(0,1.65,cz(0)+HD-3);loop();
 </script></body></html>
