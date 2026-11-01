@@ -488,13 +488,14 @@ const c5=cz(11),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
   fp.restore();
  }
  fp.fillStyle='#292a30';fp.font='bold 17px Arial';fp.fillText('NOT MEANT TO BE TAKEN IN A FETISHIZED WAY.',256,282);
+ const poster=mat(0x171d29,{roughness:.9});
  const feetFrame=box(0,2.05,c21-HD+.18,3.5,2.25,.16,poster,false);
  const feetImage=new R.Mesh(new R.PlaneGeometry(3.3,2.05),new R.MeshBasicMaterial({map:new R.CanvasTexture(feetPoster)}));
  feetImage.position.set(0,2.05,c21-HD+.075);scene.add(feetImage);
 
  lore('m36',0,1.02,c21,'UNCLAIMED PERSONAL EFFECTS',"The evacuation list says every employee was accounted for. The lockers tell a different story. Several names have been crossed out and replaced with experiment numbers.");
  // Creator Guest Room: a fan-made invitation, not a claim that Thinknoodles has visited.
- const rug=mat(0x55416a,{roughness:1}),poster=mat(0x171d29,{roughness:.9});
+ const rug=mat(0x55416a,{roughness:1});
  box(0,.055,c22,12,.08,12,rug,false);
  box(0,.58,c22-4,4.2,1.15,1.5,0x4b3834);box(0,1.2,c22-4,4.2,.12,1.5,0x7c6150);
  box(-6,1.1,c22+1,1.8,2.2,.18,locker);box(6,1.1,c22+1,1.8,2.2,.18,locker);
