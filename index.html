@@ -89,7 +89,7 @@ const TINT=[0x7fa8f0,0xe6c36a,0xf0a8c0,0xe09a58,0x9fb0a0,0x6f9fd8,0x8aa0a0,0x7a8
 const gap=z=>{box(-5.75,2,z,8.5,4,.4,curWall);box(5.75,2,z,8.5,4,.4,curWall);box(0,3.5,z,3,1,.4,curWall,false)};
 const doors=[],needs=['power',null,null,null,'gen',null,null,null,null,'key','vents','hedge',null,null,'fight',null,null,null,null,null,null,null,null],hints={hedge:'The blast shutter is welded shut. Free Experiment 1345 first.',fight:'The door is locked. Deal with the creature first.',gen:'No power to this door. Start the generator.',power:'The door panel has no power. Find the lever.',key:'Keycard required.',vents:'Sealed. Something is still in the vents.'};
 function openDoor(i,instant){const d=doors[i];if(d.open)return;d.open=true;d.col.on=false;d.btn.material.emissive.set(0x00ff40);if(instant)d.mesh.position.y=5.1}
-const SHL={done:false,on:false,t0:0,buried:false,shovel:false,burying:false,carrying:false,carryTime:0,carryWarned:false,gardenX:0,gardenZ:0},blink=[],VATS=[],TAPES=[],TVS=[],seen=new Set(),LOGS=40;let tvUntil=0,toyTokens=0;
+const SHL={done:false,on:false,t0:0,buried:false,shovel:false,burying:false,carrying:false,carryTime:0,carryWarned:false,gardenX:0,gardenZ:0},blink=[],VATS=[],TAPES=[],TVS=[],seen=new Set(),LOGS=46;let tvUntil=0,toyTokens=0;
 function hud(){const n=TAPES.filter(t=>!t.seen).length;$('logs').textContent='Logs '+seen.size+'/'+LOGS+(n?' · Tapes '+n:'')+' · Toy badges '+toyTokens+'/6'}
 function got(id){if(!seen.has(id)){seen.add(id);hud()}}
 function lore(id,x,y,z,title,body,tape){const m=box(x,y,z,tape?.28:.32,.03,tape?.18:.42,tape?mat(0x111111,{emissive:0x3399ff,emissiveIntensity:.8}):0xeee5c0,false);m.userData={hand:'use',label:tape?'Take tape':'Read note',fn(){if(tape){kill(m);TAPES.push({id,title,body,seen:false});hud();snd.grab();say('You pick up a VHS tape: '+title+'. Find a tape player to watch it.',5);return}showDoc(title+'\n\n'+body,false,false);got(id)}};return m}
@@ -486,6 +486,30 @@ const c5=cz(11),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
 }
 // Optional employee badge locations: tucked beside props, away from the central route.
 [[7,cz(1)-6],[-7,cz(3)+6],[7,cz(6)-6],[-7,cz(9)+6],[7,cz(12)-6],[-7,cz(17)+6]].forEach((p,i)=>toyBadge(p[0],p[1],i));
+/* ---------- Optional creator Easter eggs ---------- */
+/* Fan-made tributes only; these are not endorsements or claims of visits. */
+{
+ const creatorPlaque=mat(0x25202f,{metalness:.35,roughness:.7});
+ // Small display plaques beside the hidden notes make each discovery feel intentional.
+ for(const [x,z,label,color] of [
+  [-7,cz(3)+6,'DAWKO',0xb74b3c],
+  [7,cz(6)-6,'JACKSEPTICEYE',0x39a96b],
+  [7,cz(9)+6,'MARKIPLIER',0x9b3030],
+  [-7,cz(10)+6,'8-BITRYAN',0x3a75b5],
+  [7,cz(1)-6,'DANTDM',0x3988c8],
+  [7,cz(21)+6,'FUSIONZGAMER',0x9b65bd]
+ ]){
+  box(x,.82,z,.95,.12,.5,creatorPlaque);
+  sign(label,x,1.25,z-.28,0,1.5,'#'+color.toString(16).padStart(6,'0'));
+ }
+ lore('m39',-7,.98,cz(3)+6,'A NOTE LEFT BY A NIGHT GUARD',"DAWKO — The guard says this name was written on a list of people who always looked deeper into the strange things everyone else ignored. A little reminder: keep investigating.");
+ lore('m40',7,.98,cz(6)-6,'GREEN-EYED VISITOR STICKER',"JACKSEPTICEYE — A green visitor sticker with a note: “For someone who never stays quiet when the scary stuff starts.”");
+ lore('m41',7,.98,cz(9)+6,'THE RED VHS',"MARKIPLIER — A red-labeled tape case. Someone scribbled: “If the recording starts laughing, turn it off. Seriously.”");
+ lore('m42',-7,.98,cz(10)+6,'AN INVESTIGATOR’S AUDIO LOG',"8-BITRYAN — A note praises a creator who loves digging into horror-game mysteries. The last line reads: “There is always another detail hiding in the background.”");
+ lore('m43',7,.98,cz(1)-6,'BLUE DIAMOND VISITOR BADGE',"DANTDM — A blue visitor badge has been pinned to the board. On the back: “For the builders, explorers, and curious minds.”");
+ lore('m44',7,.98,cz(21)+6,'THE LAST DORM ROOM NOTE',"FUSIONZGAMER — A staff member left a note about a guest who never missed a chance to explore one more room before leaving.");
+ sign('CREATOR WALL — FAN TRIBUTES',0,3.05,cz(22)-7.82,0,4,'#d6b8f2');
+}
 /* ---------- Metal Hedge ---------- */
 function makeMH(){const g=new R.Group(),mk=(c,m=.5,r=.4,e=0)=>new R.MeshStandardMaterial({color:c,metalness:m,roughness:r,emissive:e}),
  G=mk(0x1fe534),S=mk(0xcfd3d8,.9,.3),Y=mk(0xf2e000,.3,.5),dY=mk(0x66600a),K=mk(0x050505,.2,.6),Rd=mk(0xdd1111,.2,.45),W=mk(0xffffff,0,.5),Gy=mk(0x777777,.6,.4),Pe=mk(0xeaffa0,0,.5),EG=mk(0xb8ffb8,0,.4,0x55ff66),
