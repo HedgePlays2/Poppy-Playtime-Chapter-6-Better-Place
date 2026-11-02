@@ -20,7 +20,7 @@ button{padding:12px 30px;font:18px Georgia;background:#1b1b22;color:#fff;border:
 #doc.vhs{border:2px solid #8f8;background:repeating-linear-gradient(0deg,#000e 0 2px,#071b0ae6 2px 4px);color:#d6ffd6;text-shadow:2px 0 #f0f9,-2px 0 #0ff9;letter-spacing:.5px}
 #cineflash{inset:0;background:#c00;opacity:0;pointer-events:none;z-index:8;transition:opacity .15s}#gelov{inset:0;pointer-events:none;z-index:6;background:radial-gradient(circle,#ff7fb8aa,#ff3d8acc);opacity:0;transition:opacity .8s}
 </style></head><body>
-<div class="o" id="cross"></div><div class="o" id="label"></div><div class="o" id="sub"></div><div class="o" id="banner"></div><div class="o" id="doc"></div><div class="o" id="scare"></div><div class="o" id="burial-scene"></div><div class="o" id="logs">Logs 0/32</div><div class="o" id="obj"></div><div class="o" id="vig"></div><div class="o" id="cineflash"></div><div class="o" id="gelov"></div><div class="o" id="intro"></div>
+<div class="o" id="cross"></div><div class="o" id="label"></div><div class="o" id="sub"></div><div class="o" id="banner"></div><div class="o" id="doc"></div><div class="o" id="scare"></div><div class="o" id="burial-scene"></div><div class="o" id="logs">Logs 0/52</div><div class="o" id="obj"></div><div class="o" id="vig"></div><div class="o" id="cineflash"></div><div class="o" id="gelov"></div><div class="o" id="intro"></div>
 <div class="o" id="pause"><h2>PAUSED — click to resume</h2></div>
 <div class="o" id="end"><h1>TO BE CONTINUED…</h1><h2>Poppy Playtime: Chapter 6 — A Better Place</h2><p class="s" id="endlogs"></p><p class="s">Fan-made by Hedge. Not affiliated with MOB Games.</p></div>
 <div class="o" id="menu"><h1>POPPY PLAYTIME</h1><h2>Chapter 6 — A Better Place</h2><p class="s" style="color:#ccc;font-size:16px">Directly after Chapter 5, you find yourself with a Backup of Sawyer and Giblet, and the Prototype is on the loose…</p>
@@ -107,7 +107,7 @@ function toyBadge(x,z,index){
  coin.userData={hand:'use',label:'Collect Playtime employee badge',fn(){
   if(coin.userData.taken)return;coin.userData.taken=true;kill(coin);toyTokens++;hud();snd.grab();
   say('Employee badge found: '+toyTokens+'/6. Keep searching for the others.',3.5);
-  if(toyTokens===6){showDoc('EMPLOYEE RECOGNITION — SECRET ARCHIVE\\n\\nCongratulations, employee. You found all six lost service badges.\\n\\nThe badges were not misplaced. They were removed from the staff after the final evacuation. The names on the reverse are all marked: TRANSFERRED TO THE PLAYROOM.\\n\\nA final handwritten line has been added beneath the stamp:\\n\\nTHE PROTOTYPE KEPT THE PEOPLE WHO BUILT HIS HOME.',false,false);say('All six badges collected. You uncovered a hidden Playtime Co. secret!',6)}
+  if(toyTokens===6){showDoc('EMPLOYEE RECOGNITION — SECRET ARCHIVE\n\nCongratulations, employee. You found all six lost service badges.\n\nThe badges were not misplaced. They were removed from the staff after the final evacuation. The names on the reverse are all marked: TRANSFERRED TO THE PLAYROOM.\n\nA final handwritten line has been added beneath the stamp:\n\nTHE PROTOTYPE KEPT THE PEOPLE WHO BUILT HIS HOME.',false,false);say('All six badges collected. You uncovered a hidden Playtime Co. secret!',6)}
  }};
  scene.add(coin);solids.push(coin);
  const halo=new R.Mesh(new R.TorusGeometry(.31,.025,8,24),new R.MeshBasicMaterial({color:0xffd45b,transparent:true,opacity:.7}));
@@ -184,7 +184,7 @@ for(let i=0;i<28;i++){const c=cz(i);curWall=curWall.clone();curWall.color.set(TI
   if(i>=7&&i%2===1){
    const lampMat=mat(0x3b1113,{emissive:0xff2418,emissiveIntensity:1.1});
    addDetail(new R.BoxGeometry(.42,.18,.22),lampMat,9.48,3.12,c+8.5);
-   const lamp=new R.PointLight(0xff3928,1.15,7,2);lamp.position.set(9.1,3.05,c+8.5);scene.add(lamp);
+   
   }
  }
 }
@@ -326,7 +326,7 @@ function makeShelly(){
   const sm=mat(0x111111,{emissive:0xffffff,emissiveMap:ntx,emissiveIntensity:.03});TVS.push(sm);const scr=new R.Mesh(new R.BoxGeometry(.55,.42,.02),sm);scr.position.set(x-.25,1.22,z-.31);scene.add(scr);
   const slot=new R.Mesh(new R.BoxGeometry(.4,.035,.02),glow(0xff3030,.7));slot.position.set(x+.4,.99,z-.26);scene.add(slot);
   const v=box(x+.4,.97,z,.6,.14,.5,0x1a1a1a,false);
-  v.userData={hand:'use',label:()=>{const q=TAPES.find(t=>!t.seen);return q?'Insert tape: '+q.title:'Tape player (no tapes to watch)'},fn(){const t=TAPES.find(q=>!q.seen);if(!t){say('You have no unwatched tapes.',3);return}t.seen=true;tvUntil=performance.now()+13000;showDoc(t.title+'\\n\\n'+t.body,true,true);got(t.id);hud()}}};
+  v.userData={hand:'use',label:()=>{const q=TAPES.find(t=>!t.seen);return q?'Insert tape: '+q.title:'Tape player (no tapes to watch)'},fn(){const t=TAPES.find(q=>!q.seen);if(!t){say('You have no unwatched tapes.',3);return}t.seen=true;tvUntil=performance.now()+13000;showDoc(t.title+'\n\n'+t.body,true,true);got(t.id);hud()}}};
  player(4,cz(0));player(-3.5,cz(2));player(3,cz(5));player(-3.5,cz(7));player(6,cz(9))}
 // Room 4 — generator
 {const c=cz(4);box(6.5,1.2,c,3,2.4,5,0x454b52);const pn=box(4.95,1.5,c+.8,.05,.6,1.6,glow(0xff8a20,.9),false);
@@ -396,7 +396,7 @@ function makeShelly(){
  for(let p=0;p<5;p++){const a=p*Math.PI*2/5,petal=new R.Mesh(new R.SphereGeometry(.105,10,8),maryPetal);petal.scale.set(.8,.45,1.2);petal.position.set(6.35+Math.cos(a)*.12,.55,c+7.15+Math.sin(a)*.12);scene.add(petal)}
  lore('m46',7.05,1.02,c+6.75,'A KEEPSAKE FOR MARY',"A small locket rests beside a flower someone carefully replanted. Inside is a tiny handwritten message: “Mary — Every road I take, every door I open, I'm finding my way back to you. I promised. — Hedge”");
 
- const sh=makeShelly();sh.position.set(-7.9,.06,c-3);sh.rotation.y=.3;sh.scale.setScalar(1);sh.visible=true;scene.add(sh);colr(-7.9,c-3.2,1.0,2.4);SHL.x=-7.9;SHL.z=c-3;SHL.arm=sh.userData.arm;SHL.model=sh;SHL.arm.rotation.x=.6;SHL.body=new R.Mesh(new R.BoxGeometry(.65,.45,2.2),new R.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,colorWrite:false}));SHL.body.position.set(-7.9,.28,c-3);SHL.body.userData.hitbox=true;SHL.body.castShadow=false;SHL.body.receiveShadow=false;SHL.body.userData={hand:'',label:'Inspect Shelly',fn(){if(!SHL.done||SHL.buried||SHL.carrying)return;if(!F.key){F.key=true;SHL.body.userData.hand='use';snd.grab();got('shellycard');showDoc("SHELLY — PLAYCARE STAFF\\n\\nA battered Archive keycard is tucked beneath her ID badge. You carefully remove it.\\n\\nKEYCARD ACQUIRED: ARCHIVE ACCESS.");say('Keycard acquired: ARCHIVE ACCESS. Maybe we can give her a proper goodbye.',5);return}SHL.carrying=true;SHL.carryTime=0;SHL.carryWarned=false;SHL.body.userData.hand='';const bi=solids.indexOf(SHL.body);if(bi>=0)solids.splice(bi,1);say('You lift Shelly carefully. Find somewhere to lay her to rest.',5);tone(180,.2,'sine',.1)}};scene.add(SHL.body);solids.push(SHL.body);
+ const sh=makeShelly();sh.position.set(-7.9,.06,c-3);sh.rotation.y=.3;sh.scale.setScalar(1);sh.visible=true;scene.add(sh);colr(-7.9,c-3.2,1.0,2.4);SHL.x=-7.9;SHL.z=c-3;SHL.arm=sh.userData.arm;SHL.model=sh;SHL.arm.rotation.x=.6;SHL.body=new R.Mesh(new R.BoxGeometry(.65,.45,2.2),new R.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,colorWrite:false}));SHL.body.position.set(-7.9,.28,c-3);SHL.body.userData.hitbox=true;SHL.body.castShadow=false;SHL.body.receiveShadow=false;SHL.body.userData={hand:'',label:'Inspect Shelly',fn(){if(!SHL.done||SHL.buried||SHL.carrying)return;if(!F.key){F.key=true;SHL.body.userData.hand='use';snd.grab();got('shellycard');showDoc("SHELLY — PLAYCARE STAFF\n\nA battered Archive keycard is tucked beneath her ID badge. You carefully remove it.\n\nKEYCARD ACQUIRED: ARCHIVE ACCESS.");say('Keycard acquired: ARCHIVE ACCESS. Maybe we can give her a proper goodbye.',5);return}SHL.carrying=true;SHL.carryTime=0;SHL.carryWarned=false;SHL.body.userData.hand='';const bi=solids.indexOf(SHL.body);if(bi>=0)solids.splice(bi,1);say('You lift Shelly carefully. Find somewhere to lay her to rest.',5);tone(180,.2,'sine',.1)}};scene.add(SHL.body);solids.push(SHL.body);
  SHL.m=lore('m31',-8.36,.26,c-2.9,"SHELLY'S TAPE","Shelly recording: Ludwig and I built the Lullaby protocol so Playcare had a gentle voice when the kids woke up afraid. We borrowed Mr. Sawyer's voice because they trusted it. The Prototype heard it and learned to speak with it. Everything it ever said to you through the speakers, we taught it. I'm sorry.",true);SHL.m.userData.hand=''}
 // Room 8 — poppy gel vat hall
 {const vat=(x,z)=>{const m=new R.Mesh(new R.CylinderGeometry(1.7,1.7,3.6,20),new R.MeshStandardMaterial({color:0xff4fa0,emissive:0xff2a80,emissiveIntensity:.7,transparent:true,opacity:.75,roughness:.2}));m.position.set(x,1.8,z);scene.add(m);const cl=colr(x,z,3.4,3.4);const b=new R.Mesh(new R.CylinderGeometry(1.9,1.9,.3,20),M.metal);b.position.set(x,.15,z);scene.add(b);VATS.push({m,b,x,z,cl})};
@@ -465,7 +465,7 @@ const c5=cz(11),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
  box(0,3.25,c16,12,.22,1.1,M.metal,false);[-5,5].forEach(x=>box(x,2.55,c16,.18,1.5,.18,roomTrim,false));
  for(let k=0;k<4;k++){const arm=box(-1.5+k,2.55,c16-3,.16,1.25,.16,M.metal,false);arm.rotation.z=k%2?-.35:.35}
  sign('TOY ASSEMBLY — LINE 04',0,3.25,c16-HD+.22,0,4,'#e9c65a');
- lore('m31',-7,.93,c16+6,'ASSEMBLY SHIFT REPORT',"The line kept running after the workers left. The toys coming off it were missing their faces. Someone ordered every finished product sent below the factory.");
+ lore('m51',-7,.93,c16+6,'ASSEMBLY SHIFT REPORT',"The line kept running after the workers left. The toys coming off it were missing their faces. Someone ordered every finished product sent below the factory.");
  // The Prototype's Playroom: brightly coloured play blocks arranged like a trap.
  for(let k=0;k<6;k++){const x=-7+k*2.8;box(x,.34,c17-3,2.35,.65,3.4,[red,blue,yellow][k%3]);box(x,.72,c17-3,2.15,.08,3.2,mat(0xddd0b5))}
  const slide=box(6,1.1,c17+2,2.1,.18,7,yellow);slide.rotation.x=-.18;
@@ -476,13 +476,13 @@ const c5=cz(11),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
  // Memory Theatre: ruined cinema seating and a dead projection screen.
  for(let row=0;row<4;row++)for(const x of [-5,-2.5,0,2.5,5]){box(x,.48,c18+5-row*2.2,.9,.35,.85,mat(0x51404b));box(x,.85,c18+5-row*2.2,.9,.55,.22,mat(0x74495c))}
  box(0,2.1,c18-8,11,4,.35,mat(0x111318),false);const screen=new R.Mesh(new R.PlaneGeometry(9.8,2.8),new R.MeshBasicMaterial({color:0x9ab4c7,transparent:true,opacity:.18}));screen.position.set(0,2.1,c18-7.78);scene.add(screen);
- for(const x of [-8,8]){box(x,1.4,c18-6,1.3,2.8,1.2,roomTrim);const lamp=new R.PointLight(0x7895c8,.8,8);lamp.position.set(x,2.7,c18-5);scene.add(lamp)}
+ for(const x of [-8,8]){box(x,1.4,c18-6,1.3,2.8,1.2,roomTrim);}
  sign('THE STORY NEVER ENDS',0,3.3,c18+HD-.22,Math.PI,4,'#9bb9df');
  lore('m33',-8,.93,c18-6,'PROJECTION BOOTH',"The reels show the same smiling mascot welcoming children into Playcare. Frame by frame, the smile changes. The final reel is blank except for one handwritten message: HE REMEMBERS YOU.");
  // A Better Place: a cheerful toy-town facade with an unsettlingly perfect welcome.
  const pastel=[0xe9b8b8,0x8db9d0,0xe5cf78,0x9bbf9b],plush=mat(0xd7c6a0,{roughness:.92});
  for(let k=0;k<4;k++){const x=k%2?7:-7,z=c19-7+Math.floor(k/2)*5;box(x,.85,z,3.8,1.7,2.2,pastel[k]);box(x,1.82,z,3.95,.18,2.35,plush);box(x,2.45,z,3.7,1.1,.14,mat(0x6a4853))}
- for(let k=0;k<7;k++){const x=-8+k*2.65;const lamp=new R.PointLight(pastel[k%4],.65,9);lamp.position.set(x,3.3,c19+2);scene.add(lamp);box(x,3.78,c19+2,.42,.12,.42,mat(0xeee4c9,{emissive:pastel[k%4],emissiveIntensity:.4}),false)}
+ for(let k=0;k<7;k++){const x=-8+k*2.65;box(x,3.78,c19+2,.42,.12,.42,mat(0xeee4c9,{emissive:pastel[k%4],emissiveIntensity:.4}),false)}
  box(0,.08,c19+2,13,.12,8,mat(0x8c806f),false);sign('WELCOME HOME',0,3.35,c19-HD+.22,0,5,'#f2d78b');sign('A BETTER PLACE',0,2.55,c19-7,0,4,'#e8b8c5');
  lore('m34',-7,.93,c19+5,'WELCOME HOME',"A cheerful brochure describes a safe new home for every toy. The last page has been torn out. Beneath it, scratched into the desk: THERE IS NO WAY OUT.");
 }
@@ -506,23 +506,8 @@ const c5=cz(11),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
  }
  box(0,.48,c21,3.2,.9,2.1,0x6b4a2a);box(0,.96,c21,3.25,.08,2.15,0x8b6a45);
  sign('EMPLOYEE DORMITORY — NIGHT SHIFT',0,3.3,c21-HD+.22,0,4,'#c9bba0');
- // Completely random, deliberately non-suggestive employee-room poster.
- const feetPoster=document.createElement('canvas');feetPoster.width=512;feetPoster.height=320;
- const fp=feetPoster.getContext('2d');fp.fillStyle='#e8dfc9';fp.fillRect(0,0,512,320);
- fp.fillStyle='#292a30';fp.font='bold 30px Georgia';fp.textAlign='center';fp.fillText('ANATOMY CLUB NOTICE',256,42);
- fp.fillStyle='#b78f78';
- // Simple cartoon footprints: just a silly anatomy-class illustration.
- for(const x of [190,310]){
-  fp.save();fp.translate(x,150);fp.rotate(x<256?-.18:.18);
-  fp.beginPath();fp.ellipse(0,28,29,48,0,0,Math.PI*2);fp.fill();
-  for(let t=0;t<5;t++){const a=-.9+t*.42;fp.beginPath();fp.arc(Math.sin(a)*24,-25-Math.cos(a)*5,8-t*.7,0,Math.PI*2);fp.fill()}
-  fp.restore();
- }
- fp.fillStyle='#292a30';fp.font='bold 17px Arial';fp.fillText('NOT MEANT TO BE TAKEN IN A FETISHIZED WAY.',256,282);
  const poster=mat(0x171d29,{roughness:.9});
- const feetFrame=box(0,2.05,c21-HD+.18,3.5,2.25,.16,poster,false);
- const feetImage=new R.Mesh(new R.PlaneGeometry(3.3,2.05),new R.MeshBasicMaterial({map:new R.CanvasTexture(feetPoster)}));
- feetImage.position.set(0,2.05,c21-HD+.075);scene.add(feetImage);
+ sign('SHIFT NOTICE: LIGHTS OUT AT 10 PM',0,2.05,c21-HD+.2,0,3.4,'#c9bba0');
 
  lore('m36',0,1.02,c21,'UNCLAIMED PERSONAL EFFECTS',"The evacuation list says every employee was accounted for. The lockers tell a different story. Several names have been crossed out and replaced with experiment numbers.");
  // Creator Guest Room: a fan-made invitation, not a claim that Thinknoodles has visited.
@@ -596,12 +581,12 @@ const c5=cz(11),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
   box(side*9.76,2.05,z, .16,1.05,3.15,creatorPlaque,false);
   sign(label,side*9.66,2.05,z,-side*Math.PI/2,2.85,'#'+color.toString(16).padStart(6,'0'));
  }
- lore('m39',-7,.98,cz(3)+6,'A NOTE LEFT BY A NIGHT GUARD',"DAWKO — The guard says this name was written on a list of people who always looked deeper into the strange things everyone else ignored. A little reminder: keep investigating.");
- lore('m40',7,.98,cz(6)-6,'GREEN-EYED VISITOR STICKER',"JACKSEPTICEYE — A green visitor sticker with a note: “For someone who never stays quiet when the scary stuff starts.”");
- lore('m41',7,.98,cz(9)+6,'THE RED VHS',"MARKIPLIER — A red-labeled tape case. Someone scribbled: “If the recording starts laughing, turn it off. Seriously.”");
- lore('m42',-7,.98,cz(10)+6,'AN INVESTIGATOR’S AUDIO LOG',"8-BITRYAN — A note praises a creator who loves digging into horror-game mysteries. The last line reads: “There is always another detail hiding in the background.”");
- lore('m43',7,.98,cz(1)-6,'BLUE DIAMOND VISITOR BADGE',"DANTDM — A blue visitor badge has been pinned to the board. On the back: “For the builders, explorers, and curious minds.”");
- lore('m44',7,.98,cz(21)+6,'THE LAST DORM ROOM NOTE',"FUSIONZGAMER — A staff member left a note about a guest who never missed a chance to explore one more room before leaving.");
+ lore('m39',-8,1.03,cz(3)+5.5,'A NOTE LEFT BY A NIGHT GUARD',"DAWKO — The guard says this name was written on a list of people who always looked deeper into the strange things everyone else ignored. A little reminder: keep investigating.");
+ tb(7,cz(6)-6,1.2,1.2);lore('m40',7,.93,cz(6)-6,'GREEN-EYED VISITOR STICKER',"JACKSEPTICEYE — A green visitor sticker with a note: “For someone who never stays quiet when the scary stuff starts.”");
+ tb(7,cz(9)+6,1.2,1.2);lore('m41',7,.93,cz(9)+6,'THE RED VHS',"MARKIPLIER — A red-labeled tape case. Someone scribbled: “If the recording starts laughing, turn it off. Seriously.”");
+ tb(-7,cz(10)+6,1.2,1.2);lore('m42',-7,.93,cz(10)+6,'AN INVESTIGATOR’S AUDIO LOG',"8-BITRYAN — A note praises a creator who loves digging into horror-game mysteries. The last line reads: “There is always another detail hiding in the background.”");
+ tb(7,cz(1)-6,1.2,1.2);lore('m43',7,.93,cz(1)-6,'BLUE DIAMOND VISITOR BADGE',"DANTDM — A blue visitor badge has been pinned to the board. On the back: “For the builders, explorers, and curious minds.”");
+ tb(8.6,cz(21)+6,1.2,1.2);lore('m44',8.6,.93,cz(21)+6,'THE LAST DORM ROOM NOTE',"FUSIONZGAMER — A staff member left a note about a guest who never missed a chance to explore one more room before leaving.");
  sign('CREATOR WALL — FAN TRIBUTES',0,3.05,cz(22)-7.82,0,4,'#d6b8f2');
 }
 /* ---------- Metal Hedge ---------- */
@@ -966,7 +951,7 @@ function startIntro(){intro=true;const e=$('intro');e.style.display='flex';e.sty
 const OBJ=['Power the door panel (lever on the left wall)','Search the Staff Break Room','Find out what happened to the Playcare kids','Search the Toy Repair Bay','Start Generator 3: plug both hands into the sockets','Reach the Security Office','Search the Security Office, then follow the tram line','Find a way through the wreckage. Someone is hurt','Cross the Gel Hall. Something is hunting you','Use the keycard on the Archive door','Find File 7, then survive the vents','Free Experiment 1345','Search the Playcare Corridor','Find the trail in the Data Center','Survive the Workshop. Hedge will cover you','Search the Abyss for Poppy’s trail','Explore the abandoned toy assembly line','Investigate the Prototype’s playroom','Watch what the Memory Theatre is showing','Enter A Better Place and find where the Prototype took Poppy','Explore the Toy Testing Arena','Search the abandoned employee dormitory','Find the Creator Guest Room and read its visitor pass','Reach the Prototype’s Exit Atrium','Investigate the Prototype’s observation wing','Recover the hidden Playcare memory records','Navigate the unstable core access tunnels','Reach the Prototype’s throne room'];
 function begin(k){try{ainit();restore(k);GIB.position.set(P.x-1.4,0,P.z+1.2);started=true;ri=-1;CR.next=30;if(k==0)startIntro();$('menu').style.display='none';const pl=ren.domElement.requestPointerLock();if(pl&&pl.catch)pl.catch(e=>{$('boot-status').textContent='Game started, but mouse lock was blocked: '+e.message;$('pause').style.display='flex'});$('boot-status').textContent='Game started — click the game to capture the mouse.'}catch(e){$('boot-status').textContent='Could not start game: '+(e?.stack||e?.message||String(e));console.error(e)}}
 $('graphics').onclick=()=>{setGraphicsMode(!highGraphics)};setGraphicsMode(false);
-$('new').onclick=()=>{try{delete localStorage.ch6_shellyburied}catch{};SHL.buried=false;SHL.burying=false;SHL.grave.mound.visible=SHL.grave.stone.visible=SHL.grave.label.visible=false;SHL.shovel=false;SHL.hinted=false;SHL.grave.shovel.visible=true;SHL.grave.shovelHit.userData.hand='use';SHL.carrying=false;SHL.carryTime=0;SHL.carryWarned=false;SHL.model.visible=true;begin(0)};$('cont').onclick=()=>begin(+$('cont').dataset.k);
+$('new').onclick=()=>{try{delete localStorage.ch6_shellyburied}catch{};SHL.grave.shoes.visible=false;SHL.buried=false;SHL.burying=false;SHL.grave.mound.visible=SHL.grave.stone.visible=SHL.grave.label.visible=false;SHL.shovel=false;SHL.hinted=false;SHL.grave.shovel.visible=true;SHL.grave.shovelHit.userData.hand='use';SHL.carrying=false;SHL.carryTime=0;SHL.carryWarned=false;SHL.model.visible=true;begin(0)};$('cont').onclick=()=>begin(+$('cont').dataset.k);
 function showCont(k){if(k>0){$('cont').style.display='';$('cont').dataset.k=k;$('cont').textContent='Continue — '+NAMES[k]}}
 try{showCont(+localStorage.ch6||0)}catch{}
 $('cloud').onclick=async()=>{try{await puter.auth.signIn();const v=await puter.kv.get('ch6_ckpt');if(+v>0)showCont(+v);$('cloud').textContent='Cloud save active ✓'}catch{$('cloud').textContent='Puter unavailable — local save only'}};
