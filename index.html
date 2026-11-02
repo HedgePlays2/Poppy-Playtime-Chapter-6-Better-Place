@@ -90,15 +90,17 @@ function noiseTick(){for(let i=0;i<2304;i++){const v=Math.random()*170;nd.data[i
 /* ---------- level ---------- */
 const HW=10,HD=10,SP=26,cz=i=>-i*SP;
 const NAMES=['GrabPack Calibration Room','Staff Break Room','Playcare Nursery','Toy Repair Bay','Generator Room','Neural Systems','Security Office','Tram Station Wreckage','Poppy Gel Vat Hall','Recording Studio','Restricted Archive','Metal Hedge Containment Bay','Playcare Corridor','Data Center','Prototype Workshop','The Abyss','Abandoned Toy Assembly','The Prototype’s Playroom','Memory Theatre','A Better Place','Toy Testing Arena','Employee Dormitory','Creator Guest Room','Prototype’s Exit Atrium','Prototype Observation Wing','Playcare Memory Vault','Core Access Tunnels','Prototype’s Throne'];
-box(0,-.1,-351,2*HW+.4,.2,726,M.floor,false);box(0,4.1,-351,2*HW+.4,.2,726,M.ceil,false);
+box(0,-.1,-351,2*HW+.4,.2,726,M.floor,false);box(0,8.1,-351,2*HW+.4,.2,726,M.ceil,false);
 const TINT=[0x7fa8f0,0xe6c36a,0xf0a8c0,0xe09a58,0x9fb0a0,0x6f9fd8,0x8aa0a0,0x7a8f9f,0xe070a8,0xb08aa8,0x9a9080,0x7fbfa8,0xe0a860,0x5f8fbf,0xa0605a,0x6a5a6a,0xc18b43,0x6b354d,0x4b5878,0xe1b95c,0x3c9a9a,0x8b7650,0x9a6cba,0xb9c9d8,0x7d8798,0x6c7c8c,0x9b6b45,0x3b344b],ACC=[0xe03a2a,0x2a7fff,0xf2c14e,0x2fbf6a];let curWall=M.wall;
-const gap=z=>{box(-5.75,2,z,8.5,4,.4,curWall);box(5.75,2,z,8.5,4,.4,curWall);box(0,3.5,z,3,1,.4,curWall,false)};
+const gap=z=>{box(-5.75,4,z,8.5,8,.4,curWall);box(5.75,4,z,8.5,8,.4,curWall);box(0,7.5,z,3,1,.4,curWall,false)};
 const doors=[],needs=['power',null,null,null,'gen',null,null,null,null,'key','vents','hedge',null,null,'fight',null,null,null,null,null,null,null,null,null,null,null,null],hints={hedge:'The blast shutter is welded shut. Free Experiment 1345 first.',fight:'The door is locked. Deal with the creature first.',gen:'No power to this door. Start the generator.',power:'The door panel has no power. Find the lever.',key:'Keycard required.',vents:'Sealed. Something is still in the vents.'};
 function openDoor(i,instant){const d=doors[i];if(!d||d.open)return;d.open=true;if(d.col)d.col.on=false;if(d.btn?.material?.emissive)d.btn.material.emissive.set(0x00ff40);if(instant)d.mesh.position.y=5.1}
 const SHL={done:false,on:false,t0:0,buried:false,shovel:false,burying:false,carrying:false,carryTime:0,carryWarned:false,gardenX:0,gardenZ:0},blink=[],VATS=[],TAPES=[],TVS=[],seen=new Set(),LOGS=57;let tvUntil=0,toyTokens=0;
 function hud(){const n=TAPES.filter(t=>!t.seen).length;$('logs').textContent='Logs '+seen.size+'/'+LOGS+(n?' · Tapes '+n:'')+' · Toy badges '+toyTokens+'/6'}
 function got(id){if(!seen.has(id)){seen.add(id);hud()}}
-function lore(id,x,y,z,title,body,tape){const m=box(x,y,z,tape?.28:.32,.03,tape?.18:.42,tape?mat(0x111111,{emissive:0x3399ff,emissiveIntensity:.8}):0xeee5c0,false);m.userData={hand:'use',label:tape?'Take tape':'Read note',fn(){if(tape){kill(m);TAPES.push({id,title,body,seen:false});hud();snd.grab();say('You pick up a VHS tape: '+title+'. Find a tape player to watch it.',5);return}showDoc(title+'\n\n'+body,false,false);got(id)}};return m}
+function makeCollectibleTexture(tape){const c=document.createElement('canvas');c.width=256;c.height=256;const g=c.getContext('2d');if(tape){g.fillStyle='#202326';g.fillRect(0,0,256,256);g.fillStyle='#34393b';g.fillRect(12,12,232,232);g.fillStyle='#111416';g.fillRect(28,28,200,200);g.fillStyle='#b9b3a0';g.fillRect(48,48,160,160);g.fillStyle='#d5c9a9';g.fillRect(56,56,144,72);g.fillStyle='#282725';g.font='bold 17px monospace';g.fillText('PLAYTIME CO.',65,83);g.font='13px monospace';g.fillText('ARCHIVE / VHS',65,108);g.fillStyle='#25292b';g.beginPath();g.arc(92,166,29,0,Math.PI*2);g.arc(164,166,29,0,Math.PI*2);g.fill();g.fillStyle='#a5a092';g.beginPath();g.arc(92,166,13,0,Math.PI*2);g.arc(164,166,13,0,Math.PI*2);g.fill();g.strokeStyle='#74746c';g.lineWidth=3;g.strokeRect(20,20,216,216)}else{const grad=g.createLinearGradient(0,0,256,256);grad.addColorStop(0,'#d9c9a4');grad.addColorStop(.5,'#b9a77f');grad.addColorStop(1,'#d0bd94');g.fillStyle=grad;g.fillRect(0,0,256,256);for(let i=0;i<1700;i++){const x=Math.random()*256,y=Math.random()*256;g.fillStyle=i%2?'rgba(75,53,31,.07)':'rgba(255,245,210,.12)';g.fillRect(x,y,Math.random()*3+1,Math.random()*3+1)}g.strokeStyle='rgba(78,57,38,.35)';g.lineWidth=3;g.strokeRect(9,9,238,238);g.fillStyle='rgba(115,76,43,.17)';g.fillRect(18,18,220,8);g.strokeStyle='rgba(70,55,39,.45)';g.lineWidth=2;for(let i=0;i<8;i++){const y=65+i*21;g.beginPath();g.moveTo(34,y);g.lineTo(205+(i%3)*12,y);g.stroke()}g.fillStyle='rgba(88,55,35,.3)';g.beginPath();g.moveTo(206,0);g.lineTo(256,0);g.lineTo(256,50);g.closePath();g.fill();g.fillStyle='#514333';g.font='bold 14px monospace';g.fillText('PLAYTIME CO. / INTERNAL',25,42)}const t=new R.CanvasTexture(c);t.colorSpace=R.SRGBColorSpace;t.anisotropy=4;return t}
+const NOTE_TEX=makeCollectibleTexture(false),TAPE_TEX=makeCollectibleTexture(true);
+function lore(id,x,y,z,title,body,tape){const surface=tape?mat(0x242729,{map:TAPE_TEX,roughness:.82,metalness:.25}):mat(0xd0bd94,{map:NOTE_TEX,roughness:1});const m=box(x,y,z,tape?.28:.32,.035,tape?.18:.42,surface,false);m.userData={hand:'use',label:tape?'Take tape':'Read note',fn(){if(tape){kill(m);TAPES.push({id,title,body,seen:false});hud();snd.grab();say('You pick up a VHS tape: '+title+'. Find a tape player to watch it.',5);return}showDoc(title+'\n\n'+body,false,false);got(id)}};return m}
 
 // Optional scavenger hunt: six employee-award tokens hidden off the main path.
 function toyBadge(x,z,index){
@@ -117,9 +119,9 @@ function toyBadge(x,z,index){
 }
 const tb=(x,z,w=2.2,d=1)=>box(x,.45,z,w,.9,d,0x6b4a2a),crate=(x,z,s=1)=>box(x,s/2,z,s,s,s,0x5a4a32),shelf=(x,z,w,d)=>box(x,1.2,z,w,2.4,d,0x3a3a40),RW=HW-.22,LW=-HW+.22;
 for(let i=0;i<28;i++){const c=cz(i);curWall=curWall.clone();curWall.color.set(TINT[i]);const doorMat=mat(ACC[i%4],{metalness:.35,roughness:.7});
- box(-HW,2,c,.4,4,2*HD+.4,curWall);box(HW,2,c,.4,4,2*HD+.4,curWall);
- i?gap(c+HD):box(0,2,c+HD,2*HW+.4,4,.4,curWall);
- if(i<=26){gap(c-HD);box(-1.5,2,c-HD-3,.3,4,6,curWall);box(1.5,2,c-HD-3,.3,4,6,curWall)}else box(0,2,c-HD,2*HW+.4,4,.4,curWall);
+ box(-HW,4,c,.4,8,2*HD+.4,curWall);box(HW,4,c,.4,8,2*HD+.4,curWall);
+ i?gap(c+HD):box(0,4,c+HD,2*HW+.4,8,.4,curWall);
+ if(i<=26){gap(c-HD);box(-1.5,4,c-HD-3,.3,8,6,curWall);box(1.5,4,c-HD-3,.3,8,6,curWall)}else box(0,4,c-HD,2*HW+.4,8,.4,curWall);
  sign(NAMES[i].toUpperCase(),0,3.5,c-HD+.22,0,3,'#cde');
  [-8,8].forEach(x=>{const p=new R.Mesh(new R.CylinderGeometry(.1,.1,2*HD,8),M.metal);p.rotation.x=Math.PI/2;p.position.set(x,3.7,c);scene.add(p)});
  lights.push({base:24,t:0});
@@ -226,6 +228,17 @@ for(let i=0;i<28;i++){const c=cz(i);curWall=curWall.clone();curWall.color.set(TI
     g.fillStyle='#171719';g.fillRect(0,0,256,96);g.fillStyle='#d6c6a7';g.font='bold 25px monospace';g.textAlign='center';g.fillText('BIOHAZARD',128,39);g.font='18px monospace';g.fillText('SEALED WING',128,69);
     const signMesh=new R.Mesh(new R.PlaneGeometry(1.3,.34),new R.MeshBasicMaterial({map:new R.CanvasTexture(txt),transparent:true}));
     signMesh.position.set(side*9.445,2.85,c+1.5);signMesh.rotation.y=side===1?-Math.PI/2:Math.PI/2;scene.add(signMesh);
+   }
+  }
+  // Tall dead-zone roof: exposed cross-bracing and heavy service trunks overhead.
+  for(const zoff of [-8,-2,4,9]){
+   const beam=detail(new R.BoxGeometry(20,.2,.22),rib,0,7.65,c+zoff);
+   const cross=detail(new R.BoxGeometry(.18,1.05,.18),rust,0,7.05,c+zoff);
+   detail(new R.BoxGeometry(1.8,.12,.18),rib,0,6.48,c+zoff);
+  }
+  if(i>=14){
+   for(const x of [-7.8,-4.2,4.2,7.8]){
+    detail(new R.CylinderGeometry(.09,.09,20,10),rib,x,7.45,c);
    }
   }
   // The deepest rooms have ceiling-mounted containment conduits and hanging
