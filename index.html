@@ -89,7 +89,7 @@ const nc=document.createElement('canvas');nc.width=nc.height=48;const nx=nc.getC
 function noiseTick(){for(let i=0;i<2304;i++){const v=Math.random()*170;nd.data[i*4]=v*.3;nd.data[i*4+1]=v;nd.data[i*4+2]=v*.4;nd.data[i*4+3]=255}nx.putImageData(nd,0,0);ntx.needsUpdate=true}
 /* ---------- level ---------- */
 const HW=10,HD=10,SP=26,cz=i=>-i*SP;
-const NAMES=['GrabPack Calibration Room','Staff Break Room','Playcare Nursery','Toy Repair Bay','Generator Room','Neural Systems','Security Office','Tram Station Wreckage','Poppy Gel Vat Hall','Recording Studio','Restricted Archive','Metal Hedge Containment Bay','Playcare Corridor','Data Center','Prototype Workshop','The Abyss','Abandoned Toy Assembly','The Prototype’s Playroom','Memory Theatre','A Better Place','Toy Testing Arena','Employee Dormitory','Creator Guest Room','Prototype’s Exit Atrium','Prototype Observation Wing','Playcare Memory Vault','Core Access Tunnels','Prototype’s Throne'];
+const NAMES=['Data Center — Backup Core','Staff Break Room','Playcare Nursery','Toy Repair Bay','Generator Room','Neural Systems','Security Office','Tram Station Wreckage','Poppy Gel Vat Hall','Recording Studio','Restricted Archive','Metal Hedge Containment Bay','Playcare Corridor','Secondary Data Center','Prototype Workshop','The Abyss','Abandoned Toy Assembly','The Prototype’s Playroom','Memory Theatre','A Better Place','Toy Testing Arena','Employee Dormitory','Creator Guest Room','Prototype’s Exit Atrium','Prototype Observation Wing','Playcare Memory Vault','Core Access Tunnels','Prototype’s Throne'];
 box(0,-.1,-351,2*HW+.4,.2,726,M.floor,false);box(0,8.1,-351,2*HW+.4,.2,726,M.ceil,false);
 const TINT=[0x7fa8f0,0xe6c36a,0xf0a8c0,0xe09a58,0x9fb0a0,0x6f9fd8,0x8aa0a0,0x7a8f9f,0xe070a8,0xb08aa8,0x9a9080,0x7fbfa8,0xe0a860,0x5f8fbf,0xa0605a,0x6a5a6a,0xc18b43,0x6b354d,0x4b5878,0xe1b95c,0x3c9a9a,0x8b7650,0x9a6cba,0xb9c9d8,0x7d8798,0x6c7c8c,0x9b6b45,0x3b344b],ACC=[0xe03a2a,0x2a7fff,0xf2c14e,0x2fbf6a];let curWall=M.wall;
 const gap=z=>{box(-5.75,4,z,8.5,8,.4,curWall);box(5.75,4,z,8.5,8,.4,curWall);box(0,7.5,z,3,1,.4,curWall,false)};
@@ -131,7 +131,7 @@ for(let i=0;i<28;i++){const c=cz(i);curWall=curWall.clone();curWall.color.set(TI
  for(const side of [-1,1])for(const z of [-6,0,6]){const panel=new R.Mesh(new R.BoxGeometry(.035,1.05,1.45),mat(0x34383a,{metalness:.35,roughness:.92}));panel.position.set(side*9.77,1.55,c+z);scene.add(panel);
   for(const yy of [1.12,1.98]){const screw=new R.Mesh(new R.CylinderGeometry(.018,.018,.012,8),M.metal);screw.rotation.z=Math.PI/2;screw.position.set(side*9.79,yy,c+z-.58);scene.add(screw)}}
  [-4,4].forEach(z=>{const housing=new R.Mesh(new R.BoxGeometry(2.3,.16,.65),M.metal);housing.position.set(0,7.78,c+z);scene.add(housing);const fx=new R.Mesh(new R.BoxGeometry(1.9,.045,.3),glow(0xffdca0,.85));fx.position.set(0,7.68,c+z);scene.add(fx)});
- toys(c,24);wallCam(HW-.65,3.5,c+HD-1,c);wallCam(-(HW-.65),3.5,c-HD+1,c);
+ if(i!==0)toys(c,24);wallCam(HW-.65,3.5,c+HD-1,c);wallCam(-(HW-.65),3.5,c-HD+1,c);
  if(i<15||(i>=16&&i<27)){box(0,3.06,c-HD+.2,3.2,.1,.05,glow(ACC[i%4],.7),false);const d={mesh:box(0,1.5,c-HD,3,3,.3,doorMat),open:false};d.col=d.mesh.userData.col;
   d.btn=box(2.4,1.4,c-HD+.3,.45,.6,.15,mat(0x220000,{emissive:0xff2000,emissiveIntensity:.8}),false);
   d.btn.userData={hand:'red',label:'Open door',fn(){const n=needs[i];if(n&&!F[n]){say(hints[n]);tone(110,.3,'square',.15);return}if(!d.open){openDoor(i);snd.door()}}};doors[i]=d}}
@@ -190,6 +190,41 @@ for(let i=0;i<28;i++){const c=cz(i);curWall=curWall.clone();curWall.color.set(TI
    
   }
  }
+}
+/* ---------- Chapter 5 continuation: opening backup data center ---------- */
+{
+ const serverDark=mat(0x151b22,{metalness:.62,roughness:.48});
+ const serverEdge=mat(0x39434b,{metalness:.72,roughness:.38});
+ const blueLED=glow(0x26bfff,2.2),greenLED=glow(0x54e58b,1.7),amberLED=glow(0xffa52b,1.4);
+ for(const side of [-1,1])for(const z of [4.8,.1,-4.6]){
+  const x=side*7.05,innerX=x+(side===-1?.89:-.89);
+  box(x,2.35,z,1.72,4.7,2.15,serverDark);
+  const face=new R.Mesh(new R.BoxGeometry(.055,4.25,1.82),serverEdge);face.position.set(innerX,2.35,z);scene.add(face);
+  for(let k=0;k<9;k++){
+   const yy=.62+k*.43;
+   const tray=new R.Mesh(new R.BoxGeometry(.045,.31,1.55),serverDark);tray.position.set(innerX+(side===-1?.045:-.045),yy,z);scene.add(tray);
+   const vent=new R.Mesh(new R.BoxGeometry(.012,.035,.48),serverEdge);vent.position.set(innerX+(side===-1?.075:-.075),yy+.045,z);scene.add(vent);
+   for(let q=0;q<3;q++){const led=new R.Mesh(new R.SphereGeometry(.035,7,6),q===0?blueLED:q===1?greenLED:amberLED);led.position.set(innerX+(side===-1?.09:-.09),yy-.075,z-.43+q*.12);scene.add(led)}
+  }
+  for(const dz of [-.82,.82]){const rail=new R.Mesh(new R.BoxGeometry(.075,4.45,.055),serverEdge);rail.position.set(innerX+(side===-1?.05:-.05),2.35,z+dz);scene.add(rail)}
+  const top=new R.Mesh(new R.BoxGeometry(1.82,.12,2.22),serverEdge);top.position.set(x,4.76,z);scene.add(top);
+ }
+ // Cooling units and thick data trunks run along the rear wall.
+ for(const x of [-3.9,3.9]){
+  box(x,1.45,-7.35,1.25,2.9,.72,0x242d34);
+  for(let k=0;k<7;k++){const vent=new R.Mesh(new R.BoxGeometry(.88,.045,.025),serverEdge);vent.position.set(x,.55+k*.28,-6.97);scene.add(vent)}
+  const status=new R.Mesh(new R.BoxGeometry(.22,.12,.035),new R.MeshBasicMaterial({color:0x26bfff}));status.position.set(x,2.7,-6.96);scene.add(status);
+ }
+ for(const x of [-8.8,-5.25,-1.7,1.7,5.25,8.8]){
+  const trunk=new R.Mesh(new R.CylinderGeometry(.075,.075,18,8),serverEdge);trunk.rotation.x=Math.PI/2;trunk.position.set(x,7.52,0);scene.add(trunk);
+  for(const z of [-6,-2,2,6]){const hanger=new R.Mesh(new R.BoxGeometry(.16,.34,.16),serverEdge);hanger.position.set(x,7.28,z);scene.add(hanger)}
+ }
+ // Central diagnostics console faces the entrance.
+ box(0,1.05,-7.9,2.8,2.1,.85,serverDark);
+ const monitor=new R.Mesh(new R.BoxGeometry(2.35,1.08,.07),serverEdge);monitor.position.set(0,2.35,-7.94);scene.add(monitor);
+ const display=new R.Mesh(new R.PlaneGeometry(2.18,.91),new R.MeshBasicMaterial({color:0x3a9ab5,transparent:true,opacity:.82}));display.position.set(0,2.35,-7.895);scene.add(display);
+ sign('PLAYTIME CO. / CENTRAL BACKUP DATA CENTER',0,5.15,-9.72,0,7.8,'#7bd8ef');
+ sign('SERVER AISLE 01',0,3.25,9.72,Math.PI,3.2,'#7bd8ef');
 }
 /* ---------- Chapter 6 identity pass: sealed research ruins and fallen experiments ---------- */
 /* The late-game wing should feel older, deeper and more secretive than the
