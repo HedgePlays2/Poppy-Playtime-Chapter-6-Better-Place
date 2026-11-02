@@ -810,23 +810,23 @@ function makeCrawler(){const g=new R.Group(),sk=mat(0x1b1816,{roughness:.6,metal
 const CR={m:makeCrawler(),state:'hid',next:30,t:0,stare:0,scr:8,first:true},CH={on:false,done:false},grate=new R.Mesh(new R.BoxGeometry(1.1,.06,1.1),mat(0x050505));grate.visible=false;scene.add(grate);
 function animCr(t,sp){const u=CR.m.userData;u.segs.forEach((o,i)=>{o.position.y=Math.sin(t*5*sp-i*.9)*.05;o.position.x=Math.sin(t*3*sp-i*.8)*.07});u.legs.forEach(o=>o.l.rotation.x=Math.sin(t*12*sp+o.i*1.1+(o.sd>0?0:Math.PI))*.45);u.arms.forEach((a,k)=>a.rotation.x=Math.sin(t*4*sp+k*2)*.25);u.hd.rotation.z=Math.sin(t*2.2)*.15}
 function hatchPeek(k){const m=CR.m;m.visible=true;m.scale.setScalar(1.1);m.position.set(-9.3,1.2,c4+vz[k]);m.rotation.set(0,Math.PI/2,0);animCr(0,1)}
-function startChase(){if(CH.on||CH.done)return;const m=CR.m;CH.on=true;CR.state='chase';m.visible=true;grate.visible=false;m.scale.setScalar(1.4);m.rotation.set(0,Math.PI,0);m.position.set(0,.4,cz(8)+HD-1);snd.growl();say('Sawyer: It dropped from the vents behind us! RUN! Use the red hand on the door panel!',5)}
+function startChase(){if(CH.on||CH.done)return;const m=CR.m;CH.on=true;CR.state='chase';m.visible=true;grate.visible=false;m.scale.setScalar(1.4);m.rotation.set(0,Math.PI,0);m.position.set(0,.4,cz(8)+HD-1);snd.growl();say('Sawyer: Behind us! Something just came through the vents. Move—red hand on the door panel, now!',5)}
 function hideCr(){CR.m.visible=false;grate.visible=false;CR.state='hid';CR.next=28+Math.random()*25}
 function updCrawler(dt,t){const m=CR.m;
  if(started&&!intro){CR.scr-=dt;if(CR.scr<=0&&ri>=1){noise(.5,.12,300+Math.random()*300);CR.scr=9+Math.random()*14}}
  if(CH.on&&!PR.done&&P.z<cz(8)-1){startProto();return}
  if(CH.on){const dx=P.x-m.position.x,dz=P.z-m.position.z,d=Math.hypot(dx,dz)||1;m.position.x+=dx/d*2.6*dt;m.position.z+=dz/d*2.6*dt;m.rotation.y=Math.atan2(dx,dz);animCr(t,2.2);
-  if(d<1.3){CH.on=false;scare('chase')}else if(P.z<cz(8)-HD-1){CH.on=false;CH.done=true;hideCr();noise(.6,.4,3000);say("Sawyer: It won't follow us past the door. Not yet.",4)}return}
+  if(d<1.3){CH.on=false;scare('chase')}else if(P.z<cz(8)-HD-1){CH.on=false;CH.done=true;hideCr();noise(.6,.4,3000);say("Sawyer: It won\'t cross that threshold. Not yet, anyway. Keep moving.",4)}return}
  if(CR.state=='peek'){animCr(t,.6);CR.t-=dt;const vx=m.position.x-P.x,vy=m.position.y-P.y,vz2=m.position.z-P.z,vl2=Math.hypot(vx,vy,vz2)||1,cp=Math.cos(pitch),dot=(vx*-Math.sin(yaw)*cp+vy*Math.sin(pitch)+vz2*-Math.cos(yaw)*cp)/vl2;
   CR.stare=dot>.94?CR.stare+dt:Math.max(0,CR.stare-dt);if(CR.stare>1.2||CR.t<=0){noise(.5,.4,3000);tone(300,.4,'sawtooth',.1,-200);hideCr()}return}
  if(CR.state=='hid'&&started&&!intro&&!mhFree&&ri>=1&&!V.on&&!CH.on&&!(ri==8&&!CH.done)){CR.next-=dt;if(CR.next<=0){const c=cz(ri),d=8+Math.random()*4,x=Math.max(-8.5,Math.min(8.5,P.x-Math.sin(yaw)*d+(Math.random()-.5)*6)),z=P.z-Math.cos(yaw)*d;
   if(z>c-HD+1.5&&z<c+HD-1.5&&Math.hypot(x-P.x,z-P.z)>6){grate.position.set(x,3.97,z);grate.visible=true;m.visible=true;m.scale.setScalar(1);m.position.set(x,3.15,z);m.rotation.set(Math.PI/2-.7,Math.atan2(P.x-x,P.z-z),0);CR.state='peek';CR.t=6;CR.stare=0;snd.growl();
-   if(CR.first){CR.first=false;say("Sawyer: Something's in the vents. Don't let it get close.",5)}}else CR.next=2}}}
+   if(CR.first){CR.first=false;say("Sawyer: Listen. Something is moving above us. Don\'t wait to see what it is.",5)}}else CR.next=2}}}
 const bolts=[],FT={on:false,hits:0,t:0};
 function shoot(a,b){const m=new R.Mesh(new R.SphereGeometry(.09,8,6),glow(0x66ff88,2));m.position.copy(a);scene.add(m);bolts.push({b:m,v:b.clone().sub(a).normalize().multiplyScalar(16),life:1.2})}
 function startFight(){if(FT.on||F.fight||!mhFree)return;const m=CR.m;FT.on=true;FT.hits=0;FT.t=.5;CR.state='fight';m.visible=true;grate.visible=false;m.scale.setScalar(1.4);m.rotation.set(0,0,0);m.position.set(0,.4,cz(14)-HD+3);snd.growl();seq([[0,"Giblet: Something's in here with us!",3],[3,"Metal Hedge: I've got it! Stay behind me, kid!",4]])}
 function updShelly(){if(SHL.drop&&SHL.arm.rotation.x>0)SHL.arm.rotation.x=Math.max(0,SHL.arm.rotation.x-.03);if(SHL.done||SHL.on||ri!=7||!started||intro||performance.now()-SHL.t0<11000||Math.hypot(P.x-SHL.x,P.z-SHL.z)>5.5)return;SHL.on=true;
- seq([[0,"Shelly: …is someone there?",3],[3.2,"Shelly: I didn't want this to happen. Neither did Ludwig.",5],[8.7,"Shelly: Take my tape… it's how he learned to talk. Please… stop him.",5.5],[15.5,"Giblet: …She's gone.",3],[19,"Sawyer: She and Ludwig built that system on my orders. This one is on me.",5]]);
+ seq([[0,"Shelly: …is someone there?",3],[3.2,"Shelly: I didn't want this to happen. Neither did Ludwig.",5],[8.7,"Shelly: Take my tape… it's how he learned to talk. Please… stop him.",5.5],[15.5,"Giblet: …She's gone.",3],[19,"Sawyer: I gave them the instructions. They built what I asked for. Don\'t put this on anyone else. It was my responsibility.",5]]);
  setTimeout(()=>{SHL.drop=true;SHL.done=true;SHL.model.userData.closeEyes();tone(120,1.2,'sine',.15,-60);setTimeout(()=>{SHL.m.position.y=.07;SHL.m.userData.hand='use';SHL.body.userData.hand=F.key?'':'use'},700)},9500)}
 function updFight(dt,t){bolts.forEach(o=>{o.b.position.addScaledVector(o.v,dt);o.life-=dt});for(let i=bolts.length-1;i>=0;i--)if(bolts[i].life<=0){scene.remove(bolts[i].b);bolts.splice(i,1)}
  if(!FT.on)return;const m=CR.m,dx=P.x-m.position.x,dz=P.z-m.position.z,d=Math.hypot(dx,dz)||1;if(d>5){m.position.x+=dx/d*1.4*dt;m.position.z+=dz/d*1.4*dt}m.rotation.y=Math.atan2(dx,dz);animCr(t,1.8);
@@ -1011,22 +1011,22 @@ function startBurial(){if(SHL.burying||SHL.buried)return;SHL.burying=true;intro=
 const seq=a=>a.forEach(([d,t,s])=>setTimeout(()=>say(t,s||4),d*1000));
 let sawyerBreakdownPlayed=false;
 function startSawyerBreakdown(){if(!started||ended||sawyerBreakdownPlayed&&ri!==18)return;intro=true;const e=$('sawyer-scene'),line=$('sawyer-memory-line');const beats=[
- [0,'I remember the children. I remember their voices.'],
- [4.2,'I knew when they were frightened. I knew when they were hurt. I wrote it all down as observations.'],
- [9.2,'But I did not feel it. I could not make myself understand why it mattered.'],
- [14.5,'I called it efficiency. I called it necessary. <strong>I was wrong.</strong>'],
- [19.5,'I helped build the rooms they were afraid of. I helped make the things that chased them.'],
- [25,'And now I can feel it. Every memory. Every child I failed. It is all here, and I cannot turn it off.'],
+ [0,'I remember them. The children. I remember their voices.'],
+ [4.2,'I could tell when they were frightened. I could identify distress, measure it, record it… and then move on to the next report.'],
+ [9.2,'I told myself I was being practical. That feelings would only get in the way.'],
+ [14.5,'I made a virtue of not caring. <strong>It was never a virtue.</strong>'],
+ [19.5,'I approved the rooms. The procedures. The experiments. I knew what was happening, and I kept telling myself it was necessary.'],
+ [25,'Now I remember every face. Every voice. I can finally feel what I dismissed—and I cannot pretend I don’t know anymore.'],
  [31,'<em>What have I done?</em>'],
- [37,'I am sorry. I am so, so sorry.'],
- [43,'Glowby… are you still there?'],
+ [37,'I don’t expect forgiveness. I haven’t earned it.'],
+ [43,'Glowby… are you still with me?'],
  [47,'(A small light flickers beside Sawyer’s eye.)'],
- [51,'Glowby: I am here. We can still help them.'],
- [56,'Sawyer: Then that is what we will do. No more looking away.']
+ [51,'Glowby: I’m here. We can still help them.'],
+ [56,'Sawyer: Then let’s do that. One person at a time. No more looking away.']
  ];
  e.style.display='flex';e.style.opacity=1;line.innerHTML='';noise(.8,.18,500);tone(58,2,'sine',.08,-20);
  beats.forEach(([t,html])=>setTimeout(()=>{if(e.style.display!=='none'){line.innerHTML=html;glowT=3;if(t>=25){noise(.35,.12,900);tone(48,.6,'sine',.07,-12)} }},t*1000));
- setTimeout(()=>{e.style.opacity=0},61000);setTimeout(()=>{e.style.display='none';intro=false;say('Sawyer: I cannot undo what happened. But I can help you save whoever is still alive.',7)},62500)
+ setTimeout(()=>{e.style.opacity=0},61000);setTimeout(()=>{e.style.display='none';intro=false;say('Sawyer: I can\'t undo what I did. I won\'t ask you to forgive me. But if there\'s still someone we can save, I want to help.',7)},62500)
 }
 let docT;function showDoc(t,speak,vhs){const e=$('doc');e.classList.toggle('vhs',!!vhs);if(vhs){t='▶ PLAY   ·   PLAYTIME CO. VIDEO ARCHIVE\n'+t;noise(.5,.25,4000);tone(1200,.08,'square',.05)}e.textContent=t;e.style.display='block';clearTimeout(docT);docT=setTimeout(()=>e.style.display='none',13000);
  try{if(speak&&window.puter&&puter.auth.isSignedIn())puter.ai.txt2speech(t.replace(/\n+/g,' ')).then(a=>a.play()).catch(()=>{})}catch{}}
@@ -1034,7 +1034,7 @@ const save=n=>{try{localStorage.ch6=n}catch{}try{window.puter&&puter.auth.isSign
 function startVents(){if(V.on||V.done)return;V.on=true;V.mz=c4-18;V.closed=[0,0,0];V.pass=[0,0,0];V.gt=0;covers.forEach(c=>c.userData.hand='any');blackout=true;vl.intensity=6;say('Something is crawling in the vents… run to the left wall and close the hatches!',5)}
 function scare(kind){V.on=false;CH.on=false;vl.intensity=0;hideCr();const e=$('scare');e.style.display='block';snd.scare();
  setTimeout(()=>{e.style.display='none';yaw=pitch=0;blackout=false;
-  if(kind=='chase'){P.set(0,1.65,cz(8)+HD-3);say('Sawyer: RUN! Red hand on the door panel!',4);setTimeout(startChase,3500)}
+  if(kind=='chase'){P.set(0,1.65,cz(8)+HD-3);say('Sawyer: Run! Red hand—door panel! I\'ll explain when we\'re clear!',4);setTimeout(startChase,3500)}
   else{P.set(0,1.65,c4+4);covers.forEach(c=>c.userData.hand='');V.closed=[0,0,0];say('It will find you again… be quick.',4);setTimeout(startVents,5000)}},2200)}
 function restore(k){for(let i=0;i<Math.min(k,doors.length);i++)openDoor(i,true);if(k>=1)F.power=true;if(k>=5)F.gen=true;if(k>=9){CH.done=true;PR.done=true;wounded=true}if(k>=8){SHL.done=true;SHL.m.position.y=.07;SHL.m.userData.hand='use';SHL.body.userData.hand=F.key?'':'use';SHL.arm.rotation.x=0}if(k>=10)F.key=true;if(F.key)SHL.body.userData.hand='use';let shellyBuried=false;try{shellyBuried=localStorage.getItem('ch6_shellyburied')==='1'}catch{}if(shellyBuried){SHL.buried=true;SHL.model.visible=false;SHL.grave.mound.visible=SHL.grave.stone.visible=SHL.grave.label.visible=true;SHL.grave.shoes.visible=true;SHL.body.userData.hand='';SHL.shovel=true;SHL.grave.shovel.visible=false;SHL.grave.shovelHit.userData.hand=''}if(k>=11){F.vents=V.done=true;covers.forEach(c=>c.position.y=1.2);kill(file)}if(k>=12){F.hedge=true;released=1;glass.visible=false;capCol.on=false;mhFree=true;MH.position.set(0,0,cz(k)+HD-1)}if(k>=15)F.fight=true;P.set(0,1.65,cz(k)+HD-3);yaw=pitch=0}
 /* ---------- player ---------- */
@@ -1057,7 +1057,7 @@ function musicBox(dt){if(!AC||!started||intro||!locked||V.on||CH.on||FT.on)retur
 const clock=new R.Clock(),fwdV=V3();
 function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime;
  if(locked&&!ended&&!intro&&!SHL.burying&&!PR.on){move(dt);stepT-=dt;if(moving&&stepT<=0){noise(.08,.12,500);stepT=keys.ShiftLeft?.3:.46}creak-=dt;if(creak<=0){tone(100+Math.random()*100,.9,'triangle',.07,-40);creak=8+Math.random()*12}}
- if(SHL.carrying&&locked&&!SHL.burying){SHL.carryTime+=dt;const fx=-Math.sin(yaw),fz=-Math.cos(yaw),bx=P.x+fx*1.35,bz=P.z+fz*1.35;SHL.model.position.set(bx,.04,bz);SHL.model.rotation.y=yaw+.3;SHL.body.position.set(bx,.28,bz);SHL.body.rotation.y=yaw+.3;if(SHL.carryTime>18&&!SHL.carryWarned){SHL.carryWarned=true;say('Sawyer: Why are you carrying around a corpse? Come on, bury her already.',6)}}SHL.grave.hit.userData.hand=SHL.carrying&&!SHL.buried?'use':'';if(SHL.carrying)moving=false;const bob=moving?Math.sin(t*9)*.03:0;shake=Math.max(0,shake-dt);if(locked){jumpV-=13.5*dt;jumpY+=jumpV*dt;if(jumpY<0){jumpY=0;jumpV=0}}else{jumpY=0;jumpV=0}P.y=1.65+bob+jumpY;
+ if(SHL.carrying&&locked&&!SHL.burying){SHL.carryTime+=dt;const fx=-Math.sin(yaw),fz=-Math.cos(yaw),bx=P.x+fx*1.35,bz=P.z+fz*1.35;SHL.model.position.set(bx,.04,bz);SHL.model.rotation.y=yaw+.3;SHL.body.position.set(bx,.28,bz);SHL.body.rotation.y=yaw+.3;if(SHL.carryTime>18&&!SHL.carryWarned){SHL.carryWarned=true;say('Sawyer: You don\'t have to keep carrying her. There\'s a garden nearby… if you want to give her somewhere to rest.',6)}}SHL.grave.hit.userData.hand=SHL.carrying&&!SHL.buried?'use':'';if(SHL.carrying)moving=false;const bob=moving?Math.sin(t*9)*.03:0;shake=Math.max(0,shake-dt);if(locked){jumpV-=13.5*dt;jumpY+=jumpV*dt;if(jumpY<0){jumpY=0;jumpV=0}}else{jumpY=0;jumpV=0}P.y=1.65+bob+jumpY;
  updProto(dt,t);cam.rotation.set(pitch,yaw+(shake?(Math.random()-.5)*.04:0),0);cam.updateMatrixWorld();
  // aim
  ray.setFromCamera({x:0,y:0},cam);const h=ray.intersectObjects(solids,false)[0];aim=null;
@@ -1090,33 +1090,33 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.
   if(r==1)say('Giblet: Something\'s been through here. Stay sharp.',4);
   if(r==2)say('Giblet: Cribs… this is where they kept the Playcare kids.',4);
   if(r==3)say('Giblet: Keep looking. The Archive door will need a keycard.',5);
-  if(r==4)say("Sawyer: Generator 3 feeds the Neural wing. Plug both hands into the sockets at the same time.",5);
+  if(r==4)say("Sawyer: Generator Three powers the Neural wing. Both sockets need to be activated together—one hand on each.",5);
   if(r==6)say('Giblet: The cameras… they\'re all turning toward us.',4);
   if(r==7){SHL.t0=performance.now()}
-  if(r==7)seq([[.5,"Giblet: This is the tram I crashed. It didn't stop him.",4],[5,"Sawyer: I'm sorry. About Kissy and Huggy. About all of it.",4]]);
-  if(r==8){say("Sawyer: Careful. The gel remembers.",4);if(!CH.done)setTimeout(startChase,3500)}
-  if(r==9)say("Sawyer: My old studio. I recorded the welcome message here.",4);
+  if(r==7)seq([[.5,"Giblet: This is the tram I crashed. It didn't stop him.",4],[5,"Sawyer: Kissy… Huggy… I should have done more for them. I\'m sorry.",4]]);
+  if(r==8){say("Sawyer: Watch your step. That gel reacts to movement—don\'t give it a reason to notice us.",4);if(!CH.done)setTimeout(startChase,3500)}
+  if(r==9)say("Sawyer: My old studio. I recorded the welcome message here… back when I still thought this place could be good.",4);
   if(r==12)seq([[.5,"Metal Hedge: This is Playcare. I held this hall for nine hours.",4],[5,"Giblet: Nine hours… alone?",3]]);
-  if(r==13)say("Sawyer: The Data Center. This is where they moved me into Glowby.",5);
+  if(r==13)say("Sawyer: The Data Center. This is where they transferred me into Glowby. Strange, isn\'t it? My entire world used to fit in this room.",5);
   if(r==14)setTimeout(startFight,2500);
-  if(r==15)seq([[.5,"Giblet: Poppy was here. The cage is open from the inside…",4],[5,"Sawyer: He is taking her deeper. To what he calls a better place.",5],[10.5,"Metal Hedge: Then that is where we are going. Stay close, kid.",5]]);
-  if(r==16)say("Sawyer: This assembly line was never shut down. Look at the unfinished toys.",5);
+  if(r==15)seq([[.5,"Giblet: Poppy was here. The cage is open from the inside…",4],[5,"Sawyer: He\'s taking her deeper into the complex. To his so-called better place. We can\'t let him finish whatever he\'s planning.",5],[10.5,"Metal Hedge: Then that is where we are going. Stay close, kid.",5]]);
+  if(r==16)say("Sawyer: This line is still running. Those toys were never finished… and someone kept it powered all this time.",5);
   if(r==17)say("Giblet: This is supposed to be a playroom? It feels like a trap.",4);
-  if(r==18){say("Sawyer: They used to show the children films here. Now it only shows memories.",5);if(!sawyerBreakdownPlayed){sawyerBreakdownPlayed=true;setTimeout(startSawyerBreakdown,1800)}}
-  if(r==19)seq([[.5,"Giblet: It looks… nice. Too nice.",4],[5,"Sawyer: This is his idea of a better place. A perfect little world with no doors out.",5],[11,"Metal Hedge: Then we tear the whole thing down. Together.",5]]);
-  if(r==20)say("Sawyer: A toy testing floor. They used to throw prototypes down those ramps to see what broke first.",5);
+  if(r==18){say("Sawyer: They used to bring the children here for films. I remember the laughter. I wish I had understood what it meant at the time.",5);if(!sawyerBreakdownPlayed){sawyerBreakdownPlayed=true;setTimeout(startSawyerBreakdown,1800)}}
+  if(r==19)seq([[.5,"Giblet: It looks… nice. Too nice.",4],[5,"Sawyer: So this is what he calls a better place. Everything arranged, everyone smiling… and not a single way to leave.",5],[11,"Metal Hedge: Then we tear the whole thing down. Together.",5]]);
+  if(r==20)say("Sawyer: The testing floor. They sent unfinished toys down those ramps and recorded what broke. I signed off on some of these tests.",5);
   if(r==21)say("Giblet: These were the workers' rooms. They left in a hurry… or they didn't leave at all.",5);
-  if(r==22)say("Sawyer: Someone prepared a guest room. A rather unusual name on that pass… Thinknoodles. Whoever that is, they are expected.",5);
+  if(r==22)say("Sawyer: Someone prepared a guest room. Thinknoodles… that\'s an unusual name for a visitor pass. I don\'t remember authorizing this.",5);
   if(r==23)say("Giblet: The atrium was only the entrance. He's deeper in the complex.",4);
-  if(r==24)seq([[.5,"Sawyer: Observation wing. He has been studying us since we entered.",5],[6,"Giblet: Then let's give him something to worry about.",4]]);
+  if(r==24)seq([[.5,"Sawyer: The Observation wing. Those cameras have been following us since we arrived. He knows we\'re here—and probably where we\'re going.",5],[6,"Giblet: Then let's give him something to worry about.",4]]);
   if(r==25)say("Metal Hedge: These are the children's drawings. He kept their memories like trophies.",5);
-  if(r==26)say("Sawyer: Core pressure is unstable. Stay on the marked path and keep moving.",5);
-  if(r==27){seq([[.5,"Giblet: That's him, isn't it? The Prototype.",4],[5,"Sawyer: This is where the trail ends… for now.",5],[10,"Metal Hedge: We came this far. We're not leaving Poppy behind.",5]]);endT=20}
-  if(r==5)seq([[.5,"Sawyer: Well now, this is a rather interesting turn of events. These were my halls once.",5],[6,"Sawyer: I can feel the Prototype listening in the wires.",4],[11,'Giblet: Then keep your voice down.',3],[15,"Sawyer: Read my log on the terminal. File 7 in the Archive explains Experiment 1345.",6]])}
- if(SHL.carrying&&SHL.done&&!SHL.buried&&!SHL.burying&&!SHL.shovel&&!SHL.hinted&&ri==7&&Math.hypot(P.x-SHL.gardenX,P.z-SHL.gardenZ)<3.2){SHL.hinted=true;say('Sawyer: You will need something to dig with. I saw a shovel by the east wall.',6)}
+  if(r==26)say("Sawyer: Core pressure is climbing. Stay on the marked path. If the readings are right, we don\'t have long.",5);
+  if(r==27){seq([[.5,"Giblet: That's him, isn't it? The Prototype.",4],[5,"Sawyer: This is as far as the trail goes. For now. But we\'re not turning back without Poppy.",5],[10,"Metal Hedge: We came this far. We're not leaving Poppy behind.",5]]);endT=20}
+  if(r==5)seq([[.5,"Sawyer: Well… this is a rather interesting turn of events. I used to know every corridor in this place. I wish I didn\'t.",5],[6,"Sawyer: The wiring is carrying a signal. He\'s listening. So let\'s be careful what we say.",4],[11,'Giblet: Then keep your voice down.',3],[15,"Sawyer: There\'s a terminal log you should read. File Seven, in the Archive. It explains what happened to 1345—and why I made the choices I did.",6]])}
+ if(SHL.carrying&&SHL.done&&!SHL.buried&&!SHL.burying&&!SHL.shovel&&!SHL.hinted&&ri==7&&Math.hypot(P.x-SHL.gardenX,P.z-SHL.gardenZ)<3.2){SHL.hinted=true;say('Sawyer: If you\'re going to bury her, you\'ll need a shovel. I saw one by the east wall. I… think she\'d appreciate that.',6)}
  musicBox(dt);updGiblet(dt,t);updShelly();updFight(dt,t);updCrawler(dt,t);ren.render(scene,cam)}
 /* ---------- menu ---------- */
-const INTRO=["Chapter Five ended in the dark.","The Prototype wounded you, sank you in Poppy Gel, and took Poppy with him.","Giblet's cane pulled you back. In the Data Center you found the Doctor: \"Well now, this is a rather interesting turn of events.\"","Glowby is still here. Sawyer is sharing the star with him; the purple eye on its screen is Sawyer, and it never leaves your side.","Save Poppy. Destroy the Prototype.  (Press Enter to skip)"],introTm=[];
+const INTRO=["Chapter Five ended in the dark.","The Prototype wounded you, dragged you into the Poppy Gel, and took Poppy deeper into the factory.","Giblet's cane pulled you back. In the Data Center, you found a backup of Doctor Sawyer.","Sawyer: \"Well now this is a rather interesting turn of events, plug me into that star thing I want to see what it feels like to be mobile again.\"","Glowby is still here. Sawyer now shares the star with him. The purple eye on its screen is Sawyer—and it will stay with you.","Save Poppy. Stop the Prototype. (Press Enter to skip)"],introTm=[];
 function endIntro(){if(!intro)return;intro=false;introTm.forEach(clearTimeout);const e=$('intro');e.style.opacity=0;setTimeout(()=>e.style.display='none',1600)}
 function startIntro(){intro=true;const e=$('intro');e.style.display='flex';e.style.opacity=1;e.textContent='';INTRO.forEach((t,i)=>introTm.push(setTimeout(()=>{e.textContent=t},500+i*3800)));introTm.push(setTimeout(endIntro,500+INTRO.length*3800))}
 const OBJ=['Power the door panel (lever on the left wall)','Search the Staff Break Room','Find out what happened to the Playcare kids','Search the Toy Repair Bay','Start Generator 3: plug both hands into the sockets','Reach the Security Office','Search the Security Office, then follow the tram line','Find a way through the wreckage. Someone is hurt','Cross the Gel Hall. Something is hunting you','Use the keycard on the Archive door','Find File 7, then survive the vents','Free Experiment 1345','Search the Playcare Corridor','Find the trail in the Data Center','Survive the Workshop. Hedge will cover you','Search the Abyss for Poppy’s trail','Explore the abandoned toy assembly line','Investigate the Prototype’s playroom','Watch what the Memory Theatre is showing','Enter A Better Place and find where the Prototype took Poppy','Explore the Toy Testing Arena','Search the abandoned employee dormitory','Find the Creator Guest Room and read its visitor pass','Reach the Prototype’s Exit Atrium','Investigate the Prototype’s observation wing','Recover the hidden Playcare memory records','Navigate the unstable core access tunnels','Reach the Prototype’s throne room'];
