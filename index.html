@@ -189,6 +189,86 @@ for(let i=0;i<28;i++){const c=cz(i);curWall=curWall.clone();curWall.color.set(TI
   }
  }
 }
+/* ---------- Chapter 6 identity pass: sealed research ruins and fallen experiments ---------- */
+/* The late-game wing should feel older, deeper and more secretive than the
+   Chapter 3 factory spaces: reinforced containment architecture, observation
+   glass, failed biological growth and the remains of experiments. */
+{
+ const rib=mat(0x242a30,{metalness:.58,roughness:.68}),glass=mat(0x172b32,{metalness:.35,roughness:.2,transparent:true,opacity:.48}),rust=mat(0x59413b,{metalness:.28,roughness:.9}),gel=mat(0x315b4d,{color:0x315b4d,emissive:0x123d2b,emissiveIntensity:.38,roughness:.8}),warning=mat(0x8d3025,{emissive:0x3d0804,emissiveIntensity:.3});
+ const detail=(geo,m,x,y,z,ry=0)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);o.rotation.y=ry;scene.add(o);return o};
+ for(let i=14;i<28;i++){
+  const c=cz(i);
+  for(const side of [-1,1]){
+   // Heavy, uneven containment ribs replace the bright, repetitive trim language.
+   for(const z of [-8,-3,2,7]){
+    detail(new R.BoxGeometry(.22,3.65,.42),rib,side*9.62,1.95,c+z);
+    detail(new R.BoxGeometry(.3,.18,.62),rust,side*9.58,.18,c+z);
+   }
+   // Large recessed observation bays with thick frames and dark, cloudy glass.
+   if([14,17,20,24,25].includes(i)){
+    const z=c+(side===1?-5:5);
+    detail(new R.BoxGeometry(.12,1.72,3.5),rib,side*9.55,2.25,z);
+    detail(new R.BoxGeometry(.035,1.38,3.12),glass,side*9.46,2.25,z);
+    detail(new R.BoxGeometry(.16,.12,3.62),rust,side*9.43,3.13,z);
+    detail(new R.BoxGeometry(.16,.12,3.62),rust,side*9.43,1.37,z);
+    detail(new R.BoxGeometry(.14,1.8,.13),rust,side*9.43,2.25,z-1.78);
+    detail(new R.BoxGeometry(.14,1.8,.13),rust,side*9.43,2.25,z+1.78);
+   }
+   // Thick hanging cables and ruptured gel growths cling to the wall.
+   for(let k=0;k<3;k++){
+    const z=c-6+k*6.2,curve=new R.CatmullRomCurve3([V3(side*9.38,3.4,z),V3(side*9.18,2.8,z+.45),V3(side*9.4,1.8,z+.8),V3(side*9.25,.35,z+1.15)]);
+    detail(new R.TubeGeometry(curve,18,.035,7,false),i%2?gel:rust,0,0,0);
+   }
+   // A few damaged warning plates, not cheerful painted factory stripes.
+   if(i%3===0){
+    const plate=detail(new R.BoxGeometry(.04,.48,1.55),warning,side*9.48,2.85,c+1.5);
+    const txt=document.createElement('canvas');txt.width=256;txt.height=96;const g=txt.getContext('2d');
+    g.fillStyle='#171719';g.fillRect(0,0,256,96);g.fillStyle='#d6c6a7';g.font='bold 25px monospace';g.textAlign='center';g.fillText('BIOHAZARD',128,39);g.font='18px monospace';g.fillText('SEALED WING',128,69);
+    const signMesh=new R.Mesh(new R.PlaneGeometry(1.3,.34),new R.MeshBasicMaterial({map:new R.CanvasTexture(txt),transparent:true}));
+    signMesh.position.set(side*9.445,2.85,c+1.5);signMesh.rotation.y=side===1?-Math.PI/2:Math.PI/2;scene.add(signMesh);
+   }
+  }
+  // The deepest rooms have ceiling-mounted containment conduits and hanging
+  // torn polymer curtains, making the spaces feel converted and abandoned.
+  if(i>=20){
+   detail(new R.BoxGeometry(12,.16,.34),rib,0,3.58,c-7);
+   for(const x of [-5,-2,2,5]){
+    const curtain=mat(0x30383a,{transparent:true,opacity:.52,roughness:1,side:R.DoubleSide});
+    const sheet=detail(new R.PlaneGeometry(1.25,2.25),curtain,x,2.55,c+7);
+    sheet.rotation.y=(x<0?.12:-.12);
+   }
+  }
+ }
+ // Stylised dead experiments: damaged plush shells, exposed dark joints and
+ // abandoned limbs. They are scenery only and deliberately do not block play.
+ function fallenExperiment(x,z,variant,rot=0){
+  const g=new R.Group(),fur=mat(variant,{roughness:1}),dark=mat(0x242326,{roughness:1}),seam=mat(0x4b4140,{roughness:1}),eye=mat(0x08090a,{roughness:.4});
+  const part=(geo,m,px,py,pz,sx=1,sy=1,sz=1)=>{const o=new R.Mesh(geo,m);o.position.set(px,py,pz);o.scale.set(sx,sy,sz);g.add(o);return o};
+  part(new R.SphereGeometry(1,18,12),fur,0,.27,0,.34,.22,.58);
+  part(new R.SphereGeometry(.24,16,12),fur,0,.43,-.48,1,.9,.9);
+  for(const side of [-1,1]){
+   part(new R.CapsuleGeometry(.075,.34,5,8),fur,side*.42,.19,-.05,1,1,1).rotation.z=side*.8;
+   part(new R.CapsuleGeometry(.085,.38,5,8),fur,side*.2,.13,.48,1,1,1).rotation.x=side*.7;
+   part(new R.SphereGeometry(.045,8,6),dark,side*.13,.49,-.27,.8,.8,.8);
+  }
+  part(new R.SphereGeometry(.12,12,8),dark,-.13,.31,.22,1,.65,1);
+  part(new R.CapsuleGeometry(.025,.28,4,7),seam,.31,.12,.18,1,1,1).rotation.z=-.9;
+  part(new R.SphereGeometry(.025,8,6),eye,-.07,.58,-.64);
+  part(new R.SphereGeometry(.025,8,6),eye,.07,.58,-.64);
+  g.position.set(x,.015,z);g.rotation.y=rot;g.rotation.z=(variant===0x8a3330?-.12:.1);scene.add(g);
+  // Detached, damaged toy parts nearby sell the scale of the aftermath.
+  const scrap=part.bind(g);
+  const piece=new R.Mesh(new R.CapsuleGeometry(.045,.22,4,7),dark);piece.position.set(x+(x>0?-.65:.65),.07,z+.65);piece.rotation.z=1.1;scene.add(piece);
+ }
+ fallenExperiment(-7.6,cz(14)+1,0x8a3330,.8);
+ fallenExperiment(7.5,cz(16)-3,0x315b87,-.5);
+ fallenExperiment(-7.4,cz(17)+4,0x98713c,1.2);
+ fallenExperiment(7.5,cz(20)+2,0x426b50,-1.1);
+ fallenExperiment(-7.6,cz(21)-4,0x754b78,.4);
+ fallenExperiment(7.5,cz(24)+3,0x8a3330,-.8);
+ fallenExperiment(-7.5,cz(25)-2,0x315b87,.6);
+ fallenExperiment(7.5,cz(26)+4,0x98713c,-.3);
+}
 function makeShelly(){
  const g=new R.Group(),skin=mat(0xd9b49e,{roughness:.9}),skinHi=mat(0xe8c9b5,{roughness:.92}),skinShade=mat(0xb88775,{roughness:1}),navy=mat(0x1d3d70,{roughness:.94}),blue=mat(0x4779ad,{roughness:.95}),pale=mat(0xc7d8df),white=mat(0xece5da),hair=mat(0xb17c39,{roughness:.95}),hairHi=mat(0xd5aa65,{roughness:.9}),hairDark=mat(0x704a25,{roughness:1}),dark=mat(0x342923),lip=mat(0x925f5b),gold=mat(0xa18b61,{metalness:.45,roughness:.5});
  const add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);o.castShadow=true;o.receiveShadow=true;return o},sph=(m,x,y,z,sx,sy,sz,p=g)=>{const o=add(new R.SphereGeometry(1,40,28),m,x,y,z,p);o.scale.set(sx,sy,sz);return o},seg=(p,a,b,r,m)=>{const d=b.clone().sub(a),o=new R.Mesh(new R.CapsuleGeometry(r,Math.max(.001,d.length()-2*r),12,20),m);o.position.copy(a).add(b).multiplyScalar(.5);o.quaternion.setFromUnitVectors(V3(0,1,0),d.normalize());p.add(o);return o};
