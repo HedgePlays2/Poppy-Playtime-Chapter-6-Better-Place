@@ -914,17 +914,33 @@ function updProto(dt,t){
  if(T>=27.8){PR.on=false;wounded=true;PR.shov.visible=false;GIB.userData.arms[1].rotation.x=0;PR.arm.visible=false;say('Giblet: Easy… I\'ve got you. The next door is just ahead.',5);$('obj').innerHTML='<b>Save Poppy · Destroy the Prototype</b><br>Cross the Gel Hall. You are badly hurt'}
 }
 /* ---------- GrabPack ---------- */
-function makeHand(kind,sx){const bl=kind=='blue',g=new R.Group(),O=new R.Group(),sk=mat(bl?0x4f73c4:0x8a2a35,{roughness:.55}),dk=mat(0x2a2024,{metalness:.7,roughness:.4}),gd=mat(0xc9a64a,{metalness:.8,roughness:.35}),tb=mat(0x2f6f9a,{metalness:.5,roughness:.45}),tl=mat(0x111111,{emissive:0x66ffe0,emissiveIntensity:1.6}),
- add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o},seg=(p,r,l,z)=>{const o=add(new R.CapsuleGeometry(r,l,4,8),sk,0,0,z+l/2+r,p);o.rotation.x=Math.PI/2;return z+l+r*1.6};
- add(new R.BoxGeometry(.14,.04,.13),sk,0,0,0);
- const FL=sx<0?[.95,1.1,1,.8]:[.8,1,1.1,.95],W=bl?.021:.017;
+function makeGrabPackFinish(base,accent,label){
+ const c=document.createElement('canvas');c.width=256;c.height=256;const x=c.getContext('2d');
+ x.fillStyle=base;x.fillRect(0,0,256,256);
+ for(let i=0;i<1800;i++){const px=Math.random()*256,py=Math.random()*256;x.fillStyle=i%3?'rgba(255,255,255,.035)':'rgba(0,0,0,.07)';x.fillRect(px,py,1+Math.random()*3,1)}
+ x.strokeStyle='rgba(8,12,18,.55)';x.lineWidth=8;x.strokeRect(9,9,238,238);x.strokeStyle=accent;x.lineWidth=5;x.strokeRect(18,18,220,220);
+ x.fillStyle='rgba(10,14,18,.8)';x.fillRect(28,28,200,52);x.fillStyle='#e4e0d4';x.font='bold 19px monospace';x.fillText('PLAYTIME CO.',39,51);
+ x.font='bold 13px monospace';x.fillStyle=accent;x.fillText(label,40,69);x.fillStyle='rgba(255,255,255,.18)';
+ for(let i=0;i<7;i++){x.fillRect(30+i*29,104,15,3);x.fillRect(30+i*29,111,8,2)}
+ x.fillStyle='#171b20';x.fillRect(34,145,188,70);x.strokeStyle='rgba(220,225,225,.45)';x.lineWidth=3;x.strokeRect(34,145,188,70);
+ x.fillStyle=accent;x.fillRect(45,156,166,8);x.fillStyle='#b7b8b3';x.font='12px monospace';x.fillText('GRAB SENSOR / '+label,45,184);x.fillStyle='#737b80';x.fillText('UNIT 06  •  CALIBRATED',45,202);
+ const t=new R.CanvasTexture(c);t.colorSpace=R.SRGBColorSpace;t.anisotropy=4;return t
+}
+function makeHand(kind,sx){
+ const bl=kind=='blue',g=new R.Group(),O=new R.Group(),accent=bl?'#65baff':'#ff665c',base=bl?'#385b9e':'#792b36';
+ const casingTex=makeGrabPackFinish(base,accent,bl?'BLUE':'RED'),sensorTex=makeGrabPackFinish('#20282d',accent,bl?'BLUE SENSOR':'RED SENSOR');
+ const sk=mat(bl?0x789bd8:0xb05b62,{map:casingTex,roughness:.72,metalness:.18}),dk=mat(0x2a3035,{metalness:.72,roughness:.38}),gd=mat(0xc9a64a,{metalness:.8,roughness:.35}),tb=mat(bl?0x5a91bd:0x91434b,{map:sensorTex,metalness:.5,roughness:.48}),tl=mat(bl?0x173b55:0x551c20,{emissive:bl?0x39aaff:0xff493c,emissiveIntensity:1.1});
+ const add=(geo,m,x,y,z,p=g)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o},seg=(p,r,l,z)=>{const o=add(new R.CapsuleGeometry(r,l,4,8),sk,0,0,z+l/2+r,p);o.rotation.x=Math.PI/2;return z+l+r*1.6};
+ add(new R.BoxGeometry(.14,.04,.13),sk,0,0,0);const FL=sx<0?[.95,1.1,1,.8]:[.8,1,1.1,.95],W=bl?.021:.017;
  for(let i=0;i<4;i++){const f=new R.Group();f.position.set(-.051+i*.034,0,.06);f.rotation.y=(i-1.5)*.17*-1;g.add(f);let z=0;[.05,.04,.032].forEach((l,k)=>{z=seg(f,W*(1-k*.1),l*FL[i],z);if(!bl&&k<2)add(new R.SphereGeometry(W*.8,6,6),dk,0,0,z-W*.8,f)})}
- const th=new R.Group();th.position.set(sx*.078,0,.0);th.rotation.y=sx*.9;g.add(th);seg(th,W*1.15,.04,0);seg(th,W,.03,.07);
- const cf=new R.Mesh(new R.CylinderGeometry(.06,.07,.26,14),bl?tb:dk);cf.rotation.x=Math.PI/2;cf.position.z=-.18;g.add(cf);
- [-.06,-.2,-.31].forEach(z=>add(new R.TorusGeometry(.072,.011,6,14),gd,0,0,z));
- if(bl)add(new R.BoxGeometry(.02,.07,.035),mat(0xa33333),0,-.08,-.1);else{add(new R.BoxGeometry(.07,.012,.07),tl,0,.026,.0);add(new R.BoxGeometry(.03,.012,.1),tl,0,.066,-.1);add(new R.SphereGeometry(.015,8,6),tl,0,.03,-.07)}
- O.add(g);g.rotation.x=-Math.PI/2;O.scale.setScalar(1.1);cam.add(O);
- const cb=new R.Mesh(new R.BufferGeometry(),mat(0xb59a55,{roughness:.85}));cam.add(cb);return{g:O,cb,sx,p:0,dir:1,hold:0,fn:null,tgt:V3()}}
+ const th=new R.Group();th.position.set(sx*.078,0,0);th.rotation.y=sx*.9;g.add(th);seg(th,W*1.15,.04,0);seg(th,W,.03,.07);
+ const cf=new R.Mesh(new R.CylinderGeometry(.06,.07,.26,14),tb);cf.rotation.x=Math.PI/2;cf.position.z=-.18;g.add(cf);[-.06,-.2,-.31].forEach(z=>add(new R.TorusGeometry(.072,.011,6,14),gd,0,0,z));
+ // Raised, printed sensor plate, live status lens and tiny fasteners.
+ add(new R.BoxGeometry(.086,.012,.12),dk,0,.045,-.17);add(new R.BoxGeometry(.068,.006,.094),tb,0,.054,-.17);add(new R.BoxGeometry(.035,.004,.012),tl,0,.059,-.145);
+ add(new R.SphereGeometry(.009,8,6),tl,bl?-.022:.022,.06,-.195);for(const px of [-.033,.033])for(const pz of [-.207,-.133])add(new R.SphereGeometry(.004,6,5),gd,px,.054,pz);
+ if(bl)add(new R.BoxGeometry(.02,.07,.035),mat(0xa33333),0,-.08,-.1);else{add(new R.BoxGeometry(.07,.012,.07),tl,0,.026,0);add(new R.BoxGeometry(.03,.012,.1),tl,0,.066,-.1);add(new R.SphereGeometry(.015,8,6),tl,0,.03,-.07)}
+ O.add(g);g.rotation.x=-Math.PI/2;O.scale.setScalar(1.1);cam.add(O);const cb=new R.Mesh(new R.BufferGeometry(),mat(0xb59a55,{roughness:.85}));cam.add(cb);return{g:O,cb,sx,p:0,dir:1,hold:0,fn:null,tgt:V3()}
+}
 const hands={blue:makeHand('blue',-1),red:makeHand('red',1)};
 /* Glowby: the star device on the GrabPack */
 const star=new R.Group();
