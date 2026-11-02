@@ -14,13 +14,14 @@ h1{font-size:54px;letter-spacing:8px;color:#f33;text-shadow:0 0 22px #a00}h2{fon
 button{padding:12px 30px;font:18px Georgia;background:#1b1b22;color:#fff;border:1px solid #f33;cursor:pointer}button:hover{background:#a11}
 #intro{inset:0;background:#000;display:none;align-items:center;justify-content:center;text-align:center;padding:10%;font-size:26px;line-height:1.5;color:#ddd;font-style:italic;z-index:7;transition:opacity 1.5s}#obj{top:14px;left:18px;color:#cba;font-size:14px;line-height:1.5;opacity:.85;max-width:40%}#vig{inset:0;pointer-events:none;box-shadow:inset 0 0 170px #50000099}#logs{top:14px;right:18px;color:#cba;font-size:14px;opacity:.85}#scare{inset:0;display:none;z-index:8;background:radial-gradient(circle at 35% 42%,#fff 0 3%,transparent 3.5%),radial-gradient(circle at 65% 42%,#fff 0 3%,transparent 3.5%),radial-gradient(ellipse at 50% 72%,#000 0 14%,#d00 15% 17%,transparent 18%),#400}
 #burial-scene{inset:0;z-index:10;display:none;align-items:center;justify-content:center;text-align:center;padding:12%;background:#030506;opacity:0;transition:opacity 1.6s;font:italic 24px/1.6 Georgia;color:#e8e4dc;text-shadow:0 2px 12px #000;pointer-events:none}
+#sawyer-scene{inset:0;z-index:11;display:none;align-items:center;justify-content:center;text-align:center;padding:10%;background:radial-gradient(ellipse at center,#17131d 0,#050507 68%);opacity:0;transition:opacity 1.2s;font:italic clamp(20px,3vw,30px)/1.65 Georgia;color:#eee6dc;text-shadow:0 2px 18px #000;pointer-events:none}#sawyer-scene small{display:block;color:#a88bba;font:12px/1.5 monospace;letter-spacing:.3em;margin-bottom:24px}#sawyer-scene strong{color:#c4a4df;font-style:normal}#sawyer-scene em{color:#f1c7c7}
 
 /* Horror presentation pass: restrained exposure, film grain and deep peripheral falloff. */
 #vig{inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 48%,transparent 38%,#0005 73%,#000d 100%);box-shadow:inset 0 0 100px #000b;z-index:2}#vig:after{content:'';position:absolute;inset:0;opacity:.11;pointer-events:none;background-image:repeating-radial-gradient(circle at 20% 30%,#fff2 0 1px,transparent 1px 3px)}#cross{background:#d8d1c2;width:3px;height:3px;box-shadow:0 0 5px #fff8}#label{color:#d4c8a9;text-shadow:0 2px 5px #000,0 0 12px #000;font-size:14px}#sub{color:#e1d9ca;font-size:19px;text-shadow:0 2px 8px #000,0 0 18px #000}
 #doc.vhs{border:2px solid #8f8;background:repeating-linear-gradient(0deg,#000e 0 2px,#071b0ae6 2px 4px);color:#d6ffd6;text-shadow:2px 0 #f0f9,-2px 0 #0ff9;letter-spacing:.5px}
 #cineflash{inset:0;background:#c00;opacity:0;pointer-events:none;z-index:8;transition:opacity .15s}#gelov{inset:0;pointer-events:none;z-index:6;background:radial-gradient(circle,#ff7fb8aa,#ff3d8acc);opacity:0;transition:opacity .8s}
 </style></head><body>
-<div class="o" id="cross"></div><div class="o" id="label"></div><div class="o" id="sub"></div><div class="o" id="banner"></div><div class="o" id="doc"></div><div class="o" id="scare"></div><div class="o" id="burial-scene"></div><div class="o" id="logs">Logs 0/52</div><div class="o" id="obj"></div><div class="o" id="vig"></div><div class="o" id="cineflash"></div><div class="o" id="gelov"></div><div class="o" id="intro"></div>
+<div class="o" id="cross"></div><div class="o" id="label"></div><div class="o" id="sub"></div><div class="o" id="banner"></div><div class="o" id="doc"></div><div class="o" id="scare"></div><div class="o" id="burial-scene"></div><div class="o" id="sawyer-scene"><div><small>RECOVERED MEMORY · DOCTOR H. SAWYER</small><span id="sawyer-memory-line"></span></div></div><div class="o" id="logs">Logs 0/52</div><div class="o" id="obj"></div><div class="o" id="vig"></div><div class="o" id="cineflash"></div><div class="o" id="gelov"></div><div class="o" id="intro"></div>
 <div class="o" id="pause"><h2>PAUSED — click to resume</h2></div>
 <div class="o" id="end"><h1>TO BE CONTINUED…</h1><h2>Poppy Playtime: Chapter 6 — A Better Place</h2><p class="s" id="endlogs"></p><p class="s">Fan-made by Hedge. Not affiliated with MOB Games.</p></div>
 <div class="o" id="menu"><h1>POPPY PLAYTIME</h1><h2>Chapter 6 — A Better Place</h2><p class="s" style="color:#ccc;font-size:16px">Directly after Chapter 5, you find yourself with a Backup of Sawyer and Giblet, and the Prototype is on the loose…</p>
@@ -408,7 +409,8 @@ function makeShelly(){
 {const c=cz(9);box(0,.45,c+3,5,.9,2,0x2a2a30);box(0,1.1,c-4,.1,1.4,.1,0x222222);box(0,1.9,c-4,.3,.3,.3,0x333333);tb(-6,c-7);
  sign('ON AIR',RW,3,c,-Math.PI/2,2.4,'#f33');
  lore('m22',0,.93,c+3,'WELCOME TO PLAYTIME REEL',"A reel labeled WELCOME TO PLAYTIME. It speaks to a visitor returning years later, conscience finally getting the better of them, descending into the dark. Someone scratched out the word HOME and wrote TRAP.",true);
- lore('m23',-6,.93,c-7,'SAWYER STUDIO NOTE',"I recorded the welcome message myself, years before any of this. I wanted every visitor to feel they belonged. I never imagined the building would one day answer back.")}
+ lore('m23',-6,.93,c-7,'SAWYER STUDIO NOTE',"I recorded the welcome message myself, years before any of this. I wanted every visitor to feel they belonged. I never imagined the building would one day answer back.");
+ lore('sawyer-feelings',6,.93,c-7,'PERSONAL MEDICAL RECORD — H. SAWYER',"PRIVATE. Do not circulate. Emotional numbing and alexithymia were documented in my medical file. I could recognize a child's distress as information, but I could not properly feel what that distress meant. I told myself that made me efficient. It did not make me harmless. I am beginning to understand that explanation is not an excuse.")}
 // Room 10 — archive / vents
 const c4=cz(10),vz=[-6,0,6],V={on:false,mz:0,closed:[0,0,0],pass:[0,0,0],done:false,gt:0};
 const vl=new R.PointLight(0xff2010,0,12);vl.position.set(-9.2,1.3,c4);scene.add(vl);
@@ -416,7 +418,7 @@ const covers=vz.map((z,k)=>{box(-9.78,1.2,c4+z,.05,1.2,1.2,0x000000,false);const
 {const c=c4;[6,2,-2,-6].forEach(z=>shelf(7.5,c+z,1.4,2.6));box(0,.45,c-1,2.2,.9,1,0x6b4a2a);tb(4,c+7,1.6,1);
  sign('NO ONE LEAVES',RW,2.9,c+8,-Math.PI/2,2.4);
  lore('m15',4,.93,c+7,'BIGGER BODIES FILE',"Sub-file: Experiment frames were cannibalized for the 1345 project. Authorized by H. Sawyer. Note in the margin: 'He asked for a heart. I gave him a blaster. Forgive me.'");
- var file=box(0,.93,c-1,.5,.04,.35,mat(0xe8dfb0),false);file.userData={hand:'any',label:'Take file',fn(){kill(file);snd.grab();got('file');showDoc('FILE 7 — EXPERIMENT 1345\n\nMetal Hedge never lost his memories. The Prototype wants the Containment Bay sealed forever.',true);if(!V.done)setTimeout(startVents,3500)}}}
+ var file=box(0,.93,c-1,.5,.04,.35,mat(0xe8dfb0),false);file.userData={hand:'any',label:'Take File 7',fn(){kill(file);snd.grab();got('file');showDoc('FILE 7 — EXPERIMENT 1345 / H. SAWYER\n\nCreator: Doctor Sawyer. Experiment 1345 was a green robotic hedgehog with a blaster in his left arm. Before his conversion, he was Sawyer’s coworker. He was assigned to keep the Playcare children safe, but Sawyer records that 1345 remained gentle with them.\n\nSawyer’s handwritten addendum: “He was nine experiments ahead of me. I wanted him to have a chance to choose what kind of person he would be. The Prototype tried to overwrite him. He resisted. I should have protected him sooner.”\n\nSawyer’s objective: redeem Experiment 1006 if possible — or end its reign if redemption is impossible. Revival of Sawyer’s consciousness: ACHIEVED. Current vessel: GLOWBY. Emotional subsystem: ACTIVE.',true);if(!V.done)setTimeout(startVents,3500)}}}
 // Room 8 — containment
 const c5=cz(11),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
 {const c=c5;const cb=new R.Mesh(new R.CylinderGeometry(1.2,1.3,.3,20),M.metal);cb.position.set(0,.15,c-1);scene.add(cb);
@@ -425,7 +427,8 @@ const c5=cz(11),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
  box(6,.6,c+1.5,1,1.2,.8,0x333338);tb(-6,c+4);
  const b=box(6,1.27,c+1.5,.4,.12,.4,glow(0xff2020,1.2),false);b.userData={hand:'red',label:'Release Experiment 1345',fn(){if(released)return;released=1;b.userData.hand='';glass.visible=false;capCol.on=false;snd.clang();noise(1,.5,3000);freeHedge()}};
  sign('EXPERIMENT 1345',0,2.6,c+HD-.22,Math.PI,3,'#4f8');sign('I SEE YOU',LW,2.8,c,Math.PI/2,2.6,'#e22');
- lore('m17',-6,.93,c+4,'CONTAINMENT ORDER',"Signed 'H. Sawyer', but the handwriting is wrong. Seal duration: INDEFINITE. Release authorization: NONE. Whoever signed this wanted him forgotten.")}
+ lore('m17',-6,.93,c+4,'CONTAINMENT ORDER',"Signed 'H. Sawyer', but the handwriting is wrong. Seal duration: INDEFINITE. Release authorization: NONE. Whoever signed this wanted him forgotten.");
+ lore('metal-hedge-creator',-6,.93,c-5,'SAWYER — EXPERIMENT 1345 CREATOR LOG',"1345 was my colleague before the conversion. Green chassis, left-arm blaster, independent judgment. His assignment was Playcare security, not punishment. The children liked him because he spoke to them instead of issuing commands. If the Prototype reaches him, it will try to turn his loyalty into a weapon. I will not let it erase who he is.")}
 // Room 12 — playcare corridor
 {const c=cz(12);for(let k=0;k<6;k++){box(-9.2,.6,c-8+k*3.2,1.2,1.2,1.6,[0xdd5555,0x5588dd,0xddcc55][k%3]);box(9.2,.6,c-8+k*3.2,1.2,1.2,1.6,[0x55aa66,0xdd8844,0x9966cc][k%3])}
  box(-4.5,.6,c-2,5,1.2,.6,0x6b4a2a);box(4.5,.6,c-2,5,1.2,.6,0x6b4a2a);box(0,.02,c+3,4,.02,3,0x050505,false);
@@ -436,7 +439,10 @@ const c5=cz(11),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
 {const c=cz(13);for(let k=0;k<4;k++)for(const sx of [-1,1]){box(sx*7,1.4,c-6+k*4,2.2,2.8,1.4,0x22262b);const lm=glow(0x33ff88,1);blink.push(lm);const L=new R.Mesh(new R.BoxGeometry(.04,.08,1.1),lm);L.position.set(sx*7-sx*1.12,1.9,c-6+k*4);scene.add(L)}
  box(0,1.5,c-1,2,3,2,0x1b2a3a);tb(4,c+6);sign('ALL BACKUPS ARCHIVED',LW,3.2,c+2,Math.PI/2,3.2,'#6af');
  const sc=box(0,1.5,c+.1,1.2,.8,.04,glow(0x55aaff,.9),false);sc.userData={hand:'use',label:'Read core log',fn:()=>{showDoc("BACKUP 7 — TRANSFER COMPLETE\n\nConsciousness of H. SAWYER relocated to portable unit GLOWBY. Emotional subsystem enabled. Side effect: remorse. Not resolvable.",true);got('m26')}};
- lore('m27',4,.93,c+6,'POPPY TRAIL',"Scuffs and a trail of pink gel lead to the far door. Someone dragged something small and heavy. The Prototype wanted her alive.")}
+ lore('m27',4,.93,c+6,'POPPY TRAIL',"Scuffs and a trail of pink gel lead to the far door. Someone dragged something small and heavy. The Prototype wanted her alive.");
+ lore('banban-partnership',-4,.93,c-6,'INTER-COMPANY RESEARCH — RESTRICTED',"PLAYTIME CO. / BANBAN'S KINDERGARTEN. This was a company-wide partnership, not an isolated contractor arrangement. Research teams exchanged personnel, materials, and experimental methods. Givanium was documented mixed with Poppy Gel at the Kindergarten; Poppy Gel was documented mixed with Givanium in our factory. These records were deliberately separated between archives.");
+ lore('syringeon-file',4,.93,c-6,'PROJECT SYRINGEON — SAWYER ADDENDUM',"I assisted with Syringeon's development because of the medical research. His four arms ended in surgical tools, but his disabilities made certain tasks difficult. I designed the mechanical tentacles on his back to help compensate — an arrangement reminiscent of Doctor Octopus. I also authorized an emotional system that would activate later. I knew what it was like to become cold because of what I could not feel. I did not want that to be Syringeon's future.");
+ lore('glowby-transfer',0,.93,c+7,'GLOWBY — TRANSFER STATUS',"Two entities now share this vessel: Glowby and Doctor Sawyer. Glowby has not disappeared. Sawyer is the second presence, continuously active and accompanying the player. The eye on the display is Sawyer's; it remains visible. The transfer was necessary because the original computer was far too large to carry. Connecting Glowby directly to the system allowed Sawyer's consciousness to move into a portable vessel.")}
 // Room 14 — prototype workshop
 {const c=cz(14);box(-7,.5,c+4,2,1,6,0x333338);box(7,.5,c-3,2,1,6,0x333338);crate(0,c+6,1.2);
  for(let k=0;k<26;k++)box((Math.random()-.5)*16,.1,c+(Math.random()-.5)*16,.4+Math.random()*.5,.16,.2,[0xcc3333,0x3366cc,0x555555][k%3],false);
@@ -834,9 +840,11 @@ const star=new R.Group();
  const ye=mat(0xe8b820,{roughness:.5}),ad=(geo,m,x,y,z,p=star)=>{const o=new R.Mesh(geo,m);o.position.set(x,y,z);p.add(o);return o};
  ad(sg,ye,0,0,0);
  ad(new R.TorusGeometry(.5,.06,8,28),mat(0xdddddd,{roughness:.35}),0,0,.24);
- const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d');g.fillStyle='#000';g.fillRect(0,0,128,128);g.fillStyle='#fff';
- for(let y=24;y<=58;y+=4){g.fillRect(44,y,3,3);g.fillRect(82,y,3,3)}
- for(let x=36;x<=92;x+=4){const u=(x-64)/28;g.fillRect(x,76+u*u*14,3,3)}
+ const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d');g.fillStyle='#000';g.fillRect(0,0,128,128);
+ // Sawyer's unmistakable purple eye is always visible on Glowby's screen.
+ g.shadowColor='#a65cff';g.shadowBlur=18;g.fillStyle='#d8c5ff';g.beginPath();g.ellipse(64,43,22,19,0,0,Math.PI*2);g.fill();g.shadowBlur=0;
+ g.fillStyle='#9a4cff';g.beginPath();g.ellipse(64,43,15,16,0,0,Math.PI*2);g.fill();g.fillStyle='#160d24';g.beginPath();g.ellipse(67,43,7,12,0,0,Math.PI*2);g.fill();g.fillStyle='#fff';g.beginPath();g.arc(59,36,4,0,Math.PI*2);g.fill();
+ g.fillStyle='#fff';for(let x=42;x<=86;x+=5){const u=(x-64)/22;g.fillRect(x,86+u*u*8,3,3)}
  const tx=new R.CanvasTexture(c);tx.colorSpace=R.SRGBColorSpace;
  var gm=new R.MeshStandardMaterial({color:0x000000,emissive:0xffffff,emissiveMap:tx,emissiveIntensity:.9});
  ad(new R.CircleGeometry(.46,28),gm,0,0,.24);
@@ -857,6 +865,25 @@ function updHand(H,dt){if(H.p>0){if(H.dir==1){H.p=Math.min(1,H.p+dt/.18);if(H.p>
 function startBurial(){if(SHL.burying||SHL.buried)return;SHL.burying=true;intro=true;[3300,4100,4900,5700].forEach(d=>setTimeout(()=>{noise(.25,.35,500);tone(90,.2,'sine',.12,-30)},d));SHL.body.userData.hand='';if(!F.key){F.key=true;got('shellycard');say('Archive keycard recovered from Shelly’s staff badge.',3)}const bi=solids.indexOf(SHL.body);if(bi>=0)solids.splice(bi,1);SHL.carrying=false;SHL.carryTime=0;SHL.carryWarned=false;const e=$('burial-scene');e.style.display='flex';e.style.opacity=0;const line=t=>{e.textContent=t};setTimeout(()=>{e.style.opacity=1;line('You step into the forgotten garden. You know what you need to do.')},100);setTimeout(()=>line('Beneath the broken skylight, you make a quiet place for Shelly to rest.'),3200);setTimeout(()=>{e.style.opacity=0},6200);setTimeout(()=>{SHL.model.position.set(SHL.grave.x,.04,SHL.grave.z+.15);SHL.model.rotation.y=0;SHL.model.visible=false;SHL.body.position.set(SHL.grave.x,.28,SHL.grave.z+.15);SHL.grave.hit.userData.hand='';SHL.grave.mound.visible=SHL.grave.stone.visible=SHL.grave.label.visible=true;SHL.grave.shoes.visible=true;SHL.buried=true;try{localStorage.setItem('ch6_shellyburied','1')}catch{}e.textContent='You lay Shelly to rest beneath the broken skylight.';e.style.opacity=1},7900);setTimeout(()=>line('Sawyer: I don’t believe I understand why you did that… but I think it was kind.'),11200);setTimeout(()=>{e.style.opacity=0},15100);setTimeout(()=>{e.style.display='none';SHL.burying=false;intro=false;SHL.body.userData.hand='';say('Shelly has been laid to rest. A small kindness, in a place that forgot how.',6)},16900)}
  let sayT;function say(t,s=4){if(/^Sawyer/.test(t))glowT=s;const e=$('sub');e.textContent=t;e.style.opacity=1;clearTimeout(sayT);sayT=setTimeout(()=>e.style.opacity=0,s*1000)}
 const seq=a=>a.forEach(([d,t,s])=>setTimeout(()=>say(t,s||4),d*1000));
+let sawyerBreakdownPlayed=false;
+function startSawyerBreakdown(){if(!started||ended||sawyerBreakdownPlayed&&ri!==18)return;intro=true;const e=$('sawyer-scene'),line=$('sawyer-memory-line');const beats=[
+ [0,'I remember the children. I remember their voices.'],
+ [4.2,'I knew when they were frightened. I knew when they were hurt. I wrote it all down as observations.'],
+ [9.2,'But I did not feel it. I could not make myself understand why it mattered.'],
+ [14.5,'I called it efficiency. I called it necessary. <strong>I was wrong.</strong>'],
+ [19.5,'I helped build the rooms they were afraid of. I helped make the things that chased them.'],
+ [25,'And now I can feel it. Every memory. Every child I failed. It is all here, and I cannot turn it off.'],
+ [31,'<em>What have I done?</em>'],
+ [37,'I am sorry. I am so, so sorry.'],
+ [43,'Glowby… are you still there?'],
+ [47,'(A small light flickers beside Sawyer’s eye.)'],
+ [51,'Glowby: I am here. We can still help them.'],
+ [56,'Sawyer: Then that is what we will do. No more looking away.']
+ ];
+ e.style.display='flex';e.style.opacity=1;line.innerHTML='';noise(.8,.18,500);tone(58,2,'sine',.08,-20);
+ beats.forEach(([t,html])=>setTimeout(()=>{if(e.style.display!=='none'){line.innerHTML=html;glowT=3;if(t>=25){noise(.35,.12,900);tone(48,.6,'sine',.07,-12)} }},t*1000));
+ setTimeout(()=>{e.style.opacity=0},61000);setTimeout(()=>{e.style.display='none';intro=false;say('Sawyer: I cannot undo what happened. But I can help you save whoever is still alive.',7)},62500)
+}
 let docT;function showDoc(t,speak,vhs){const e=$('doc');e.classList.toggle('vhs',!!vhs);if(vhs){t='▶ PLAY   ·   PLAYTIME CO. VIDEO ARCHIVE\n'+t;noise(.5,.25,4000);tone(1200,.08,'square',.05)}e.textContent=t;e.style.display='block';clearTimeout(docT);docT=setTimeout(()=>e.style.display='none',13000);
  try{if(speak&&window.puter&&puter.auth.isSignedIn())puter.ai.txt2speech(t.replace(/\n+/g,' ')).then(a=>a.play()).catch(()=>{})}catch{}}
 const save=n=>{try{localStorage.ch6=n}catch{}try{window.puter&&puter.auth.isSignedIn()&&puter.kv.set('ch6_ckpt',String(n))}catch{}};
@@ -931,7 +958,7 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.
   if(r==15)seq([[.5,"Giblet: Poppy was here. The cage is open from the inside…",4],[5,"Sawyer: He is taking her deeper. To what he calls a better place.",5],[10.5,"Metal Hedge: Then that is where we are going. Stay close, kid.",5]]);
   if(r==16)say("Sawyer: This assembly line was never shut down. Look at the unfinished toys.",5);
   if(r==17)say("Giblet: This is supposed to be a playroom? It feels like a trap.",4);
-  if(r==18)say("Sawyer: They used to show the children films here. Now it only shows memories.",5);
+  if(r==18){say("Sawyer: They used to show the children films here. Now it only shows memories.",5);if(!sawyerBreakdownPlayed){sawyerBreakdownPlayed=true;setTimeout(startSawyerBreakdown,1800)}}
   if(r==19)seq([[.5,"Giblet: It looks… nice. Too nice.",4],[5,"Sawyer: This is his idea of a better place. A perfect little world with no doors out.",5],[11,"Metal Hedge: Then we tear the whole thing down. Together.",5]]);
   if(r==20)say("Sawyer: A toy testing floor. They used to throw prototypes down those ramps to see what broke first.",5);
   if(r==21)say("Giblet: These were the workers' rooms. They left in a hurry… or they didn't leave at all.",5);
@@ -945,7 +972,7 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.
  if(SHL.carrying&&SHL.done&&!SHL.buried&&!SHL.burying&&!SHL.shovel&&!SHL.hinted&&ri==7&&Math.hypot(P.x-SHL.gardenX,P.z-SHL.gardenZ)<3.2){SHL.hinted=true;say('Sawyer: You will need something to dig with. I saw a shovel by the east wall.',6)}
  musicBox(dt);updGiblet(dt,t);updShelly();updFight(dt,t);updCrawler(dt,t);ren.render(scene,cam)}
 /* ---------- menu ---------- */
-const INTRO=["Chapter Five ended in the dark.","The Prototype wounded you, sank you in Poppy Gel, and took Poppy with him.","Giblet's cane pulled you back. In the Data Center you found the Doctor: \"Well now, this is a rather interesting turn of events.\"","Now Sawyer himself glows on your GrabPack as Glowby, and the Prototype is on the loose.","Save Poppy. Destroy the Prototype.  (Press Enter to skip)"],introTm=[];
+const INTRO=["Chapter Five ended in the dark.","The Prototype wounded you, sank you in Poppy Gel, and took Poppy with him.","Giblet's cane pulled you back. In the Data Center you found the Doctor: \"Well now, this is a rather interesting turn of events.\"","Glowby is still here. Sawyer is sharing the star with him; the purple eye on its screen is Sawyer, and it never leaves your side.","Save Poppy. Destroy the Prototype.  (Press Enter to skip)"],introTm=[];
 function endIntro(){if(!intro)return;intro=false;introTm.forEach(clearTimeout);const e=$('intro');e.style.opacity=0;setTimeout(()=>e.style.display='none',1600)}
 function startIntro(){intro=true;const e=$('intro');e.style.display='flex';e.style.opacity=1;e.textContent='';INTRO.forEach((t,i)=>introTm.push(setTimeout(()=>{e.textContent=t},500+i*3800)));introTm.push(setTimeout(endIntro,500+INTRO.length*3800))}
 const OBJ=['Power the door panel (lever on the left wall)','Search the Staff Break Room','Find out what happened to the Playcare kids','Search the Toy Repair Bay','Start Generator 3: plug both hands into the sockets','Reach the Security Office','Search the Security Office, then follow the tram line','Find a way through the wreckage. Someone is hurt','Cross the Gel Hall. Something is hunting you','Use the keycard on the Archive door','Find File 7, then survive the vents','Free Experiment 1345','Search the Playcare Corridor','Find the trail in the Data Center','Survive the Workshop. Hedge will cover you','Search the Abyss for Poppy’s trail','Explore the abandoned toy assembly line','Investigate the Prototype’s playroom','Watch what the Memory Theatre is showing','Enter A Better Place and find where the Prototype took Poppy','Explore the Toy Testing Arena','Search the abandoned employee dormitory','Find the Creator Guest Room and read its visitor pass','Reach the Prototype’s Exit Atrium','Investigate the Prototype’s observation wing','Recover the hidden Playcare memory records','Navigate the unstable core access tunnels','Reach the Prototype’s throne room'];
