@@ -591,8 +591,10 @@ const c5=cz(11),capCol=colr(0,c5-1,2.2,2.2);let glass,MH,released=0;
   [7,cz(1)-6,'DANTDM',0x3988c8],
   [7,cz(21)+6,'FUSIONZGAMER',0x9b65bd]
  ]){
-  box(x,.82,z,.95,.12,.5,creatorPlaque);
-  sign(label,x,1.25,z-.28,0,1.5,'#'+color.toString(16).padStart(6,'0'));
+  const side=x>0?1:-1;
+  // Wall-mounted creator nameplate, facing into the room instead of floating above the floor.
+  box(side*9.76,2.05,z, .16,1.05,3.15,creatorPlaque,false);
+  sign(label,side*9.66,2.05,z,-side*Math.PI/2,2.85,'#'+color.toString(16).padStart(6,'0'));
  }
  lore('m39',-7,.98,cz(3)+6,'A NOTE LEFT BY A NIGHT GUARD',"DAWKO — The guard says this name was written on a list of people who always looked deeper into the strange things everyone else ignored. A little reminder: keep investigating.");
  lore('m40',7,.98,cz(6)-6,'GREEN-EYED VISITOR STICKER',"JACKSEPTICEYE — A green visitor sticker with a note: “For someone who never stays quiet when the scary stuff starts.”");
